@@ -18,8 +18,6 @@ Getting up and running for development is easy.
 
 `cd boldr-universal-react`
 
-Set the env file `cp example.env .env`
-
 Install the dependencies `npm install`
 
 Start the development process with `npm run dev`
@@ -27,9 +25,14 @@ Start the development process with `npm run dev`
 ### Production
 Running the two commands below will compile your application and serve the production ready build.
 
+**Build:** `npm run build`
+**Run:** `npm run start:prod`
 
 ## Notes
+#### Using DLLs
+Taking advantage of Webpack's DLLs is pretty easy in this project. The command is `npm run build:dlls`. It creates a `vendor.json` tfile in the webpack directory and places the DLL bundle in `static/assets/dlls`. When you add new dependencies to your project, all you need to do is add the name to the on-going list within `webpack/dll.config.js`. As a side note, rather than using DLLs in production (which you shouldnt, by the way), you'll want to add the package into the list of vendor dependencies inside `webpack/webpack.config.client.js`.
 
+If you don't feel like using DLLs, set WEBPACK_DLLS to 0 in the `package.json`
 
 ## Resources
 

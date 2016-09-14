@@ -43,6 +43,14 @@
         "WEBPACK_DLLS": 1
       }
     },
+    "start:prod": {
+      "command": "node ./bin/run.js",
+      "env": {
+        "NODE_ENV": "production",
+        "SSR_PORT": 3000,
+        "WEBPACK_DLLS": 0
+      }
+    },
     "test": {
       "command": "mocha --compilers js:./config/test/mocha.js --require config/test/clientHelper.js --require ignore-styles --opts ./config/test/mocha.opts './src/**/*.test.js'",
       "env": {
@@ -51,6 +59,7 @@
     }
   },
   "scripts": {
+    "build": "npm-run-all -s build:server build:client",
     "build:client": "better-npm-run build:client",
     "build:server": "better-npm-run build:server",
     "build:dlls": "webpack --verbose --colors --display-error-details --config ./webpack/dll.config.js",
@@ -60,6 +69,7 @@
     "dev:client": "better-npm-run dev:client",
     "dev:server": "better-npm-run dev:server",
     "postinstall": "npm run build:dlls",
+    "start:prod": "better-npm-run start:prod",
     "test": "better-npm-run test"
   },
   "main": "index.js",
