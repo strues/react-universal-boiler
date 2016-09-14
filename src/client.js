@@ -37,7 +37,7 @@ const render = () => {
     return history.listen(location => {
       match({ routes, location }, (error, redirectLocation, renderProps) => {
         if (error) {
-          console.log('==> React Router match failed.'); // eslint-disable-line no-console
+          console.log('⚠  ==> React Router match failed.'); // eslint-disable-line no-console
         }
         const { components } = renderProps;
         const locals = {
@@ -47,8 +47,8 @@ const render = () => {
           dispatch,
           getState
         };
-        if (window.__PRELOAD_STATE) {
-          delete window.__PRELOAD_STATE;
+        if (window.__PRELOADED_STATE) {
+          delete window.__PRELOADED_STATE;
         } else {
           trigger('fetch', components, locals);
         }

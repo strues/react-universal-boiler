@@ -9,6 +9,8 @@ const HOST = 'localhost';
 module.exports = {
   HMR_PORT: 3001,
   SSR_PORT: 3000,
+  API_PORT: 8000,
+  API_HOST: 'localhost',
   HOST: 'localhost',
   ROOT_DIR: ABS_ROOT,
   SRC_DIR: path.join(ABS_ROOT, 'src'),
