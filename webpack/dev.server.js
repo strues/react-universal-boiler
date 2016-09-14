@@ -15,6 +15,7 @@ const serverOptions = {
   headers: { 'Access-Control-Allow-Origin': '*' },
   hot: true,
   inline: true,
+  serverSideRender: true,
   lazy: false,
   stats: { colors: true },
   publicPath: wpConfig.output.publicPath

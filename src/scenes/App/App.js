@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-
-import { Navigation, Button } from '../../components';
+import 'normalize.css/normalize.css';
+import { Navigation, Button } from 'components';
 import styles from './App.scss';
 
 const App = (props) => {

@@ -9,6 +9,13 @@
   "ecmaFeatures": {
     "defaultParams": true
   },
+  "settings": {
+    "import/resolver": {
+      "babel-module": {
+        "root": ["./src"]
+      }
+    }
+  },
   "rules": {
     "no-unused-vars": 0,
     "babel/new-cap": 0,

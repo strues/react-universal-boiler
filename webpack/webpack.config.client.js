@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const path = require('path');
 const webpack = require('webpack');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
@@ -25,7 +26,7 @@ const ifProd = ifElse(isProd);
 const webpackIsomorphicToolsPlugin =
   new WebpackIsomorphicToolsPlugin(isomorphicConfig).development(isDev);
 
-module.exports = function webpackConfig(CSSModules) {
+module.exports = function webpackConfig() {
   return {
     target: 'web',
     stats: false,
@@ -77,32 +78,35 @@ module.exports = function webpackConfig(CSSModules) {
         { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
         { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
         { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' },
+        {
+          test: /\.css$/,
+          include: /node_modules/,
+          loader: isDev ? 'style!css' :
+          ExtractTextPlugin.extract({
+            fallbackLoader: 'style',
+            loader: 'css'
+          })
+        },
         createSourceLoader({
           happy: { id: 'css' },
           test: /\.css$/,
+          exclude: /node_modules/,
           loader: isDev ?
-            'style!css?localIdentName=[name]__[local].[hash:base64:5]&' +
-            (CSSModules ? 'modules' : '') +
-            '&sourceMap&-minimize&importLoaders=1!postcss' :
+            'style!css?localIdentName=[name]__[local].[hash:base64:5]&modules&sourceMap&-minimize&importLoaders=1!postcss' :
             ExtractTextPlugin.extract({
               fallbackLoader: 'style',
-              loader: 'css?' +
-              (CSSModules ? 'modules' : '') +
-              '&sourceMap&importLoaders=1!postcss'
+              loader: 'css?modules&sourceMap&importLoaders=1!postcss'
             }),
         }),
         createSourceLoader({
           happy: { id: 'sass' },
           test: /\.scss$/,
+          exclude: /node_modules/,
           loader: isDev ?
-            'style!css?localIdentName=[name]__[local].[hash:base64:5]&' +
-              (CSSModules ? 'modules' : '') +
-              '&sourceMap&-minimize&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap' :
+            'style!css?localIdentName=[name]__[local].[hash:base64:5]&modules&sourceMap&-minimize&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap' :
             ExtractTextPlugin.extract({
               fallbackLoader: 'style',
-              loader: 'css?' +
-              (CSSModules ? 'modules' : '') +
-              '&sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
+              loader: 'css?modules&sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
             }),
         })
       ])
@@ -117,8 +121,8 @@ module.exports = function webpackConfig(CSSModules) {
       // http://webpack.github.io/docs/list-of-plugins.html#defineplugin
       new webpack.DefinePlugin({
         'process.env': {
-          'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-          'DEBUG': JSON.stringify(process.env.DEBUG)
+          NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+          DEBUG: JSON.stringify(process.env.DEBUG)
         },
         __DEV__: process.env.NODE_ENV !== 'production',
         __DISABLE_SSR__: false,

@@ -10,7 +10,7 @@ const Navigation = (props) => {
 };
 
 Navigation.propTypes = {
-  children: PropTypes.element
+  children: PropTypes.array
 };
 
 export default Navigation;
