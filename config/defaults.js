@@ -14,4 +14,4 @@ module.exports = {
   SRC_DIR: path.join(ABS_ROOT, 'src'),
   STATIC_DIR: path.join(ABS_ROOT, 'static'),
   ASSETS_DIR: path.join(ABS_ROOT, 'static', 'assets')
-}
+};

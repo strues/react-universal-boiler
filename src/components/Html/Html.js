@@ -50,6 +50,7 @@ export default class Html extends Component {
             charSet="UTF-8"
           />
         { __DLLS__ && [<script key="dlls__vendor" src="/assets/dlls/dll__vendor.js" charSet="UTF-8" />] }
+        { !__DLLS__ && [<script key="vendor" src={ assets.javascript.vendor } charSet="UTF-8" />] }
           <script src={ assets.javascript.main } charSet="UTF-8" />
           {/* (will be present only in development mode) */}
       {

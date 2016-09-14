@@ -1,10 +1,10 @@
 import http from 'http';
 import path from 'path';
+// Express deps
 import express from 'express';
-import PrettyError from 'pretty-error';
 import compression from 'compression';
 import favicon from 'serve-favicon';
-
+// React deps
 import React from 'react';
 import ReactDOM from 'react-dom/server';
 import match from 'react-router/lib/match';
@@ -13,19 +13,19 @@ import RouterContext from 'react-router/lib/RouterContext';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import { trigger } from 'redial';
-
+// Our deps
 import configureStore from './state/store';
 import Html from './components/Html';
 import getRoutes from './scenes';
 
+const debug = require('debug')('boldr:server');
 const cfg = require('../config/defaults');
 
 const app = express();
 const server = http.createServer(app);
-const debug = require('debug')('boldr:server');
 
-app.use(favicon(path.join(__dirname, '..', 'static', 'favicon.ico')));
-app.use(express.static(path.join(__dirname, '..', 'static')));
+app.use(favicon(path.resolve(process.cwd(), './static/favicon.ico')));
+app.use(express.static('assets'));
 
 app.get('*', (req, res) => {
   if (__DEV__) {
@@ -47,7 +47,7 @@ app.get('*', (req, res) => {
     return;
   }
 
-    match({ history, routes: getRoutes(store), location }, (error, redirectLocation, renderProps, ...args) => {
+  match({ history, routes: getRoutes(store), location }, (error, redirectLocation, renderProps) => {
     if (redirectLocation) {
       res.redirect(redirectLocation.pathname + redirectLocation.search);
     } else if (error) {
@@ -93,5 +93,5 @@ server.listen(cfg.SSR_PORT, (err) => {
     debug(err);
     return;
   }
-  debug(`🚀  Web server listening on ${cfg.HOST}:${cfg.SSR_PORT} in ${process.env.NODE_ENV} mode`);
+  console.log(`🚀  Web server listening on ${cfg.HOST}:${cfg.SSR_PORT} in ${process.env.NODE_ENV} mode`);
 });
