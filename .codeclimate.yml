@@ -1,0 +1,12 @@
+engines:
+  eslint:
+    enabled: true
+ratings:
+   paths:
+   - src/**
+exclude_paths:
+- node_modules/**/*
+- static/**
+- webpack/**
+- src/client.js
+- src/server.js

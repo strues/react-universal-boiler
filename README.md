@@ -1,4 +1,5 @@
-# Boldr Universal React Starter
+# Boldr Universal React Starter  
+[![Code Climate](https://codeclimate.com/github/strues/boldr-universal-react/badges/gpa.svg)](https://codeclimate.com/github/strues/boldr-universal-react)  [![Build Status](https://travis-ci.org/strues/boldr-universal-react.svg?branch=master)](https://travis-ci.org/strues/boldr-universal-react)
 
 A **bold** way to begin your next great universal React application.
 
