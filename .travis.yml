@@ -10,4 +10,4 @@ git:
 install:
 - npm install
 script:
-- NODE_ENV=npm run test
+- npm run test
