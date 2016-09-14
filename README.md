@@ -3,9 +3,9 @@
 A **bold** way to begin your next great universal React application.
 
 ## Features
-- A pleasant 😍 developer experience with 🔥 fast bundling; so you can get shit done.
-- [Webpack 2](https://github.com/webpack/webpack): With code splitting on routes
-- [React-Hot-Loader](https://github.com/gaearon/react-hot-loader): Hot module replacement
+- A pleasant 😍 developer experience with 🔥 fast bundling, so you can get shit done. This starter takes advantage of tools like, [HappyPack](https://github.com/amireh/happypack) and the [DLL capabilities](http://webpack.github.io/docs/list-of-plugins.html#dllplugin) within Webpack itself. Your rebuilds happen fast because, nobody enjoys waiting around like a  🐢  while assets recompile.
+- [React-Hot-Loader](https://github.com/gaearon/react-hot-loader): Build your React components with less full page reloads thanks to hot module replacement and React Hot Loader.
+- Code Splitting: Give your visitors the best experience possible by allowing their browsers to only download what's necessary.
 
 ## Demo
 

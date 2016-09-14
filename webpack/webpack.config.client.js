@@ -38,7 +38,7 @@ module.exports = function webpackConfig(CSSModules) {
       main: removeEmpty([
         ifDev('react-hot-loader/patch'),
         ifDev(`webpack-hot-middleware/client?reload=true&path=http://localhost:${config.HMR_PORT}/__webpack_hmr`),
-        ifProd('babel-polyfill'),
+        ifProd(require.resolve('./util/polyfills')),
         path.join(config.SRC_DIR, 'client.js')
       ]),
       vendor: ifProd([
@@ -57,7 +57,7 @@ module.exports = function webpackConfig(CSSModules) {
       path: path.resolve(config.ASSETS_DIR),
       filename: ifProd('[name]-[chunkhash].js', '[name].js'),
       chunkFilename: ifDev('[name]-[id].chunk.js', '[name]-[id].[chunkhash].js'),
-      publicPath: ifDev(`http://localhost:${config.HMR_PORT}/assets/`, '/assets/')
+      publicPath: isDev ? `http://localhost:${config.HMR_PORT}/assets/` : '/assets/'
     },
     resolve: {
       extensions: ['', '.js', '.jsx', '.json', '.css', '.scss'],

@@ -17,7 +17,7 @@ const initialState = window.__PRELOADED_STATE || {};
 const store = configureStore(browserHistory, initialState);
 const history = syncHistoryWithStore(browserHistory, store);
 
-const { dispatch } = store;
+const { dispatch, getState } = store;
 const routes = getRoutes(store, history);
 
 const render = () => {

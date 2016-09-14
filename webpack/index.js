@@ -6,7 +6,7 @@ const dllHelpers = require('./util/dllHelpers');
 let webpackConfig;
 let CSSModules = true;
 
-const validDLLs = dllHelpers.isValidDLLs(['vendor'], cfg.ASSETS_DIR);
+const validDLLs = dllHelpers.isValidDLLs(['vendor'], path.join(__dirname, '..', 'static', 'assets'));
 
 if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
   process.env.WEBPACK_DLLS = '0';

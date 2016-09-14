@@ -20,7 +20,7 @@ const nodeConfig = { // eslint-disable-line
   },
   output: {
     path: path.resolve(__dirname, '../static'),
-    publicPath: '/assets/',
+    pathInfo: true,
     chunkFilename: '[name]-[chunkhash].js',
     filename: '[name].js',
     libraryTarget: 'commonjs2'

@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-const projectRootPath = path.resolve(__dirname, '../');
+
+const projectRootPath = path.resolve(process.cwd());
 
 module.exports = {
   devtool: process.env.NODE_ENV === 'production' ? null : 'inline-source-map',

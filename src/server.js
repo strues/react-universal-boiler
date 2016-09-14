@@ -25,7 +25,7 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(favicon(path.resolve(process.cwd(), './static/favicon.ico')));
-app.use(express.static('assets'));
+app.use(express.static(path.join(__dirname, '..', 'static')));
 
 app.get('*', (req, res) => {
   if (__DEV__) {
@@ -39,7 +39,7 @@ app.get('*', (req, res) => {
 
   function hydrateOnClient() {
     res.send(`<!doctype html>
-      ${ReactDOM.renderToString(<Html assets={ webpackIsomorphicTools.assets() } store={ store } />) }`);
+      ${ReactDOM.renderToString(<Html assets={ webpackIsomorphicTools.assets() } store={ store } />)} `);
   }
 
   if (__DISABLE_SSR__) {

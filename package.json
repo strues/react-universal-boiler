@@ -42,6 +42,12 @@
         "HMR_PORT": 3001,
         "WEBPACK_DLLS": 1
       }
+    },
+    "test": {
+      "command": "mocha --compilers js:./config/test/mocha.js --require config/test/clientHelper.js --require ignore-styles --opts ./config/test/mocha.opts './src/**/*.test.js'",
+      "env": {
+        "BABEL_ENV": "client"
+      }
     }
   },
   "scripts": {
@@ -53,7 +59,8 @@
     "dev": "npm-run-all --parallel dev:client dev:server",
     "dev:client": "better-npm-run dev:client",
     "dev:server": "better-npm-run dev:server",
-    "postinstall": "npm run build:dlls"
+    "postinstall": "npm run build:dlls",
+    "test": "better-npm-run test"
   },
   "main": "index.js",
   "author": "Steven Truesdell <steven@strues.io>",
@@ -93,23 +100,28 @@
     "babel-plugin-transform-runtime": "^6.15.0",
     "babel-preset-latest": "^6.14.0",
     "babel-preset-react": "^6.11.1",
+    "chai": "^3.5.0",
     "css-loader": "^0.25.0",
+    "enzyme": "^2.4.1",
     "eslint": "^3.5.0",
     "eslint-config-boldr": "^1.1.1",
     "eslint-loader": "^1.5.0",
+    "expect": "^1.20.2",
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
     "file-loader": "^0.9.0",
     "happypack": "^2.2.1",
+    "ignore-styles": "^5.0.1",
+    "jsdom": "^9.5.0",
     "json-loader": "^0.5.4",
+    "mocha": "^3.0.2",
     "node-noop": "^1.0.0",
     "node-sass": "^3.9.3",
     "postcss-loader": "^0.13.0",
+    "react-addons-test-utils": "^15.3.1",
     "react-hot-loader": "^3.0.0-beta.3",
     "rimraf": "^2.5.4",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
-    "stylelint": "^7.2.0",
-    "stylelint-config-standard": "^13.0.0",
     "url-loader": "^0.5.7",
     "webpack": "^2.1.0-beta.22",
     "webpack-dev-middleware": "^1.7.0",
