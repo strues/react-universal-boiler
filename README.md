@@ -26,6 +26,7 @@ Start the development process with `npm run dev`
 Running the two commands below will compile your application and serve the production ready build.
 
 **Build:** `npm run build`
+
 **Run:** `npm run start:prod`
 
 ## Notes

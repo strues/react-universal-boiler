@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - 6
+cache:
+  directories:
+  - node_modules
+sudo: false
+git:
+  depth: 3
+install:
+- npm install
+script:
+- NODE_ENV=npm run test
