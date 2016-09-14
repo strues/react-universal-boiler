@@ -5,25 +5,32 @@ import thunkMiddleware from 'redux-thunk';
 import reducers from './reducers';
 
 export default function configureStore(history, initialState) {
+  // Redux middleware
   const reduxRouterMiddleware = routerMiddleware(history);
-  let store = createStore(reducers, initialState, compose(
-    applyMiddleware(
-      thunkMiddleware,
-      reduxRouterMiddleware
-    ),
+  const middleware = [thunkMiddleware, reduxRouterMiddleware];
 
-    process.env.NODE_ENV === 'development' &&
-    typeof window === 'object' &&
-    typeof window.devToolsExtension !== 'undefined'
-      ? window.devToolsExtension()
-      : f => f
-  ))
+  // Development enhancers
+  const enhancers = [];
 
-  if (process.env.NODE_ENV === 'development') {
-    if (module.hot) {
-      module.hot.accept('./reducers', () => store.replaceReducer(require('./reducers').default))
+  if (__DEV__ && typeof window === 'object') {
+    const devToolsExtension = window.devToolsExtension;
+    if (typeof devToolsExtension === 'function') {
+      enhancers.push(devToolsExtension());
     }
   }
 
-  return store
+  // Creating the store
+  const store = createStore(reducers, initialState, compose(
+    applyMiddleware(...middleware),
+    ...enhancers
+  ));
+
+  // Hot reload
+  if (process.env.NODE_ENV === 'development') {
+    if (module.hot) {
+      module.hot.accept('./reducers', () => store.replaceReducer(require('./reducers').default));
+    }
+  }
+
+  return store;
 }

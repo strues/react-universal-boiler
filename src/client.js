@@ -8,15 +8,19 @@ import { trigger } from 'redial';
 
 import getRoutes from './scenes';
 import configureStore from './state/store';
-
+// The element React looks for to mount
 const MOUNT_POINT = window.document.getElementById('content');
+// initialState is serialized on the window for the client-side to grab
+// once rendering takes place.
 const initialState = window.__PRELOADED_STATE || {};
+
 const store = configureStore(browserHistory, initialState);
 const history = syncHistoryWithStore(browserHistory, store);
+
 const { dispatch } = store;
 const routes = getRoutes(store, history);
 
-let render = () => {
+const render = () => {
   const { pathname, search, hash } = window.location;
   const location = `${pathname}${search}${hash}`;
 
@@ -24,7 +28,7 @@ let render = () => {
     ReactDOM.render(
       <AppContainer>
         <Provider store={ store } key="provider">
-            <Router routes={ routes } history={ history } key={ Math.random() } helpers={ { client } } />
+            <Router routes={ routes } history={ history } key={ Math.random() } />
         </Provider>
       </AppContainer>,
       MOUNT_POINT

@@ -66,7 +66,7 @@ module.exports = {
       'react-router-redux',
       'react-helmet',
       'redux-thunk',
-      'redux-connect',
+      'redial',
       'isomorphic-fetch',
       'normalizr'
     ]

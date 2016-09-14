@@ -1,7 +1,7 @@
 {
   "env": {
     "server": {
-      "presets": ["latest", "react"],
+      "presets": [["es2015", { "modules": "commonjs"}], "react"],
       "plugins": ["transform-class-properties",
         "transform-object-rest-spread",
         "transform-regenerator", ["transform-runtime", {

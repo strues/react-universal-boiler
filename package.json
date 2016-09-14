@@ -6,6 +6,24 @@
   "author": "",
   "license": "ISC",
   "betterScripts": {
+    "build:client": {
+      "command": "./node_modules/.bin/webpack --env production --config webpack/webpack.config.client.js",
+      "env": {
+        "DEBUG": "boldr:*",
+        "NODE_ENV": "production",
+        "BABEL_ENV": "client",
+        "SSR_PORT": 3000
+      }
+    },
+    "build:server": {
+      "command": "./node_modules/.bin/webpack --env production --config webpack/webpack.config.node.js",
+      "env": {
+        "DEBUG": "boldr:*",
+        "NODE_ENV": "production",
+        "BABEL_ENV": "server",
+        "SSR_PORT": 3000
+      }
+    },
     "dev:client": {
       "command": "node ./webpack/dev.server.js",
       "env": {
@@ -30,7 +48,10 @@
     }
   },
   "scripts": {
+    "build:client": "better-npm-run build:client",
+    "build:server": "better-npm-run build:server",
     "build:dlls": "webpack --verbose --colors --display-error-details --config ./webpack/dll.config.js",
+    "clean": "rimraf static/assets && rimraf static/server.js && rimraf static/server.js.map && rimraf static/webpack-assets.json && rimraf static/webpack-stats.json",
     "dev": "npm-run-all --parallel dev:client dev:server",
     "dev:client": "better-npm-run dev:client",
     "dev:server": "better-npm-run dev:server"
@@ -46,26 +67,26 @@
     "babel-plugin-transform-react-inline-elements": "^6.8.0",
     "babel-plugin-transform-regenerator": "^6.14.0",
     "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-es2015": "^6.14.0",
     "babel-preset-latest": "^6.14.0",
     "babel-preset-react": "^6.11.1",
-    "chokidar": "^1.6.0",
     "css-loader": "^0.25.0",
     "eslint": "^3.5.0",
     "eslint-config-boldr": "^1.1.1",
     "eslint-loader": "^1.5.0",
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
     "file-loader": "^0.9.0",
-    "find-cache-dir": "^0.1.1",
     "happypack": "^2.2.1",
     "json-loader": "^0.5.4",
+    "node-noop": "^1.0.0",
     "node-sass": "^3.9.3",
     "postcss-loader": "^0.13.0",
     "react-hot-loader": "^3.0.0-beta.3",
+    "rimraf": "^2.5.4",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "stylelint": "^7.2.0",
     "stylelint-config-standard": "^13.0.0",
-    "stylelint-webpack-plugin": "^0.3.1",
     "url-loader": "^0.5.7",
     "webpack": "^2.1.0-beta.22",
     "webpack-dev-middleware": "^1.7.0",
@@ -91,7 +112,6 @@
     "react-router-redux": "^4.0.5",
     "redial": "^0.4.2",
     "redux": "^3.6.0",
-    "redux-connect": "^3.0.0",
     "redux-thunk": "^2.1.0",
     "serialize-javascript": "^1.3.0",
     "serve-favicon": "^2.3.0",

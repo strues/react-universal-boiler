@@ -14,7 +14,7 @@ if (process.env.WEBPACK_DLLS === '1' && !validDLLs) {
 }
 
 if (process.env.NODE_ENV !== 'test') {
-  webpackConfig = require('./webpack.config.babel.js')(CSSModules);
+  webpackConfig = require('./webpack.config.client.js')(CSSModules);
   if (process.env.WEBPACK_DLLS === '1' && validDLLs) {
     dllHelpers.installVendorDLL(webpackConfig, 'vendor');
   }
