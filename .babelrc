@@ -22,6 +22,7 @@
         "transform-object-rest-spread",
         "transform-react-constant-elements",
         "transform-react-inline-elements",
+        "lodash",
         ["transform-runtime", {
           "helpers": false,
           "polyfill": false,

@@ -68,7 +68,9 @@ module.exports = {
       'redux-thunk',
       'redial',
       'isomorphic-fetch',
-      'classnames'
+      'classnames',
+      'superagent',
+      'lodash'
     ]
   },
 

@@ -2,8 +2,7 @@ import React, { PropTypes } from 'react';
 
 const Navigation = (props) => {
   return (
-    <nav>
-      Navigation
+    <nav id="navbar">
       { props.children }
     </nav>
   );

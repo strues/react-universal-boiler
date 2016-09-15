@@ -5,6 +5,7 @@ const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 const HappyPack = require('happypack');
 const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 const debug = require('debug')('boldr:webpack');
 
@@ -39,7 +40,7 @@ module.exports = function webpackConfig() {
     entry: removeEmptyKeys({
       main: removeEmpty([
         ifDev('react-hot-loader/patch'),
-        ifDev(`webpack-hot-middleware/client?reload=true&path=http://localhost:${config.HMR_PORT}/__webpack_hmr`),
+        ifDev(`webpack-hot-middleware/client?reload=true&path=http://${config.HOST}:${config.HMR_PORT}/__webpack_hmr`),
         ifProd(require.resolve('./util/polyfills')),
         path.join(config.SRC_DIR, 'client.js')
       ]),
@@ -54,14 +55,16 @@ module.exports = function webpackConfig() {
         'redux-thunk',
         'redial',
         'isomorphic-fetch',
-        'classnames'
+        'superagent',
+        'classnames',
+        'lodash'
       ])
     }),
     output: {
       path: path.resolve(config.ASSETS_DIR),
       filename: ifProd('[name]-[chunkhash].js', '[name].js'),
       chunkFilename: ifDev('[name]-[id].chunk.js', '[name]-[id].[chunkhash].js'),
-      publicPath: isDev ? `http://localhost:${config.HMR_PORT}/assets/` : '/assets/'
+      publicPath: isDev ? `http://${config.HOST}:${config.HMR_PORT}/assets/` : '/assets/'
     },
     resolve: {
       extensions: ['', '.js', '.jsx', '.json', '.css', '.scss'],
@@ -106,12 +109,22 @@ module.exports = function webpackConfig() {
           test: /\.scss$/,
           exclude: /node_modules/,
           loader: isDev ?
+            'style!css?localIdentName=[name]__[local].[hash:base64:5]&sourceMap&-minimize&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap' :
+            ExtractTextPlugin.extract({
+              fallbackLoader: 'style',
+              loader: 'css?modules&sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
+            })
+        }),
+        {
+          test: /\.module.scss$/,
+          exclude: /node_modules/,
+          loader: isDev ?
             'style!css?localIdentName=[name]__[local].[hash:base64:5]&modules&sourceMap&-minimize&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap' :
             ExtractTextPlugin.extract({
               fallbackLoader: 'style',
               loader: 'css?modules&sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
-            }),
-        })
+            })
+        }
       ])
     },
     plugins: removeEmpty([
@@ -172,6 +185,10 @@ module.exports = function webpackConfig() {
         filename: '[name].[chunkhash].js',
         minChunks: Infinity
       })),
+      // Create smaller Lodash builds by replacing feature sets of modules with
+      // noop, identity, or simpler alternatives.
+      // https://github.com/lodash/lodash-webpack-plugin
+      ifProd(new LodashModuleReplacementPlugin),
       // Extracts all stylesheets into a main file. During development styles are dumped
       // into the head and/or added dynamically.
       ifProd(new ExtractTextPlugin({
@@ -198,6 +215,12 @@ module.exports = function webpackConfig() {
       ifProd(new webpack.optimize.AggressiveMergingPlugin())
     ]),
     postcss: [autoprefixer({ browsers: ['last 2 versions'] })],
+    /*
+     * Include polyfills and/or mocks for node
+     * Description: Node configuration
+     *
+     * See: https://webpack.github.io/docs/configuration.html#node
+     */
     node: {
       __dirname: true,
       __filename: true
