@@ -1,0 +1,13 @@
+@import '../../theme/variables';
+
+.paragraph {
+	font-size: $text-size;
+	line-height: 1.5rem;
+	margin: 0 0 1.5rem;
+}
+
+.lead {
+	font-size: 1.3rem;
+	line-height: 2rem;
+	margin-bottom: 1rem;
+}

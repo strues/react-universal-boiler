@@ -10,7 +10,7 @@ const App = (props) => {
           <Button text="Home" />
           <Button text="Going Nowheres" />
         </Navigation>
-        { props.children }
+          { props.children }
       </div>
   );
 };
