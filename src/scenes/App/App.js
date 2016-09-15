@@ -7,8 +7,8 @@ const App = (props) => {
   return (
       <div>
         <Navigation>
-          <Button text="Home" href="/" />
-          <Button text="LastFM" href="lastfm" />
+          <Button text="Home" />
+          <Button text="Going Nowheres" />
         </Navigation>
         { props.children }
       </div>

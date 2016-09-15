@@ -21,7 +21,6 @@ module.exports = {
       // Generate this list using the following command against the stdout of
       // webpack running against the source bundle config (dev/prod.js):
       //
-      //    webpack --config webpack/dev.config.js --display-modules | egrep -o 'babel-runtime/\S+' | sed 's/\.js$//' | sort | uniq
       'babel-runtime/core-js/array/from',
       'babel-runtime/core-js/get-iterator',
       'babel-runtime/core-js/is-iterable',
@@ -69,7 +68,7 @@ module.exports = {
       'redux-thunk',
       'redial',
       'isomorphic-fetch',
-      'normalizr'
+      'classnames'
     ]
   },
 
@@ -85,7 +84,7 @@ module.exports = {
     }),
 
     new webpack.DllPlugin({
-      path: path.join(projectRootPath, 'webpack/dlls/[name].json'),
+      path: path.join(projectRootPath, 'tools/webpack/dlls/[name].json'),
       name: 'DLL_[name]_[hash]'
     })
   ]

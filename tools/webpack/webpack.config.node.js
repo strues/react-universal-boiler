@@ -3,7 +3,7 @@ const fs = require('fs');
 const webpack = require('webpack');
 const NodeExternals = require('webpack-node-externals');
 
-const config = require('../config/defaults');
+const config = require('../defaults');
 
 const nodeConfig = { // eslint-disable-line
   target: 'node',
@@ -11,7 +11,6 @@ const nodeConfig = { // eslint-disable-line
   progress: true,
   bail: true,
   externals: NodeExternals(),
-  context: __dirname,
   devtool: 'source-map',
   entry: {
     server: [
@@ -19,7 +18,7 @@ const nodeConfig = { // eslint-disable-line
     ]
   },
   output: {
-    path: path.resolve(__dirname, '../static'),
+    path: path.resolve(config.STATIC_DIR),
     pathInfo: true,
     chunkFilename: '[name]-[chunkhash].js',
     filename: '[name].js',
@@ -65,7 +64,7 @@ const nodeConfig = { // eslint-disable-line
       __CLIENT__: false,
       __SERVER__: true
     }),
-    new webpack.IgnorePlugin(/\.(css|less|scss|svg|png|jpe?g|png)$/, 'node-noop'),
+    new webpack.NormalModuleReplacementPlugin(/\.(eot|woff|woff2|ttf|otf|svg|png|jpg|jpeg|gif|webp|mp4|mp3|ogg|pdf)$/, 'node-noop'), // eslint-disable-line
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
     })

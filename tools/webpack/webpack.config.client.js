@@ -8,7 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const debug = require('debug')('boldr:webpack');
 
-const config = require('../config/defaults');
+const config = require('../defaults');
 const { removeEmpty, ifElse, merge, removeEmptyKeys } = require('./util/helpers');
 const createHappyPlugin = require('./util/createHappyPlugin');
 const createSourceLoader = require('./util/createSourceLoader');
@@ -31,6 +31,7 @@ module.exports = function webpackConfig() {
     target: 'web',
     stats: false,
     progress: true,
+    bail: isProd ? true : false, // eslint-disable-line
     devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
     context: config.ROOT_DIR,
     cache: isDev,
@@ -51,7 +52,9 @@ module.exports = function webpackConfig() {
         'react-router-redux',
         'react-helmet',
         'redux-thunk',
-        'redial'
+        'redial',
+        'isomorphic-fetch',
+        'classnames'
       ])
     }),
     output: {

@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const debug = require('debug')('boldr:webpack-ds');
-const config = require('../config/defaults');
+const config = require('../defaults');
 const wpConfig = require('./index.js');
 
 const compiler = webpack(wpConfig);
