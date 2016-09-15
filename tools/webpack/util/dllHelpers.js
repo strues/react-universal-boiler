@@ -1,10 +1,11 @@
 const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
+
 const projectRootPath = path.resolve(process.cwd());
 
 function installVendorDLL(config, dllName) {
-  const manifest = loadDLLManifest(path.join(projectRootPath, `webpack/dlls/${dllName}.json`));
+  const manifest = loadDLLManifest(path.join(projectRootPath, `tools/webpack/dlls/${dllName}.json`));
 
   if (manifest) {
     console.log(`Webpack: will be using the ${dllName} DLL.`);
@@ -39,7 +40,7 @@ function loadDLLManifest(filePath) {
 function isValidDLLs(dllNames, assetsPath) {
   for (const dllName of dllNames) {
     try {
-      const manifest = require(path.join(projectRootPath, `webpack/dlls/${dllName}.json`));
+      const manifest = require(path.join(projectRootPath, `tools/webpack/dlls/${dllName}.json`));
       const dll = fs.readFileSync(path.join(assetsPath, `dlls/dll__${dllName}.js`)).toString('utf-8');
       if (dll.indexOf(manifest.name) === -1) {
         console.warn(`Invalid dll: ${dllName}`);

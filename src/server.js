@@ -19,7 +19,7 @@ import Html from './components/Html';
 import getRoutes from './scenes';
 
 const debug = require('debug')('boldr:server');
-const cfg = require('../config/defaults');
+const config = require('../tools/defaults');
 
 const app = express();
 const server = http.createServer(app);
@@ -88,10 +88,10 @@ app.get('*', (req, res) => {
   });
 });
 
-server.listen(cfg.SSR_PORT, (err) => {
+server.listen(config.SSR_PORT, (err) => {
   if (err) {
     debug(err);
     return;
   }
-  console.log(`🚀  Web server listening on ${cfg.HOST}:${cfg.SSR_PORT} in ${process.env.NODE_ENV} mode`);
+  console.log(`🚀  Web server listening on ${config.HOST}:${config.SSR_PORT} in ${process.env.NODE_ENV} mode`);
 });

@@ -15,6 +15,8 @@ export default (store) => {
     component: require('./App').default,
     indexRoute: {
       component: require('./Home').default
-    }
+    },
+    childRoutes: [
+    ]
   };
 };

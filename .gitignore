@@ -6,3 +6,4 @@ static/server.js.map
 static/webpack-assets.json
 static/webpack-stats.jsons
 *.log
+.env

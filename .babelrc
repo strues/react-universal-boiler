@@ -6,8 +6,11 @@
         "transform-object-rest-spread",
         "transform-regenerator", ["transform-runtime", {
           "helpers": false,
-            "polyfill": false,
-            "regenerator": false
+          "polyfill": false,
+          "regenerator": false
+        }],
+        ["module-resolver", {
+          "root": ["./src"]
         }]
       ]
     },
@@ -21,8 +24,11 @@
         "transform-react-inline-elements",
         ["transform-runtime", {
           "helpers": false,
-              "polyfill": false,
-              "regenerator": true
+          "polyfill": false,
+          "regenerator": true
+        }],
+        ["module-resolver", {
+          "root": ["./src"]
         }]
       ]
     }
