@@ -42,7 +42,7 @@ If you don't feel like using DLLs, set WEBPACK_DLLS to 0 in the `package.json`
 
 
 ## Alternatives
-- [`ReactGo`]https://github.com/reactGo/reactGo)
+- [`ReactGo`](https://github.com/reactGo/reactGo)
 Your One-Stop solution for a full-stack app with ES6/ES2015 React.js featuring universal Redux, React Router, React Router Redux Hot reloading, CSS modules, Express 4.x, and multiple ORMs.
 
 
