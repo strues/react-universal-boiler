@@ -10,6 +10,8 @@ A **bold** way to begin your next great universal React application.
 
 ## Demo
 
+Check it out in action here: https://starter.boldr.io/
+
 ## Usage
 
 ### Development
@@ -40,11 +42,12 @@ If you don't feel like using DLLs, set WEBPACK_DLLS to 0 in the `package.json`
 
 
 ## Alternatives
-- [`React Webpack Node`](https://github.com/choonkending/react-webpack-node)
+- [`ReactGo`]https://github.com/reactGo/reactGo)
 Your One-Stop solution for a full-stack app with ES6/ES2015 React.js featuring universal Redux, React Router, React Router Redux Hot reloading, CSS modules, Express 4.x, and multiple ORMs.
 
 
-## Contributing
 
+## Contributing
+Pull requests are welcome and encouraged. If I made a mistake, raise an issue and/or fix it and submit a PR. Have a question? I'll do what I can to answer it for you.
 
 ## Dependencies

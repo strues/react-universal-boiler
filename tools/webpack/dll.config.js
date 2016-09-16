@@ -67,7 +67,6 @@ module.exports = {
       'react-helmet',
       'redux-thunk',
       'redial',
-      'isomorphic-fetch',
       'classnames',
       'superagent',
       'lodash',

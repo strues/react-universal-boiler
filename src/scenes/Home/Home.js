@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 
 import { Heading, Card, Row, Col, Grid, Logo, TextBlock } from 'components';
 import { fetchPosts } from './actions';
-import styles from './Home.scss';
 
 const mapStateToProps = (state) => {
   return {
@@ -26,7 +25,7 @@ class Home extends Component {
     return (
       <div>
         <Helmet title="Home" />
-        <div className={ styles.wrapper }>
+        <div className="wrapper">
           <Grid>
           <Row>
             <Col xs={ 3 } md={ 2 }>

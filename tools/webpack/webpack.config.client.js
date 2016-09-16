@@ -54,7 +54,6 @@ module.exports = function webpackConfig() {
         'react-helmet',
         'redux-thunk',
         'redial',
-        'isomorphic-fetch',
         'superagent',
         'classnames',
         'lodash',
@@ -85,15 +84,17 @@ module.exports = function webpackConfig() {
         { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
         { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
         { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' },
-        {
-          test: /\.css$/,
-          include: /node_modules/,
-          loader: isDev ? 'style!css' :
-          ExtractTextPlugin.extract({
-            fallbackLoader: 'style',
-            loader: 'css'
-          })
-        },
+        createSourceLoader({
+          happy: { id: 'sass' },
+          test: /\.scss$/,
+          exclude: /node_modules/,
+          loader: isDev ?
+            'style!css?localIdentName=[name]__[local].[hash:base64:5]&sourceMap&-minimize&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap' :
+            ExtractTextPlugin.extract({
+              fallbackLoader: 'style',
+              loader: 'css?sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
+            })
+        }),
         createSourceLoader({
           happy: { id: 'css' },
           test: /\.css$/,
@@ -104,17 +105,6 @@ module.exports = function webpackConfig() {
               fallbackLoader: 'style',
               loader: 'css?modules&sourceMap&importLoaders=1!postcss'
             }),
-        }),
-        createSourceLoader({
-          happy: { id: 'sass' },
-          test: /\.scss$/,
-          exclude: /node_modules/,
-          loader: isDev ?
-            'style!css?localIdentName=[name]__[local].[hash:base64:5]&sourceMap&-minimize&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap' :
-            ExtractTextPlugin.extract({
-              fallbackLoader: 'style',
-              loader: 'css?modules&sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
-            })
         }),
         {
           test: /\.module.scss$/,
@@ -193,8 +183,7 @@ module.exports = function webpackConfig() {
       // Extracts all stylesheets into a main file. During development styles are dumped
       // into the head and/or added dynamically.
       ifProd(new ExtractTextPlugin({
-        filename: '[name].[chunkhash].css',
-        allChunks: true
+        filename: '[name].[chunkhash].css'
       })),
       // Becareful adding too much for Uglify to do because it has a talent for breaking bundles.
       ifProd(new webpack.optimize.UglifyJsPlugin({

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
+import '../../theme/grid.scss';
 
 class Grid extends PureComponent {
   render() {
