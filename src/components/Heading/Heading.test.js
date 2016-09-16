@@ -22,7 +22,7 @@ describe('<Heading />', () => {
 		expect(wrapper.type()).to.equal('h1');
 	});
 
-	it('should render the aossicated semantically heading tag if a type prop was specified.', () => {
+	it('should render the correct heading tag if a type prop was specified.', () => {
 		let wrapper = shallow(<Heading type="h2">My Contents</Heading>);
 
 		expect(wrapper.type()).to.equal('h2');
