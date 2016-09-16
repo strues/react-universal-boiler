@@ -13,7 +13,7 @@ module.exports = {
   API_HOST: 'localhost',
   HOST: 'localhost',
   ROOT_DIR: ABS_ROOT,
-  SRC_DIR: path.join(ABS_ROOT, 'src'),
-  STATIC_DIR: path.join(ABS_ROOT, 'static'),
-  ASSETS_DIR: path.join(ABS_ROOT, 'static', 'assets')
+  SRC_DIR: path.resolve(path.join(ABS_ROOT, 'src')),
+  STATIC_DIR: path.resolve(path.join(ABS_ROOT, 'static')),
+  ASSETS_DIR: path.resolve(path.join(ABS_ROOT, 'static', 'assets'))
 };

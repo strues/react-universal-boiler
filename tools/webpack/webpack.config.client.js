@@ -57,7 +57,8 @@ module.exports = function webpackConfig() {
         'isomorphic-fetch',
         'superagent',
         'classnames',
-        'lodash'
+        'lodash',
+        'webfontloader'
       ])
     }),
     output: {
@@ -181,7 +182,7 @@ module.exports = function webpackConfig() {
       // can pass a value that doesn't exist. In our case this is the manifest file. Webpack
       // will place "webpack code" there instead of across your bundlded files.
       ifProd(new webpack.optimize.CommonsChunkPlugin({
-        name: ['main', 'vendor', 'manifest'],
+        name: ['main', 'vendor'],
         filename: '[name].[chunkhash].js',
         minChunks: Infinity
       })),

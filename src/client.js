@@ -5,7 +5,8 @@ import { AppContainer } from 'react-hot-loader';
 import { Router, browserHistory, match } from 'react-router/es6';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { trigger } from 'redial';
-
+import WebFontLoader from 'webfontloader';
+import 'theme/main.scss';
 import getRoutes from './scenes';
 import configureStore from './state/store';
 // The element React looks for to mount
@@ -19,6 +20,10 @@ const history = syncHistoryWithStore(browserHistory, store);
 
 const { dispatch, getState } = store;
 const routes = getRoutes(store, history);
+
+WebFontLoader.load({
+  google: { families: ['Cabin:300,400,700'] }
+});
 
 const render = () => {
   const { pathname, search, hash } = window.location;

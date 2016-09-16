@@ -1,10 +1,20 @@
+@import 'variables';
+@import 'grid';
+
+body {
+  background: linear-gradient(to left, #517fa4 , #243949);
+  font-family: $font-stack;
+  font-size: $text-size;
+  color: $font-color;
+}
+
 .wrapper {
   background: -webkit-linear-gradient(to left, #517fa4 , #243949);
   background: linear-gradient(to left, #517fa4 , #243949);
   align-content: center;
   height: 375px;
   padding-top: 25px;
-  color: #fff;
+  color: $white;
   h1 {
     vertical-align: middle;
     font-size: 5em;

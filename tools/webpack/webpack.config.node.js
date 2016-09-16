@@ -7,7 +7,8 @@ const config = require('../defaults');
 
 const nodeConfig = { // eslint-disable-line
   target: 'node',
-  stats: false,
+  stats: true,
+  debug: true,
   progress: true,
   bail: true,
   externals: NodeExternals(),
@@ -26,8 +27,7 @@ const nodeConfig = { // eslint-disable-line
   },
   resolve: {
     extensions: ['', '.js', '.jsx', '.json'],
-    modulesDirectories: ['src', 'node_modules'],
-    mainFields: ['jsnext:main', 'main']
+    modulesDirectories: ['src', 'node_modules']
   },
   module: {
     loaders: [

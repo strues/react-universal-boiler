@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react';
-import 'normalize.css/normalize.css';
+import Link from 'react-router/lib/Link';
 import { Navigation, Button } from 'components';
-import styles from './App.scss';
 
 const App = (props) => {
   return (
       <div>
         <Navigation>
-          <Button text="Home" />
-          <Button text="Going Nowheres" />
+          <Link to="/">
+            <Button>Home</Button>
+          </Link>
+          <a href="https://github.com/strues/boldr-universal-react"><Button>GitHub</Button></a>
         </Navigation>
           { props.children }
       </div>

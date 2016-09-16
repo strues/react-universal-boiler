@@ -2,9 +2,6 @@
 // BEM Sass port of Flexbox Grid - http://flexboxgrid.com //
 // ////////////////////////////////////////////////////// //
 
-// Variables
-@import 'variables';
-
 // Mixins
 @mixin breakpoint($breakpoint, $breakpoint-size) {
   // The grid is mobile first so xs is the default, hence no breakpoint

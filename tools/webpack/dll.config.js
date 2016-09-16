@@ -70,7 +70,8 @@ module.exports = {
       'isomorphic-fetch',
       'classnames',
       'superagent',
-      'lodash'
+      'lodash',
+      'webfontloader'
     ]
   },
 
