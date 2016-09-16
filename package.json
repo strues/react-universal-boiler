@@ -51,9 +51,10 @@
       }
     },
     "test": {
-      "command": "mocha --compilers js:./tools/test/mocha.js --require tools/test/clientHelper.js --require ignore-styles --opts ./tools/test/mocha.opts './src/**/*.test.js'",
+      "command": "nyc mocha --compilers js:./tools/test/mocha.js --require tools/test/clientHelper.js --require ignore-styles --opts ./tools/test/mocha.opts './src/**/*.test.js'",
       "env": {
-        "BABEL_ENV": "client"
+        "BABEL_ENV": "test",
+        "NODE_ENV": "test"
       }
     }
   },
@@ -64,6 +65,7 @@
     "build:dlls": "webpack --verbose --colors --display-error-details --config ./tools/webpack/dll.config.js",
     "clean": "rimraf static/assets && rimraf static/server.js && rimraf static/server.js.map && rimraf static/webpack-assets.json && rimraf static/webpack-stats.json",
     "clean:server": "rimraf static/server.js && rimraf static/server.js.map",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "dev": "npm-run-all --parallel dev:client dev:server",
     "dev:client": "better-npm-run dev:client",
     "dev:server": "better-npm-run dev:server",
@@ -97,12 +99,37 @@
     "npm": "~3.x"
   },
   "homepage": "https://github.com/strues/boldr-universal-react#readme",
+  "nyc": {
+    "check-coverage": true,
+    "lines": 65,
+    "statements": 65,
+    "functions": 45,
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "src/**/*.test.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "require": [
+      "babel-register",
+      "babel-polyfill",
+      "./tools/test/clientHelper.js"
+    ],
+    "extension": [
+      ".js"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
   "devDependencies": {
     "autoprefixer": "^6.4.1",
     "babel-core": "^6.14.0",
-    "babel-polyfill": "^6.13.0",
-    "babel-register": "^6.14.0",
     "babel-loader": "^6.2.5",
+    "babel-plugin-istanbul": "^2.0.1",
     "babel-plugin-lodash": "^3.2.8",
     "babel-plugin-module-resolver": "^2.2.0",
     "babel-plugin-transform-class-properties": "^6.11.5",
@@ -111,10 +138,13 @@
     "babel-plugin-transform-react-constant-elements": "^6.9.1",
     "babel-plugin-transform-react-inline-elements": "^6.8.0",
     "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-polyfill": "^6.13.0",
     "babel-preset-latest": "^6.14.0",
     "babel-preset-react": "^6.11.1",
+    "babel-register": "^6.14.0",
     "chai": "^3.5.0",
     "chai-enzyme": "^0.5.1",
+    "coveralls": "^2.11.13",
     "css-loader": "^0.25.0",
     "enzyme": "^2.4.1",
     "eslint": "^3.5.0",
@@ -130,8 +160,10 @@
     "json-loader": "^0.5.4",
     "lodash-webpack-plugin": "^0.10.0",
     "mocha": "^3.0.2",
+    "mocha-lcov-reporter": "^1.2.0",
     "node-noop": "^1.0.0",
     "node-sass": "^3.10.0",
+    "nyc": "^8.3.0",
     "postcss-loader": "^0.13.0",
     "react-hot-loader": "^3.0.0-beta.4",
     "rimraf": "^2.5.4",
