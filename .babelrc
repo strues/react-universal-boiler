@@ -33,6 +33,21 @@
           "root": ["./src"]
         }]
       ]
+    },
+    "test": {
+      "presets": ["latest", "react"],
+      "plugins": ["istanbul", "transform-decorators-legacy",
+        "transform-class-properties",
+        "transform-object-rest-spread",
+        "transform-regenerator", ["transform-runtime", {
+          "helpers": false,
+          "polyfill": false,
+          "regenerator": true
+        }],
+        ["module-resolver", {
+          "root": ["./src"]
+        }]
+      ]
     }
   }
 }
