@@ -75,9 +75,7 @@ module.exports = {
   },
 
   resolve: {
-    root: path.resolve(projectRootPath, 'node_modules'),
-    extensions: ['', '.js'],
-    postfixes: [],
+    extensions: ['.js']
   },
 
   plugins: [
