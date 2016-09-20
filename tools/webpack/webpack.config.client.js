@@ -31,12 +31,10 @@ module.exports = function webpackConfig() {
   return {
     target: 'web',
     stats: false,
-    progress: true,
     bail: isProd ? true : false, // eslint-disable-line
     devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
     context: config.ROOT_DIR,
     cache: isDev,
-    debug: isDev,
     entry: removeEmptyKeys({
       main: removeEmpty([
         ifDev('react-hot-loader/patch'),
@@ -67,25 +65,23 @@ module.exports = function webpackConfig() {
       publicPath: isDev ? `http://${config.HOST}:${config.HMR_PORT}/assets/` : '/assets/'
     },
     resolve: {
-      extensions: ['', '.js', '.jsx', '.json', '.css', '.scss'],
-      modulesDirectories: ['src', 'node_modules']
+      extensions: ['.js', '.jsx', '.json', '.css', '.scss'],
+      modules: ['src', 'node_modules']
     },
     module: {
       loaders: removeEmpty([
-        createSourceLoader({
-          happy: { id: 'jsx' },
+        {
           test: /\.jsx?$/,
           exclude: /node_modules/,
           loader: 'babel'
-        }),
+        },
         { test: /\.json$/, loader: 'json' },
         { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
         { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
         { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
         { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
         { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' },
-        createSourceLoader({
-          happy: { id: 'sass' },
+        {
           test: /\.scss$/,
           exclude: /node_modules/,
           loader: isDev ?
@@ -94,9 +90,8 @@ module.exports = function webpackConfig() {
               fallbackLoader: 'style',
               loader: 'css?sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
             })
-        }),
-        createSourceLoader({
-          happy: { id: 'css' },
+        },
+        {
           test: /\.css$/,
           exclude: /node_modules/,
           loader: isDev ?
@@ -105,7 +100,7 @@ module.exports = function webpackConfig() {
               fallbackLoader: 'style',
               loader: 'css?modules&sourceMap&importLoaders=1!postcss'
             }),
-        }),
+        },
         {
           test: /\.module.scss$/,
           exclude: /node_modules/,
@@ -160,9 +155,9 @@ module.exports = function webpackConfig() {
       // your bundling during development. HappyPack runs multiple parallel Webpack processes.
       // You can define a number of threads to share or give each loader a predetermined amount.
       // See util/createHappyPlugin.js and https://github.com/amireh/happypack for more.
-      ifDev(createHappyPlugin('jsx')),
-      ifDev(createHappyPlugin('sass')),
-      ifDev(createHappyPlugin('css')),
+      // ifDev(createHappyPlugin('jsx')),
+      // ifDev(createHappyPlugin('sass')),
+      // ifDev(createHappyPlugin('css')),
       //
       // Production plugins
       // * ------------------------------------- *
@@ -204,7 +199,6 @@ module.exports = function webpackConfig() {
       // http://webpack.github.io/docs/list-of-plugins.html#aggressivemergingplugin
       ifProd(new webpack.optimize.AggressiveMergingPlugin())
     ]),
-    postcss: [autoprefixer({ browsers: ['last 2 versions'] })],
     /*
      * Include polyfills and/or mocks for node
      * Description: Node configuration
@@ -213,7 +207,8 @@ module.exports = function webpackConfig() {
      */
     node: {
       __dirname: true,
-      __filename: true
+      __filename: true,
+      global: true
     }
   };
 };

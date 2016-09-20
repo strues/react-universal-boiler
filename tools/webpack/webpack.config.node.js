@@ -8,11 +8,9 @@ const config = require('../defaults');
 const nodeConfig = { // eslint-disable-line
   target: 'node',
   stats: true,
-  debug: true,
-  progress: true,
   bail: true,
-  externals: NodeExternals(),
-  devtool: 'source-map',
+  externals: [NodeExternals()],
+  devtool: '#source-map',
   entry: {
     server: [
       path.resolve(path.join(config.SRC_DIR, 'server.js'))
@@ -20,14 +18,14 @@ const nodeConfig = { // eslint-disable-line
   },
   output: {
     path: path.resolve(config.STATIC_DIR),
-    pathInfo: true,
     chunkFilename: '[name]-[chunkhash].js',
     filename: '[name].js',
     libraryTarget: 'commonjs2'
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.json'],
-    modulesDirectories: ['src', 'node_modules']
+    extensions: ['.js', '.jsx', '.json'],
+    modules: ['src', 'node_modules'],
+    mainFields: ['main']
   },
   module: {
     loaders: [
@@ -71,7 +69,8 @@ const nodeConfig = { // eslint-disable-line
   ],
   node: {
     __filename: true,
-    __dirname: true
+    __dirname: true,
+    global: true
   }
 };
 
