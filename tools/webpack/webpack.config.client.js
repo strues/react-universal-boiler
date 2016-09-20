@@ -73,7 +73,7 @@ module.exports = function webpackConfig() {
         {
           test: /\.jsx?$/,
           exclude: /node_modules/,
-          loader: 'babel'
+          loader: 'happypack/loader?id=jsx'
         },
         { test: /\.json$/, loader: 'json' },
         { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
@@ -132,6 +132,11 @@ module.exports = function webpackConfig() {
         __SERVER__: false,
         __DLLS__: process.env.WEBPACK_DLLS === '1'
       }),
+      ifDev(new HappyPack({
+        id: 'jsx',
+        threads: 4,
+        loaders: ['babel']
+      })),
       // Used for requiring assets in a way that works within a node environment so that
       // you are able to bundle everything including your server together.
       // https://github.com/halt-hammerzeit/webpack-isomorphic-tools
