@@ -1,4 +1,4 @@
-# Boldr Universal React Starter  
+# React Universal Boiler
 [![Code Climate](https://codeclimate.com/github/strues/boldr-universal-react/badges/gpa.svg)](https://codeclimate.com/github/strues/boldr-universal-react)  [![Build Status](https://travis-ci.org/strues/boldr-universal-react.svg?branch=master)](https://travis-ci.org/strues/boldr-universal-react) [![Coverage Status](https://coveralls.io/repos/github/strues/boldr-universal-react/badge.svg?branch=master)](https://coveralls.io/github/strues/boldr-universal-react?branch=master)
 
 A **bold** way to begin your next great universal React application.
@@ -17,7 +17,7 @@ Check it out in action here: https://starter.boldr.io/
 ### Development
 Getting up and running for development is easy.
 
-`git clone git@github.com:strues/boldr-universal-react.git`
+`git clone git@github.com:strues/react-universal-boiler.git`
 
 `cd boldr-universal-react`
 
