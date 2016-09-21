@@ -11,8 +11,6 @@ const debug = require('debug')('boldr:webpack');
 
 const config = require('../defaults');
 const { removeEmpty, ifElse, merge, removeEmptyKeys } = require('./util/helpers');
-const createHappyPlugin = require('./util/createHappyPlugin');
-const createSourceLoader = require('./util/createSourceLoader');
 const dllHelpers = require('./util/dllHelpers');
 
 const isomorphicConfig = require('./util/isomorphic.config');
@@ -132,6 +130,10 @@ module.exports = function webpackConfig() {
         __SERVER__: false,
         __DLLS__: process.env.WEBPACK_DLLS === '1'
       }),
+      // HappyPack Plugins are used as caching mechanisms to seriously speed-up
+      // your bundling during development. HappyPack runs multiple parallel Webpack processes.
+      // You can define a number of threads to share or give each loader a predetermined amount.
+      // See util/createHappyPlugin.js and https://github.com/amireh/happypack for more.
       ifDev(new HappyPack({
         id: 'jsx',
         threads: 4,
@@ -156,13 +158,7 @@ module.exports = function webpackConfig() {
       // http://webpack.github.io/docs/list-of-plugins.html#noerrorsplugin
       ifDev(new webpack.NoErrorsPlugin()),
       ifDev(new webpack.IgnorePlugin(/webpack-stats\.json$/)),
-      // HappyPack Plugins are used as caching mechanisms to seriously speed-up
-      // your bundling during development. HappyPack runs multiple parallel Webpack processes.
-      // You can define a number of threads to share or give each loader a predetermined amount.
-      // See util/createHappyPlugin.js and https://github.com/amireh/happypack for more.
-      // ifDev(createHappyPlugin('jsx')),
-      // ifDev(createHappyPlugin('sass')),
-      // ifDev(createHappyPlugin('css')),
+
       //
       // Production plugins
       // * ------------------------------------- *
