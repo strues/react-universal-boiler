@@ -18,7 +18,7 @@ $body-bg: $white;
 
 $font-base: 16px;
 $text-size: 1rem;
-$font-stack: 'Cabin', 'Helvetica Neue', Arial, sans-serif;
+$font-stack: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
 
 $heading-h1: 5.2rem;
 $heading-h2: 3.5rem;
@@ -45,7 +45,7 @@ $grid-containers: (
   lg: 71rem,
 );
 
-$gutter: 2px;
+$gutter: 10px;
 $baseline-grid: 10px;
 $button-border-color: $default-border-color !default;
 $button-border-style: solid !default;

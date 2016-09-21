@@ -15,12 +15,6 @@ module.exports = {
   entry: {
     vendor: [
       'babel-polyfill',
-
-      // <babel-runtime>
-      //
-      // Generate this list using the following command against the stdout of
-      // webpack running against the source bundle config (dev/prod.js):
-      //
       'babel-runtime/core-js/array/from',
       'babel-runtime/core-js/get-iterator',
       'babel-runtime/core-js/is-iterable',

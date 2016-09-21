@@ -22,7 +22,7 @@ const { dispatch, getState } = store;
 const routes = getRoutes(store, history);
 
 WebFontLoader.load({
-  google: { families: ['Cabin:300,400,700'] }
+  google: { families: ['Open Sans:300,400,700'] }
 });
 
 const render = () => {

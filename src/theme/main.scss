@@ -1,29 +1,32 @@
 @import 'variables';
 @import 'grid';
-@import '../scenes/Home/Home.scss';
+
 body {
-  background: linear-gradient(to left, #517fa4 , #243949);
+  background: linear-gradient(to left, #EB3349 , #F45C43);
   font-family: $font-stack;
   font-size: $text-size;
   color: $font-color;
+  margin: 0;
 }
 
 .wrapper {
-  background: -webkit-linear-gradient(to left, #517fa4 , #243949);
-  background: linear-gradient(to left, #517fa4 , #243949);
   align-content: center;
   height: 375px;
   padding-top: 25px;
   color: $white;
+
   h1 {
     vertical-align: middle;
     font-size: 5em;
     margin: 0;
-    text-transform: uppercase;
-    padding-left: 50px;
+    text-align: center;
   }
   h1.heading__secondary {
     font-size: 5em;
     margin: 0;
+  }
+
+  p {
+    text-align: center;
   }
 }

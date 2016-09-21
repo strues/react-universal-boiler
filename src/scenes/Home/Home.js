@@ -3,7 +3,7 @@ import Helmet from 'react-helmet';
 import { provideHooks } from 'redial';
 import { connect } from 'react-redux';
 
-import { Heading, Card, Row, Col, Grid, Logo, TextBlock } from 'components';
+import { Heading, Card, Row, Col, Grid, TextBlock } from 'components';
 import { fetchPosts } from './actions';
 
 const mapStateToProps = (state) => {
@@ -28,12 +28,8 @@ class Home extends Component {
         <div className="wrapper">
           <Grid>
           <Row>
-            <Col xs={ 3 } md={ 2 }>
-              <Logo />
-            </Col>
-            <Col xs={ 9 } md={ 10 }>
-              <Heading type="h1" style={ { paddingTop: '50px' } }>Boldr Universal</Heading>
-              <Heading type="h1" className="heading__secondary">React Starter</Heading>
+            <Col xs>
+              <Heading type="h1" style={ { paddingTop: '50px' } }>React Universal Boiler</Heading>
               <TextBlock>The data below pulls from an external API and waits for the request to resolve before
               rendering the page.</TextBlock>
             </Col>

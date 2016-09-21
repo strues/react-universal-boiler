@@ -4,7 +4,7 @@ static/assets/
 static/server.js
 static/server.js.map
 static/webpack-assets.json
-static/webpack-stats.jsons
+static/webpack-stats.json
 *.log
 .env
 .nyc_output

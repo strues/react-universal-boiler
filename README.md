@@ -1,5 +1,5 @@
 # React Universal Boiler
-[![Code Climate](https://codeclimate.com/github/strues/boldr-universal-react/badges/gpa.svg)](https://codeclimate.com/github/strues/boldr-universal-react)  [![Build Status](https://travis-ci.org/strues/boldr-universal-react.svg?branch=master)](https://travis-ci.org/strues/boldr-universal-react) [![Coverage Status](https://coveralls.io/repos/github/strues/boldr-universal-react/badge.svg?branch=master)](https://coveralls.io/github/strues/boldr-universal-react?branch=master)
+[![Code Climate](https://codeclimate.com/github/strues/react-universal-boiler/badges/gpa.svg)](https://codeclimate.com/github/strues/react-universal-boiler)  [![Build Status](https://travis-ci.org/strues/react-universal-boiler.svg?branch=master)](https://travis-ci.org/strues/react-universal-boiler) [![Coverage Status](https://coveralls.io/repos/github/strues/react-universal-boiler/badge.svg?branch=master)](https://coveralls.io/github/strues/react-universal-boiler?branch=master)
 
 A **bold** way to begin your next great universal React application.
 

@@ -7,7 +7,7 @@ const App = (props) => {
       <div>
         <Navigation>
           <Link to="/">
-            <Button>Home</Button>
+            <Button display="primary">Home</Button>
           </Link>
           <a href="https://github.com/strues/boldr-universal-react"><Button>GitHub</Button></a>
         </Navigation>

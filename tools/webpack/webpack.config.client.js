@@ -29,7 +29,7 @@ module.exports = function webpackConfig() {
   return {
     target: 'web',
     stats: false,
-    bail: isProd ? true : false, // eslint-disable-line
+    bail: true, // eslint-disable-line
     devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
     context: config.ROOT_DIR,
     cache: isDev,
@@ -68,11 +68,16 @@ module.exports = function webpackConfig() {
     },
     module: {
       loaders: removeEmpty([
-        {
+        ifDev({
           test: /\.jsx?$/,
           exclude: /node_modules/,
           loader: 'happypack/loader?id=jsx'
-        },
+        }),
+        ifProd({
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          loader: 'babel'
+        }),
         { test: /\.json$/, loader: 'json' },
         { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
         { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
