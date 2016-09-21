@@ -19,7 +19,7 @@ Getting up and running for development is easy.
 
 `git clone git@github.com:strues/react-universal-boiler.git`
 
-`cd boldr-universal-react`
+`cd react-universal-boiler`
 
 Install the dependencies `npm install`
 
