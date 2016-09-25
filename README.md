@@ -39,13 +39,15 @@ Taking advantage of Webpack's DLLs is pretty easy in this project. The command i
 If you don't feel like using DLLs, set WEBPACK_DLLS to 0 in the `package.json`
 
 ## Resources
+- [`React Redux Links`](https://github.com/markerikson/react-redux-links)
 
 
 ## Alternatives
 - [`ReactGo`](https://github.com/reactGo/reactGo)
 Your One-Stop solution for a full-stack app with ES6/ES2015 React.js featuring universal Redux, React Router, React Router Redux Hot reloading, CSS modules, Express 4.x, and multiple ORMs.
 
-
+- [`React Redux Universal Hot - Fork`](https://github.com/bertho-zero/react-redux-universal-hot-example)
+This is a fork of the very popular, but no longer maintained project from Erikas.
 
 ## Contributing
 Pull requests are welcome and encouraged. If I made a mistake, raise an issue and/or fix it and submit a PR. Have a question? I'll do what I can to answer it for you.
