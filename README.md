@@ -49,6 +49,9 @@ Your One-Stop solution for a full-stack app with ES6/ES2015 React.js featuring u
 - [`React Redux Universal Hot - Fork`](https://github.com/bertho-zero/react-redux-universal-hot-example)
 This is a fork of the very popular, but no longer maintained project from Erikas.
 
+- [`React Cool Starter`](https://github.com/wellyshen/react-cool-starter)
+A simple but feature rich starter boilerplate for you to build an universal web app with the best development experience and a focus on performance and best practices.
+
 ## Contributing
 Pull requests are welcome and encouraged. If I made a mistake, raise an issue and/or fix it and submit a PR. Have a question? I'll do what I can to answer it for you.
 
