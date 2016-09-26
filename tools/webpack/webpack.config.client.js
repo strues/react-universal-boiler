@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 const HappyPack = require('happypack');
 const autoprefixer = require('autoprefixer');
+const AssetsPlugin = require('assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
@@ -203,7 +204,14 @@ module.exports = function webpackConfig() {
       // A plugin for a more aggressive chunk merging strategy. Even similar chunks
       // are merged if the total size is reduced enough.
       // http://webpack.github.io/docs/list-of-plugins.html#aggressivemergingplugin
-      ifProd(new webpack.optimize.AggressiveMergingPlugin())
+      ifProd(new webpack.optimize.AggressiveMergingPlugin()),
+
+      new AssetsPlugin({
+        path: path.resolve(config.ASSETS_DIR),
+        filename: 'assets.js',
+        processOutput: x => `module.exports = ${JSON.stringify(x)};`
+      }),
+      // ifDev(new DashboardPlugin({ port: 3001 }))
     ]),
     /*
      * Include polyfills and/or mocks for node

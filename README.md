@@ -36,7 +36,24 @@ Running the two commands below will compile your application and serve the produ
 #### Using DLLs
 Taking advantage of Webpack's DLLs is pretty easy in this project. The command is `npm run build:dlls`. It creates a `vendor.json` tfile in the webpack directory and places the DLL bundle in `static/assets/dlls`. When you add new dependencies to your project, all you need to do is add the name to the on-going list within `webpack/dll.config.js`. As a side note, rather than using DLLs in production (which you shouldnt, by the way), you'll want to add the package into the list of vendor dependencies inside `webpack/webpack.config.client.js`.
 
-If you don't feel like using DLLs, set WEBPACK_DLLS to 0 in the `package.json`
+If you don't feel like using DLLs, set WEBPACK_DLLS to 0 in the `package.json`  
+
+#### Where are the Babel transforms?
+Inspired by Create React App, a custom Babel preset was created containing some common Babel plugins and presets. **Why?** Typically I find myself using the exact same Babel plugins, and rather than installing 5+ different packages, a single command takes care of it.
+
+**babel-preset-boldr contains:**
+- `babel-plugin-transform-class-properties`
+- `babel-plugin-transform-decorators-legacy`
+- `babel-plugin-transform-function-bind`
+- `babel-plugin-transform-object-rest-spread`
+- `babel-plugin-transform-react-constant-elements`
+- `babel-plugin-transform-react-jsx-self`
+- `babel-plugin-transform-react-jsx-source`
+- `babel-plugin-transform-regenerator`
+- `babel-plugin-transform-runtime`
+- `babel-preset-latest`
+- `babel-preset-react`
+- `babel-runtime`
 
 ## Resources
 - [`React Redux Links`](https://github.com/markerikson/react-redux-links)

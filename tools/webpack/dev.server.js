@@ -2,6 +2,7 @@ const Express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+
 const debug = require('debug')('boldr:webpack-ds');
 const config = require('../defaults');
 const wpConfig = require('./index.js');
@@ -25,6 +26,7 @@ const app = new Express();
 
 app.use(webpackDevMiddleware(compiler, serverOptions));
 app.use(webpackHotMiddleware(compiler));
+
 
 /* eslint-disable */
 app.listen(config.HMR_PORT, function onAppListening(err) {
