@@ -4,7 +4,6 @@ const webpack = require('webpack');
 const NodeExternals = require('webpack-node-externals');
 
 const config = require('../defaults');
-function noop() {};
 const nodeConfig = { // eslint-disable-line
   target: 'node',
   stats: true,
@@ -62,7 +61,7 @@ const nodeConfig = { // eslint-disable-line
       __CLIENT__: false,
       __SERVER__: true
     }),
-    new webpack.NormalModuleReplacementPlugin(/\.(eot|woff|woff2|ttf|otf|svg|png|jpg|jpeg|gif|webp|mp4|mp3|ogg|pdf)$/, noop()), // eslint-disable-line
+    new webpack.IgnorePlugin(/\.(eot|woff|woff2|ttf|otf|svg|png|jpg|jpeg|gif|webp|mp4|mp3|ogg|pdf)$/), // eslint-disable-line
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
     })
