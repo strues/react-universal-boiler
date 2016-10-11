@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import { Heading, Card, Row, Col, Grid, TextBlock } from 'components';
 import { fetchPosts } from './actions';
+import './style.scss';
 
 const mapStateToProps = (state) => {
   return {
@@ -30,7 +31,7 @@ class Home extends Component {
           <Row>
             <Col xs>
               <Heading type="h1" style={ { paddingTop: '50px' } }>React Universal Boiler</Heading>
-              <TextBlock>The data below pulls from an external API and waits for the request to resolve before
+              <TextBlock className="home__text-block">The data below pulls from an external API and waits for the request to resolve before
               rendering the page.</TextBlock>
             </Col>
           </Row>
