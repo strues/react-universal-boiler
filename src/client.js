@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
-import { Router, browserHistory, match } from 'react-router/es6';
+import { Router, browserHistory, match } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { trigger } from 'redial';
 import WebFontLoader from 'webfontloader';
@@ -25,7 +25,7 @@ WebFontLoader.load({
   google: { families: ['Open Sans:300,400,700'] }
 });
 
-const render = () => {
+const renderApp = () => {
   const { pathname, search, hash } = window.location;
   const location = `${pathname}${search}${hash}`;
 
@@ -63,11 +63,13 @@ const render = () => {
   });
 };
 
-const unsubscribeHistory = render();
+const unsubscribeHistory = renderApp();
 
 if (module.hot) {
   module.hot.accept('./scenes/index', () => {
     unsubscribeHistory();
-    setTimeout(render);
+    setTimeout(renderApp);
   });
 }
+
+renderApp();
