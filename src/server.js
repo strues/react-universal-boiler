@@ -5,7 +5,7 @@ import 'source-map-support/register';
 import http from 'http';
 import path from 'path';
 // Express deps
-import express from 'express';
+import Express from 'express';
 import compression from 'compression';
 import favicon from 'serve-favicon';
 // React deps
@@ -23,13 +23,14 @@ import Html from './components/Html';
 import getRoutes from './scenes';
 
 const debug = require('debug')('boldr:server');
-const config = require('../tools/defaults');
 
-const app = express();
+const port = parseInt(process.env.SSR_PORT, 10);
+
+const app = new Express();
 const server = http.createServer(app);
-
+app.use(compression());
 app.use(favicon(path.resolve(process.cwd(), './static/favicon.ico')));
-app.use(express.static(path.join(__dirname, '..', 'static')));
+app.use(Express.static(path.join(__dirname, '..', 'static')));
 
 app.get('*', (req, res) => {
   if (__DEV__) {
@@ -76,9 +77,9 @@ app.get('*', (req, res) => {
             <RouterContext { ...renderProps } />
           </Provider>
         );
-        res.status(200);
+
         global.navigator = { userAgent: req.headers['user-agent'] };
-        res.send('<!doctype html>\n' + // eslint-disable-line
+        res.status(200).send('<!doctype html>\n' + // eslint-disable-line
           ReactDOM.renderToString(
             <Html assets={ webpackIsomorphicTools.assets() } component={ component } store={ store } />
           ));
@@ -92,10 +93,10 @@ app.get('*', (req, res) => {
   });
 });
 
-server.listen(config.SSR_PORT, (err) => {
+server.listen(port, (err) => {
   if (err) {
     debug(err);
     return;
   }
-  console.log(`🚀  Web server listening on ${config.HOST}:${config.SSR_PORT} in ${process.env.NODE_ENV} mode`);
+  console.log(`🚀  Web server listening on ${port} in ${process.env.NODE_ENV} mode`);
 });

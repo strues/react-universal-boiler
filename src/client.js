@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { AppContainer } from 'react-hot-loader';
+
 import { Router, browserHistory, match } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { trigger } from 'redial';
 import WebFontLoader from 'webfontloader';
 import 'theme/main.scss';
+import ReactHotLoader from './components/ReactHotLoader';
 import getRoutes from './scenes';
 import configureStore from './state/store';
 // The element React looks for to mount
@@ -31,11 +32,11 @@ const renderApp = () => {
 
   match({ routes, location }, () => {
     ReactDOM.render(
-      <AppContainer>
+      <ReactHotLoader>
         <Provider store={ store } key="provider">
             <Router routes={ routes } history={ history } key={ Math.random() } />
         </Provider>
-      </AppContainer>,
+      </ReactHotLoader>,
       MOUNT_POINT
     );
 

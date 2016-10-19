@@ -73,7 +73,7 @@
     "start:prod": "better-npm-run start:prod",
     "test": "better-npm-run test"
   },
-  "main": "index.js",
+  "main": "bin/run.js",
   "author": "Steven Truesdell <steven@strues.io>",
   "license": "MIT",
   "repository": {
@@ -150,6 +150,7 @@
     "eslint-plugin-react": "^6.3.0",
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
     "file-loader": "^0.9.0",
+    "flow-bin": "^0.33.0",
     "happypack": "^2.2.1",
     "ignore-styles": "^5.0.1",
     "jsdom": "^9.6.0",
@@ -157,6 +158,7 @@
     "lodash-webpack-plugin": "^0.10.1",
     "mocha": "^3.1.0",
     "mocha-lcov-reporter": "^1.2.0",
+    "node-noop": "^1.0.0",
     "node-sass": "^3.10.1",
     "nyc": "^8.3.0",
     "postcss-loader": "^0.13.0",
@@ -177,6 +179,7 @@
     "classnames": "^2.2.5",
     "compression": "^1.6.2",
     "debug": "^2.2.0",
+    "dotenv": "^2.0.0",
     "es6-promise": "^4.0.4",
     "express": "^4.14.0",
     "lodash": "^4.16.2",

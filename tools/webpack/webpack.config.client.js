@@ -37,7 +37,7 @@ module.exports = function webpackConfig() {
     entry: removeEmptyKeys({
       main: removeEmpty([
         ifDev('react-hot-loader/patch'),
-        ifDev(`webpack-hot-middleware/client?reload=true&path=http://${config.HOST}:${config.HMR_PORT}/__webpack_hmr`),
+        ifDev(`webpack-hot-middleware/client?reload=true&path=http://localhost:${config.HMR_PORT}/__webpack_hmr`),
         ifProd(require.resolve('./util/polyfills')),
         path.join(config.SRC_DIR, 'client.js')
       ]),
@@ -61,7 +61,7 @@ module.exports = function webpackConfig() {
       path: path.resolve(config.ASSETS_DIR),
       filename: ifProd('[name]-[chunkhash].js', '[name].js'),
       chunkFilename: ifDev('[name]-[id].chunk.js', '[name]-[id].[chunkhash].js'),
-      publicPath: isDev ? `http://${config.HOST}:${config.HMR_PORT}/assets/` : '/assets/'
+      publicPath: isDev ? `http://localhost:${config.HMR_PORT}/assets/` : '/assets/'
     },
     resolve: {
       extensions: ['.js', '.jsx', '.json', '.css', '.scss'],
@@ -85,37 +85,31 @@ module.exports = function webpackConfig() {
         { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
         { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
         { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' },
-        {
-          test: /\.scss$/,
-          exclude: /node_modules/,
-          loader: isDev ?
-            'style!css?localIdentName=[name]__[local].[hash:base64:5]&sourceMap&-minimize&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap' :
-            ExtractTextPlugin.extract({
-              fallbackLoader: 'style',
-              loader: 'css?sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
-            })
-        },
-        {
-          test: /\.css$/,
-          exclude: /node_modules/,
-          loader: isDev ?
-            'style!css?localIdentName=[name]__[local].[hash:base64:5]&modules&sourceMap&-minimize&importLoaders=1!postcss' :
-            ExtractTextPlugin.extract({
-              fallbackLoader: 'style',
-              loader: 'css?modules&sourceMap&importLoaders=1!postcss'
-            }),
-        },
-        {
-          test: /\.module.scss$/,
-          exclude: /node_modules/,
-          loader: isDev ?
-            'style!css?localIdentName=[name]__[local].[hash:base64:5]&modules&sourceMap&-minimize&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap' :
-            ExtractTextPlugin.extract({
-              fallbackLoader: 'style',
-              loader: 'css?modules&sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
-            })
-        }
-      ])
+        ifProd({
+          test: webpackIsomorphicToolsPlugin.regular_expression('stylesCss'),
+          loader: ExtractTextPlugin.extract({
+            fallbackLoader: 'style',
+            loader: 'css?modules&sourceMap&importLoaders=1!postcss'
+          })
+        }),
+        ifProd({
+          test: webpackIsomorphicToolsPlugin.regular_expression('stylesSass'),
+          loader: ExtractTextPlugin.extract({
+            fallbackLoader: 'style',
+            loader: 'css?sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
+          })
+        }),
+        ifDev({
+          test: webpackIsomorphicToolsPlugin.regular_expression('stylesCss'),
+          loader: 'style!css?localIdentName=[name]__[local].[hash:base64:5]&modules&sourceMap&-minimize&importLoaders=1!postcss'
+        }),
+        ifDev({
+          test: webpackIsomorphicToolsPlugin.regular_expression('stylesSass'),
+          loader: 'style!css?localIdentName=[name]__[local].[hash:base64:5]&sourceMap&-minimize&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap'
+        })
+        
+      ]),
+      noParse: /\.min\.js/
     },
     plugins: removeEmpty([
       //
@@ -128,6 +122,7 @@ module.exports = function webpackConfig() {
       new webpack.DefinePlugin({
         'process.env': {
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+          SSR_PORT: JSON.stringify(process.env.SSR_PORT),
           DEBUG: JSON.stringify(process.env.DEBUG)
         },
         __DEV__: process.env.NODE_ENV !== 'production',
@@ -142,7 +137,7 @@ module.exports = function webpackConfig() {
       // See util/createHappyPlugin.js and https://github.com/amireh/happypack for more.
       ifDev(new HappyPack({
         id: 'jsx',
-        threads: 4,
+        threads: 6,
         loaders: ['babel']
       })),
       // Used for requiring assets in a way that works within a node environment so that
@@ -150,10 +145,10 @@ module.exports = function webpackConfig() {
       // https://github.com/halt-hammerzeit/webpack-isomorphic-tools
       webpackIsomorphicToolsPlugin,
       // Define common options used by all webpack plugins, such as minifying and debug modes.
-      new webpack.LoaderOptionsPlugin({
-        minimize: isProd,
-        debug: !isProd
-      }),
+      ifProd(new webpack.LoaderOptionsPlugin({
+        minimize: true,
+        debug: false
+      })),
       //
       // Development plugins
       // * ------------------------------------- *
@@ -208,10 +203,8 @@ module.exports = function webpackConfig() {
 
       new AssetsPlugin({
         path: path.resolve(config.ASSETS_DIR),
-        filename: 'assets.js',
-        processOutput: x => `module.exports = ${JSON.stringify(x)};`
-      }),
-      // ifDev(new DashboardPlugin({ port: 3001 }))
+        filename: 'assets.js'
+      })
     ]),
     /*
      * Include polyfills and/or mocks for node
