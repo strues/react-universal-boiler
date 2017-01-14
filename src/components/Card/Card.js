@@ -14,16 +14,16 @@ const Card = ({ image, route, title, text, className, ...rest }) => {
   });
 
   return (
-    <div { ...rest } className={ finalClassName }>
-			<Link to={ route }>
-				<img className={ style.cardImage } src={ image } />
-			</Link>
-			<div className={ style.contents }>
-				<Heading type="h4">{ title }</Heading>
-				<TextBlock>{ text }</TextBlock>
-			</div>
-		</div>
-    );
+  <div { ...rest } className={ finalClassName }>
+    <Link to={ route }>
+      <img className={ style.cardImage } src={ image } alt="card feature" />
+    </Link>
+    <div className={ style.contents }>
+      <Heading type="h4">{ title }</Heading>
+      <TextBlock>{ text }</TextBlock>
+    </div>
+  </div>
+  );
 };
 Card.propTypes = {
   /**

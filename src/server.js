@@ -1,7 +1,3 @@
-// Useful for debugging node.js code that has been bundled with Webpack.
-// https://github.com/evanw/node-source-map-support
-import 'source-map-support/register';
-
 import http from 'http';
 import path from 'path';
 // Express deps

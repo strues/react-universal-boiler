@@ -15,9 +15,9 @@ const TextBlock = ({ className, isLead, children, ...rest }) => {
 
   return (
     <p { ...rest } className={ finalClassName }>
-			{ children }
-		</p>
-    );
+      { children }
+    </p>
+  );
 };
 
 TextBlock.propTypes = {

@@ -14,7 +14,6 @@ module.exports = {
 
   entry: {
     vendor: [
-      'babel-polyfill',
       'babel-runtime/core-js/array/from',
       'babel-runtime/core-js/get-iterator',
       'babel-runtime/core-js/is-iterable',

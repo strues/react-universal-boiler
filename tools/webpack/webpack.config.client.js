@@ -10,7 +10,7 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 const debug = require('debug')('boldr:webpack');
 
-const config = require('../defaults');
+const config = require('../config');
 const { removeEmpty, ifElse, merge, removeEmptyKeys } = require('./util/helpers');
 const dllHelpers = require('./util/dllHelpers');
 
@@ -77,37 +77,36 @@ module.exports = function webpackConfig() {
         ifProd({
           test: /\.jsx?$/,
           exclude: /node_modules/,
-          loader: 'babel'
+          loader: 'babel-loader'
         }),
-        { test: /\.json$/, loader: 'json' },
-        { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
-        { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
-        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
-        { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
+        { test: /\.json$/, loader: 'json-loader' },
+        { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
+        { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/octet-stream' },
+        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader' },
+        { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=image/svg+xml' },
         { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' },
         ifProd({
           test: webpackIsomorphicToolsPlugin.regular_expression('stylesCss'),
           loader: ExtractTextPlugin.extract({
-            fallbackLoader: 'style',
-            loader: 'css?modules&sourceMap&importLoaders=1!postcss'
+            fallbackLoader: 'style-loader',
+            loader: 'css-loader?modules&sourceMap&importLoaders=1!postcss-loader'
           })
         }),
         ifProd({
           test: webpackIsomorphicToolsPlugin.regular_expression('stylesSass'),
           loader: ExtractTextPlugin.extract({
-            fallbackLoader: 'style',
-            loader: 'css?sourceMap&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap&sourceMapContents'
+            fallbackLoader: 'style-loader',
+            loader: 'css-loader?sourceMap&importLoaders=2!postcss-loader!sass-loader?outputStyle=expanded&sourceMap&sourceMapContents'
           })
         }),
         ifDev({
           test: webpackIsomorphicToolsPlugin.regular_expression('stylesCss'),
-          loader: 'style!css?localIdentName=[name]__[local].[hash:base64:5]&modules&sourceMap&-minimize&importLoaders=1!postcss'
+          loader: 'style-loader!css-loader?localIdentName=[name]__[local].[hash:base64:5]&modules&sourceMap&-minimize&importLoaders=1!postcss-loader'
         }),
         ifDev({
           test: webpackIsomorphicToolsPlugin.regular_expression('stylesSass'),
-          loader: 'style!css?localIdentName=[name]__[local].[hash:base64:5]&sourceMap&-minimize&importLoaders=2!postcss!sass?outputStyle=expanded&sourceMap'
+          loader: 'style-loader!css-loader?localIdentName=[name]__[local].[hash:base64:5]&sourceMap&-minimize&importLoaders=2!postcss-loader!sass-loader?outputStyle=expanded&sourceMap'
         })
-        
       ]),
       noParse: /\.min\.js/
     },
@@ -138,7 +137,7 @@ module.exports = function webpackConfig() {
       ifDev(new HappyPack({
         id: 'jsx',
         threads: 6,
-        loaders: ['babel']
+        loaders: ['babel-loader']
       })),
       // Used for requiring assets in a way that works within a node environment so that
       // you are able to bundle everything including your server together.
@@ -157,7 +156,7 @@ module.exports = function webpackConfig() {
       // When there are errors while compiling this plugin skips the emitting
       // phase (and recording phase), so there are no assets emitted that include errors
       // http://webpack.github.io/docs/list-of-plugins.html#noerrorsplugin
-      ifDev(new webpack.NoErrorsPlugin()),
+      ifDev(new webpack.NoEmitOnErrorsPlugin()),
       ifDev(new webpack.IgnorePlugin(/webpack-stats\.json$/)),
 
       //

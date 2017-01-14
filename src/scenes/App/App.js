@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Link from 'react-router/lib/Link';
-import { Navigation, Button } from 'components';
+import { Navigation, Button } from '../../components';
 
 const App = (props) => {
   return (

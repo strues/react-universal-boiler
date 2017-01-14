@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const _ = require('lodash');
 const NodeExternals = require('webpack-node-externals');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
-const config = require('../defaults');
+const config = require('../config');
 const isomorphicConfig = require('./util/isomorphic.config');
 
 const webpackIsomorphicToolsPlugin =
@@ -41,7 +41,7 @@ function addNodeNoop(regExpGroup) {
   new webpack.NormalModuleReplacementPlugin(
     webpackIsomorphicToolsPlugin.regular_expression(regExpGroup),
     'node-noop'
-  )
+  );
 }
 _.forEach(ignoredAssetGroups, addNodeNoop);
 
@@ -53,6 +53,7 @@ const nodeConfig = { // eslint-disable-line
   devtool: '#source-map',
   entry: {
     server: [
+      'source-map-support/register',
       path.resolve(path.join(config.SRC_DIR, 'server.js'))
     ]
   },
@@ -65,34 +66,39 @@ const nodeConfig = { // eslint-disable-line
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
     modules: ['src', 'node_modules'],
-    mainFields: ['main']
   },
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
+        exclude: /(node_modules)/,
         loader: 'babel-loader',
-        exclude: /(node_modules)/
+        query: {
+          babelrc: false,
+          compact: true,
+          presets: ['react', 'stage-2', ['env', { targets: { node: true }, modules: false }]],
+          plugins: ['transform-decorators-legacy']
+        }
       },
       { test: /\.json$/, loader: 'json-loader' },
       {
         test: /\.css$/,
         loaders: [
           'css-loader/locals',
-          'postcss'
+          'postcss-loader'
         ]
       },
       { test: /\.scss$/,
         loaders: [
           'css-loader/locals',
-          'postcss',
-          'sass'
+          'postcss-loader',
+          'sass-loader'
         ]
       }
     ],
     noParse: /\.min\.js/
   },
-  plugins: plugins,
+  plugins,
   node: {
     __filename: true,
     __dirname: true,
