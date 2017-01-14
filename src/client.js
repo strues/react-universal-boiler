@@ -1,15 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-
-import { Router, browserHistory, match } from 'react-router';
+import Router from 'react-router/lib/Router';
+import match from 'react-router/lib/match';
+import browserHistory from 'react-router/lib/browserHistory';
+import applyRouterMiddleware from 'react-router/lib/applyRouterMiddleware';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { trigger } from 'redial';
 import WebFontLoader from 'webfontloader';
-import 'theme/main.scss';
+
 import ReactHotLoader from './components/ReactHotLoader';
 import getRoutes from './scenes';
 import configureStore from './state/store';
+
+import 'theme/main.scss';
+
 // The element React looks for to mount
 const MOUNT_POINT = window.document.getElementById('content');
 // initialState is serialized on the window for the client-side to grab
@@ -34,7 +39,7 @@ const renderApp = () => {
     ReactDOM.render(
       <ReactHotLoader>
         <Provider store={ store } key="provider">
-            <Router routes={ routes } history={ history } key={ Math.random() } />
+          <Router routes={ routes } history={ history } key={ Math.random() } />
         </Provider>
       </ReactHotLoader>,
       MOUNT_POINT

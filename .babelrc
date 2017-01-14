@@ -1,28 +1,22 @@
 {
+  "presets": ["react", "stage-2", ["latest", { "modules": false }]],
+  "plugins": ["transform-runtime", "transform-class-properties", "transform-decorators-legacy", "transform-object-rest-spread"],
   "env": {
-    "development": {
-      "presets": ["boldr"],
-      "plugins": [
-        ["module-resolver", {
-          "root": ["./src"]
-        }]
-      ]
-    },
     "production": {
-      "presets": ["boldr"],
+      "presets": ["react", "stage-2", ["latest", { "modules": false }]],
       "plugins": [
         "lodash",
-        ["module-resolver", {
-          "root": ["./src"]
-        }]
+        "transform-runtime",
+        "transform-class-properties", "transform-decorators-legacy", "transform-object-rest-spread"
       ]
     },
     "test": {
-      "presets": ["boldr"],
-      "plugins": ["istanbul", ["module-resolver", {
-          "root": ["./src"]
-        }]
+      "presets": ["react", "stage-2", ["latest", { "modules": false }]],
+      "plugins": ["istanbul", "transform-runtime", "transform-class-properties", "transform-decorators-legacy", "transform-object-rest-spread"
       ]
-    }
+    },
+    "server": {
+     "plugins": ["system-import-transformer"]
+   }
   }
 }

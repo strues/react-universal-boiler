@@ -1,6 +1,6 @@
 const path = require('path');
 const debug = require('debug')('webpack');
-const config = require('../defaults');
+const config = require('../config');
 const dllHelpers = require('./util/dllHelpers');
 
 const validDLLs = dllHelpers.isValidDLLs(['vendor'], path.resolve(config.ASSETS_DIR));
