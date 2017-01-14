@@ -171,6 +171,7 @@
     "nyc": "^10.0.0",
     "postcss-cssnext": "^2.9.0",
     "postcss-loader": "^1.2.2",
+    "react-addons-test-utils": "^15.4.2",
     "react-hot-loader": "^3.0.0-beta.5",
     "rimraf": "^2.5.4",
     "sass-loader": "^4.1.1",
