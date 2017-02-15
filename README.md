@@ -1,7 +1,6 @@
 # React Universal Boiler
 [![Code Climate](https://codeclimate.com/github/strues/react-universal-boiler/badges/gpa.svg)](https://codeclimate.com/github/strues/react-universal-boiler)  [![Build Status](https://travis-ci.org/strues/react-universal-boiler.svg?branch=master)](https://travis-ci.org/strues/react-universal-boiler) [![Coverage Status](https://coveralls.io/repos/github/strues/react-universal-boiler/badge.svg?branch=master)](https://coveralls.io/github/strues/react-universal-boiler?branch=master)
 
-This repository will be kept up to date as far as dependencies go, but I will be focusing my efforts collaborating on [React, Universally](https://github.com/ctrlplusb/react-universally)
 
 ## Features
 - A pleasant 😍 developer experience with 🔥 fast bundling, so you can get shit done. This starter takes advantage of tools like, [HappyPack](https://github.com/amireh/happypack) and the [DLL capabilities](http://webpack.github.io/docs/list-of-plugins.html#dllplugin) within Webpack itself. Your rebuilds happen fast because, nobody enjoys waiting around like a  🐢  while assets recompile.
@@ -10,7 +9,7 @@ This repository will be kept up to date as far as dependencies go, but I will be
 
 ## Demo
 
-Check it out in action here: https://starter.boldr.io/
+
 
 ## Usage
 
@@ -38,28 +37,15 @@ Taking advantage of Webpack's DLLs is pretty easy in this project. The command i
 
 If you don't feel like using DLLs, set WEBPACK_DLLS to 0 in the `package.json`  
 
-#### Where are the Babel transforms?
-Inspired by Create React App, a custom Babel preset was created containing some common Babel plugins and presets. **Why?** Typically I find myself using the exact same Babel plugins, and rather than installing 5+ different packages, a single command takes care of it.
-
-**babel-preset-boldr contains:**
-- `babel-plugin-transform-class-properties`
-- `babel-plugin-transform-decorators-legacy`
-- `babel-plugin-transform-function-bind`
-- `babel-plugin-transform-object-rest-spread`
-- `babel-plugin-transform-react-constant-elements`
-- `babel-plugin-transform-react-jsx-self`
-- `babel-plugin-transform-react-jsx-source`
-- `babel-plugin-transform-regenerator`
-- `babel-plugin-transform-runtime`
-- `babel-preset-latest`
-- `babel-preset-react`
-- `babel-runtime`
 
 ## Resources
 - [`React Redux Links`](https://github.com/markerikson/react-redux-links)
 
 
 ## Alternatives
+- [`React, Universally`](https://github.com/ctrlplusb/react-universally)
+A starter kit giving you the minimum requirements for a modern universal React application.
+
 - [`ReactGo`](https://github.com/reactGo/reactGo)
 Your One-Stop solution for a full-stack app with ES6/ES2015 React.js featuring universal Redux, React Router, React Router Redux Hot reloading, CSS modules, Express 4.x, and multiple ORMs.
 

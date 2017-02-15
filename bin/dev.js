@@ -1,6 +1,4 @@
-#!/usr/bin/env node
 const path = require('path');
-require('../serverEntry.babel');
 const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 
 const ROOT_DIR = path.resolve(__dirname, '..');

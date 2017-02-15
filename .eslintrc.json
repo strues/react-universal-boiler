@@ -1,6 +1,6 @@
 {
   "parser": "babel-eslint",
-  "extends": ["boldr", "boldr/react"],
+  "extends": ["boldr"],
   "env": {
     "browser": true,
     "es6": true,
@@ -9,13 +9,6 @@
   "plugins": ["react"],
   "ecmaFeatures": {
     "defaultParams": true
-  },
-  "settings": {
-    "import/resolver": {
-      "babel-module": {
-        "root": ["./src"]
-      }
-    }
   },
   "rules": {
     "no-unused-vars": 0,
