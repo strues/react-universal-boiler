@@ -1,19 +1,21 @@
 import React, { Component, PropTypes } from 'react';
-
 import Helmet from 'react-helmet';
-import { provideHooks } from 'redial';
 import { connect } from 'react-redux';
 
 import { Heading, Card, Row, Col, Grid, TextBlock } from '../../components';
-import { fetchPosts } from './actions';
+// import { fetchPosts } from './actions';
 import './style.scss';
 
 
 class Home extends Component {
+  static displayName = 'Home';
+
   static propTypes = {
     posts: PropTypes.object
   }
+
   render() {
+    const { appData } = this.props;
     return (
       <div>
         <Helmet title="Home" />
@@ -27,11 +29,25 @@ class Home extends Component {
               </TextBlock>
             </Col>
           </Row>
+          <Row>
+
+            <ul>
+            {
+              this.props.app.loading ? <p>Loading....</p> : this.props.app.data.results.map(result =>
+                <li key={ result.id }>{result.title}</li>
+              )
+            }
+          </ul>
+          </Row>
           </Grid>
           </div>
       </div>
     );
   }
 }
-
-export default Home;
+const mapStateToProps = (state) => {
+  return {
+    app: state.app,
+  };
+};
+export default connect(mapStateToProps)(Home);

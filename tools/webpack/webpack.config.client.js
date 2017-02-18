@@ -36,21 +36,20 @@ module.exports = function webpackConfig() {
     cache: isDev,
     entry: removeEmptyKeys({
       main: removeEmpty([
-        ifDev('react-hot-loader/patch'),
+
         ifDev(`webpack-hot-middleware/client?reload=true&path=http://localhost:${config.HMR_PORT}/__webpack_hmr`),
         ifProd(require.resolve('./util/polyfills')),
-        path.join(config.SRC_DIR, 'client.js')
+        path.join(config.SRC_DIR, 'client', 'index.js')
       ]),
       vendor: ifProd([
         'react',
         'react-dom',
-        'react-router',
+        'react-router-dom',
         'redux',
         'react-redux',
         'react-router-redux',
         'react-helmet',
         'redux-thunk',
-        'redial',
         'superagent',
         'classnames',
         'lodash',

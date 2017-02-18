@@ -4,7 +4,7 @@ import thunkMiddleware from 'redux-thunk';
 
 import reducers from './reducers';
 
-export default function configureStore(history, initialState) {
+export default function configureStore(history, preloadedState) {
   // Redux middleware
   const reduxRouterMiddleware = routerMiddleware(history);
   const middleware = [thunkMiddleware, reduxRouterMiddleware];
@@ -20,7 +20,7 @@ export default function configureStore(history, initialState) {
   }
 
   // Creating the store
-  const store = createStore(reducers, initialState, compose(
+  const store = createStore(reducers, preloadedState, compose(
     applyMiddleware(...middleware),
     ...enhancers
   ));

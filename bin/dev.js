@@ -11,5 +11,5 @@ global.__DLLS__ = process.env.WEBPACK_DLLS === '1';
 
 global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../tools/webpack/util/isomorphic.config'))
   .server(ROOT_DIR, () => {
-    require('../src/server.js');
+    require('../src/server/index.js');
   });

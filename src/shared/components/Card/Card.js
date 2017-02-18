@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import cxN from 'classnames';
-import Link from 'react-router/lib/Link';
 import { Heading, TextBlock } from '../index';
 import style from './Card.css';
 
@@ -15,9 +14,9 @@ const Card = ({ image, route, title, text, className, ...rest }) => {
 
   return (
   <div { ...rest } className={ finalClassName }>
-    <Link to={ route }>
+    <a href={ route }>
       <img className={ style.cardImage } src={ image } alt="card feature" />
-    </Link>
+    </a>
     <div className={ style.contents }>
       <Heading type="h4">{ title }</Heading>
       <TextBlock>{ text }</TextBlock>

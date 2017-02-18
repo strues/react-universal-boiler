@@ -54,7 +54,7 @@ const nodeConfig = { // eslint-disable-line
   entry: {
     server: [
       'source-map-support/register',
-      path.resolve(path.join(config.SRC_DIR, 'server.js'))
+      path.resolve(path.join(config.SRC_DIR, 'server/index.js'))
     ]
   },
   output: {
