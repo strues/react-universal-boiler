@@ -29,7 +29,7 @@ export const getAppData = () => {
       .then(data => {
         dispatch(gotRequestData(data));
       })
-      .catch(err => dispatch(failedToGetData(err.response.status)));
+      .catch(err => dispatch(failedToGetData(err)));
   };
 };
 

@@ -67,7 +67,6 @@ module.exports = options => {
                 targets: {
                   node: 'current',
                 },
-                include: ['transform-es2015-destructuring'],
               }],
               'react',
             ],
@@ -84,16 +83,13 @@ module.exports = options => {
               ['transform-runtime', {
                 helpers: false,
                 polyfill: false,
-                regenerator: true,
+                regenerator: false,
               }],
               ['transform-regenerator', {
-                asyncGenerators: true,
-                generators: true,
-                async: true,
+                // babel-preset-env handles async to generator
+                async: false,
               }],
               'dynamic-import-webpack',
-              'transform-react-jsx-source',
-              'transform-react-jsx-self',
             ],
           },
         },

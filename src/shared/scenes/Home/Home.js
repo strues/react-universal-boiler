@@ -21,14 +21,7 @@ class Home extends PureComponent {
         </div>
         <div className="grid--fluid">
           <div className="row">
-            {this.props.posts.map(d => (
-              <div className="grid__col-xs" key={d.id}>
-                <h3>{d.title}</h3>
-                <p>
-                  {d.body}
-                </p>
-              </div>
-            ))}
+
           </div>
         </div>
       </div>

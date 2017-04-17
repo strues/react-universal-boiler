@@ -11,6 +11,7 @@ module.exports = (webpackConfig, cb) => {
     logger.task(`${type} webpack configuration compiled`);
   } catch (error) {
     logger.error(`${type} webpack config is invalid\n`, error);
+    console.log(error);
     process.exit(1);
   }
 

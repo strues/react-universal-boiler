@@ -13,8 +13,8 @@ export default [
         path: '/',
         exact: true,
         component: HomeContainer,
-        loadData: async (dispatch: Dispatch) =>
-          Promise.all([await dispatch(getAppData())]),
+        loadData: (dispatch: Dispatch) =>
+          Promise.all([dispatch(getAppData())]),
       },
       {
         path: '/tools',

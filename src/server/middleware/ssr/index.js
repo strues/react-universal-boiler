@@ -27,10 +27,8 @@ function ssrMiddleware(req, res, next) {
   global.navigator = { userAgent: req.headers['user-agent'] };
 
   const history = createHistory();
-  const store = configureStore(history);
-
-  // Create context for React Router
-  const routerContext = {};
+  const createStore = req => configureStore({});
+  const store = createStore(history);
   // Here is where our data loading begins
   const loadBranchData = async () => {
     // Matching our routes to the url
@@ -50,41 +48,45 @@ function ssrMiddleware(req, res, next) {
     return Promise.all(promises);
   };
   // Send response after all the action(s) are dispatched.
-  loadBranchData()
-    .then(() => {
-      // Checking if the response status is 404.
-      const status = routerContext.status === '404' ? 404 : 200;
-      // Render our application to a string for the first time
-      const reactAppString = renderAppToString(store, routerContext, req);
+  loadBranchData().then(() => {
+    // Create context for React Router
+    const routerContext = {};
 
-      const helmet = Helmet.rewind();
-      // render styled-components styleSheets to string.
-      const styles = styleSheet.rules().map(rule => rule.cssText).join('\n');
-      // Render the application to static HTML markup
-      const html = renderToStaticMarkup(
-        <CreateHtml
-          reactAppString={reactAppString}
-          nonce={nonce}
-          helmet={Helmet.rewind()}
-          styles={styles}
-          preloadedState={store.getState()}
-        />,
-      );
-      // Check if the render result contains a redirect, if so we need to set
-      // the specific status and redirect header and end the response
-      if (routerContext.url) {
-        res.status(301).setHeader('Location', routerContext.url);
-        res.end();
+    // Render our application to a string for the first time
+    const reactAppString = renderAppToString(store, routerContext, req);
 
-        return;
-      }
+    const helmet = Helmet.rewind();
+    // render styled-components styleSheets to string.
+    const styles = styleSheet.rules().map(rule => rule.cssText).join('\n');
+    // Render the application to static HTML markup
+    const html = renderToStaticMarkup(
+      <CreateHtml
+        reactAppString={reactAppString}
+        nonce={nonce}
+        helmet={Helmet.rewind()}
+        styles={styles}
+        preloadedState={store.getState()}
+      />,
+    );
+    // Check if the render result contains a redirect, if so we need to set
+    // the specific status and redirect header and end the response
+    if (routerContext.url) {
+      res.status(301).setHeader('Location', routerContext.url);
+      res.end();
 
-      // Pass the route and initial state into html template
-      return res.status(status).send(`<!DOCTYPE html>${html}`);
-    })
-    .catch(err => {
-      console.error(`💩  ==> Rendering route resulted in an error: ${err}`);
-      return res.status(404).send('Oh No! Your request got lost.');
-    });
+      return;
+    }
+    // Checking if the response status is 404.
+    // const status = routerContext.status === '404' ? 404 : 200;
+
+    // Pass the route and initial state into html template
+  return res
+      .status(
+        routerContext.missed
+          ? 404
+          : 200,
+      )
+      .send(`<!DOCTYPE html>${html}`);
+  });
 }
 export default ssrMiddleware;

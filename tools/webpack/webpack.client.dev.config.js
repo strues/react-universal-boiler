@@ -63,19 +63,22 @@ module.exports = options => {
             // an increase in speed.
             cacheDirectory: true,
             presets: [
-              ['env', {
-                // Disable polyfill transforms or include polyfill.io
-                // I've opted to include polyfill.io to only provide what
-                // is needed.
-                useBuiltIns: true,
-                // enable debug to see what babel is using
-                debug: false,
-                // Prevent transforming to commonjs
-                modules: false,
-                targets: {
-                  node: 'current',
+              [
+                'env',
+                {
+                  // Disable polyfill transforms or include polyfill.io
+                  // I've opted to include polyfill.io to only provide what
+                  // is needed.
+                  useBuiltIns: true,
+                  // enable debug to see what babel is using
+                  debug: false,
+                  // Prevent transforming to commonjs
+                  modules: false,
+                  targets: {
+                    node: 'current',
+                  },
                 },
-              }],
+              ],
               'react',
             ],
             plugins: [
@@ -86,21 +89,31 @@ module.exports = options => {
               // static defaultProps = {} or state = {}
               'transform-class-properties',
               // ...foo
-              ['transform-object-rest-spread', {
-                useBuiltIns: true,
-              }],
+              [
+                'transform-object-rest-spread',
+                {
+                  useBuiltIns: true,
+                },
+              ],
               // @connect()
               // class Foo extends Component {}
               'transform-decorators-legacy',
-              ['transform-runtime', {
-                helpers: true,
-                polyfill: false,
-                regenerator: false,
-              }],
-              ['transform-regenerator', {
-                // babel-preset-env handles async to generator
-                async: false,
-              }],
+              [
+                'transform-runtime',
+                {
+                  helpers: true,
+                  polyfill: false,
+                  regenerator: false,
+                },
+              ],
+              [
+                'transform-regenerator',
+                {
+                  // babel-preset-env handles async to generator
+                  async: false,
+                },
+              ],
+
               'dynamic-import-webpack',
               // Adds component stack to warning messages
               'transform-react-jsx-source',
@@ -157,9 +170,9 @@ module.exports = options => {
       ]),
       new WebpackMd5Hash(),
       new CircularDependencyPlugin({
-       exclude: /a\.js|node_modules/,
-       // show a warning when there is a circular dependency
-       failOnError: false,
+        exclude: /a\.js|node_modules/,
+        // show a warning when there is a circular dependency
+        failOnError: false,
       }),
       // Prevent webpack errors during development in order to
       // keep our process alive.

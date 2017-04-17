@@ -75,11 +75,12 @@ module.exports = options => {
               }],
               'transform-decorators-legacy',
               ['transform-runtime', {
-                helpers: false,
+                helpers: true,
                 polyfill: false,
-                regenerator: true,
+                regenerator: false,
               }],
               ['transform-regenerator', {
+                // babel-preset-env handles async to generator
                 async: false,
               }],
               'dynamic-import-node',

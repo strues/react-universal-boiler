@@ -47,7 +47,7 @@ module.exports = options => {
     bail: isProd,
     //  Webpack will output an error / warning when hints are found.
     performance: {
-      hints: isProd,
+      hints: false,
     },
     plugins: [
       // EnvironmentPlugin is essentially DefinePlugin but allows you to
