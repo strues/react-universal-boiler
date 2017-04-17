@@ -1,0 +1,70 @@
+$coal: #373a3c;
+$white: #fff;
+$color-black: #000 !default;
+$color-white: #fff !default;
+$color-gray-lightest: #f5f5f5 !default;
+$color-gray-light: #e6e6e6 !default;
+$color-gray: #999 !default;
+$color-dark-gray: #333 !default;
+$color-blue: #3a99d8 !default;
+$default-border-width: 1px !default;
+$default-border-color: $color-gray !default;
+$default-border-radius: 3px !default;
+$font-color: $coal;
+$body-bg: $white;
+$font-base: 16px;
+$text-size: 1rem;
+$font-stack: 'Rubik', 'Helvetica Neue', Arial, sans-serif;
+$heading-h1: 5.2rem;
+$heading-h2: 3.5rem;
+$heading-h3: 2.5rem;
+$heading-h4: 2rem;
+$heading-h5: 1.5rem;
+$heading-h6: 1rem;
+$grid-columns: 12;
+$grid-gutter: 2rem;
+
+$grid-breakpoints: (
+  xs: false,
+  sm: 48em,
+  md: 62em,
+  lg: 75em
+);
+
+$grid-containers: (
+  xs: false,
+  sm: 46rem,
+  md: 61rem,
+  lg: 71rem,
+);
+$gutter: 10px;
+$baseline-grid: 10px;
+$button-border-color: $default-border-color !default;
+$button-border-style: solid !default;
+$button-border-width: $default-border-width !default;
+$button-border-radius: $default-border-radius !default;
+$button-bg-color: transparent !default;
+$button-transition: none 0.15s ease-in-out !default;
+$button-transition-property: border-color, background-color, color !default;
+$button-hover-border-color: darken($button-border-color, 35%) !default;
+$button-hover-bg-color: rgba($button-hover-border-color, 0.07) !default;
+$button-focus-border-color: $color-blue !default;
+$button-active-border-color: $button-hover-border-color !default;
+$button-active-bg-color: $button-hover-bg-color !default;
+$button-disabled-opacity: 0.5 !default;
+$button-color-difference: 10% !default;
+
+// Sizes
+$button-padding: ($gutter - $button-border-width) $gutter !default;
+$button-padding-large: ($gutter - $button-border-width) $baseline-grid !default;
+$button-padding-small: 0 ($gutter / 2) !default;
+
+// Primary theme
+$button-primary-color: $color-white !default;
+$button-primary-bg-color: $color-blue !default;
+$button-primary-border-color: transparent !default;
+
+// Link type
+$button-link-color: $color-blue !default;
+$button-link-bg-color: transparent !default;
+$button-link-border-color: transparent !default;

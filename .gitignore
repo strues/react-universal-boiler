@@ -1,11 +1,7 @@
 node_modules
 .happypack
-static/assets/
-static/server.js
-static/server.js.map
-static/webpack-assets.json
-static/webpack-stats.json
+public/assets/
 *.log
 .env
-.nyc_output
 coverage/
+lib/main.js

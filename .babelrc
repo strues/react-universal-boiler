@@ -1,22 +1,6 @@
+// Included here so we can babel-node various scripts. The real babel
+// configuration happens in each specific Webpack config.
 {
-  "presets": ["react", "stage-2", ["latest", { "modules": false }]],
-  "plugins": ["transform-runtime", "transform-class-properties", "transform-decorators-legacy", "transform-object-rest-spread"],
-  "env": {
-    "production": {
-      "presets": ["react", "stage-2", ["latest", { "modules": false }]],
-      "plugins": [
-        "lodash",
-        "transform-runtime",
-        "transform-class-properties", "transform-decorators-legacy", "transform-object-rest-spread"
-      ]
-    },
-    "test": {
-      "presets": ["react", "stage-2", ["latest", { "modules": false }]],
-      "plugins": ["istanbul", "transform-runtime", "transform-class-properties", "transform-decorators-legacy", "transform-object-rest-spread"
-      ]
-    },
-    "server": {
-     "plugins": ["system-import-transformer"]
-   }
-  }
+  "presets": ["env"],
+  "plugins": ["syntax-flow", "syntax-dynamic-import"],
 }

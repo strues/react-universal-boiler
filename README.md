@@ -1,8 +1,10 @@
 # React Universal Boiler
-[![Code Climate](https://codeclimate.com/github/strues/react-universal-boiler/badges/gpa.svg)](https://codeclimate.com/github/strues/react-universal-boiler)  [![Build Status](https://travis-ci.org/strues/react-universal-boiler.svg?branch=master)](https://travis-ci.org/strues/react-universal-boiler) [![Coverage Status](https://coveralls.io/repos/github/strues/react-universal-boiler/badge.svg?branch=master)](https://coveralls.io/github/strues/react-universal-boiler?branch=master)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
+> Completely rewritten and improved for React 15.5 and React Router 4. Better documentation is in the works.
 
 ## Features
+- [React-Router 4](https://github.com/ReactTraining/react-router) configured with async data loading.
 - A pleasant 😍 developer experience with 🔥 fast bundling, so you can get shit done. This starter takes advantage of tools like, [HappyPack](https://github.com/amireh/happypack) and the [DLL capabilities](http://webpack.github.io/docs/list-of-plugins.html#dllplugin) within Webpack itself. Your rebuilds happen fast because, nobody enjoys waiting around like a  🐢  while assets recompile.
 - [React-Hot-Loader](https://github.com/gaearon/react-hot-loader): Build your React components with less full page reloads thanks to hot module replacement and React Hot Loader.
 - Code Splitting: Give your visitors the best experience possible by allowing their browsers to only download what's necessary.
@@ -20,22 +22,20 @@ Getting up and running for development is easy.
 
 `cd react-universal-boiler`
 
-Install the dependencies `npm install`
+Install the dependencies `yarn`
 
-Start the development process with `npm run dev`
+Start the development process with `yarn dev`
 
 ### Production
 Running the two commands below will compile your application and serve the production ready build.
 
-**Build:** `npm run build`
+**Build:** `yarn build`
 
-**Run:** `npm run start:prod`
+**Run:** `yarn start`
 
 ## Notes
-#### Using DLLs
-Taking advantage of Webpack's DLLs is pretty easy in this project. The command is `npm run build:dlls`. It creates a `vendor.json` tfile in the webpack directory and places the DLL bundle in `static/assets/dlls`. When you add new dependencies to your project, all you need to do is add the name to the on-going list within `webpack/dll.config.js`. As a side note, rather than using DLLs in production (which you shouldnt, by the way), you'll want to add the package into the list of vendor dependencies inside `webpack/webpack.config.client.js`.
-
-If you don't feel like using DLLs, set WEBPACK_DLLS to 0 in the `package.json`  
+> Configuring the production vendor assets bundle requires adding your dependencies
+for the browser to the vendorFiles array within tools/config/config.js
 
 
 ## Resources
