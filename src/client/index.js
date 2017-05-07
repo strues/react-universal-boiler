@@ -6,9 +6,8 @@ import { render, unmountComponentAtNode } from 'react-dom';
 import { Provider } from 'react-redux';
 import createHistory from 'history/createBrowserHistory';
 import ConnectedRouter from 'react-router-redux/ConnectedRouter';
-import renderRoutes from 'react-router-config/renderRoutes';
 import WebFontLoader from 'webfontloader';
-
+import renderRoutes from '../shared/core/addRoutes';
 import routes from '../shared/routes';
 import configureStore from '../shared/state/store';
 import ReactHotLoader from './ReactHotLoader';

@@ -8,7 +8,6 @@ import AssetsPlugin from 'assets-webpack-plugin';
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
 import ChunkManifestPlugin from 'chunk-manifest-webpack-plugin';
 import BabiliWebpackPlugin from 'babili-webpack-plugin';
-import PurifyCSSPlugin from 'purifycss-webpack';
 import WebpackMd5Hash from 'webpack-md5-hash';
 
 import config from '../config/config';
@@ -23,7 +22,6 @@ module.exports = options => {
     devtool: 'hidden-source-map',
     entry: {
       main: [
-        require.resolve('../config/polyfills'),
         `${paths.clientSrcDir}/index.js`,
       ],
       vendor: config.vendorFiles,
@@ -42,10 +40,6 @@ module.exports = options => {
       fs: 'empty',
       global: true,
       crypto: 'empty',
-      process: true,
-      module: false,
-      clearImmediate: false,
-      setImmediate: false,
     },
     module: {
       rules: [
@@ -81,9 +75,9 @@ module.exports = options => {
               }],
               'transform-decorators-legacy',
               ['transform-runtime', {
-                helpers: false,
+                helpers: true,
                 polyfill: false,
-                regenerator: false,
+                regenerator: true,
               }],
               ['transform-regenerator', {
                 // babel-preset-env handles async to generator
@@ -135,7 +129,7 @@ module.exports = options => {
                 loader: 'postcss-loader',
               },
               {
-                loader: 'fast-sass-loader',
+                loader: 'sass-loader',
               },
             ],
           }),
@@ -154,19 +148,7 @@ module.exports = options => {
         minChunks: module => /node_modules/.test(module.resource),
       }),
       new BabiliWebpackPlugin(),
-      new PurifyCSSPlugin({
-        paths: [
-          ...glob.sync(`${paths.sharedDir}/**/*.js`),
-          ...glob.sync(`${paths.sharedDir}/**/*.(scss|css)`),
-        ],
-        styleExtensions: ['.css', '.scss'],
-        moduleExtensions: [],
-        purifyOptions: {
-          minify: true,
-          info: true,
-          rejected: true,
-        },
-      }),
+
       new BundleAnalyzerPlugin({
         openAnalyzer: false,
         analyzerMode: 'static',
@@ -180,7 +162,7 @@ module.exports = options => {
         manifestVariable: 'CHUNK_MANIFEST',
       }),
       new AssetsPlugin({
-        filename: options.clientAssetsFile,
+        filename: 'assets.json',
         path: paths.assetsDir,
       }),
     ],

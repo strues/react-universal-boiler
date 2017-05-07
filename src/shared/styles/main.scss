@@ -1,11 +1,11 @@
 @import 'variables';
-@import 'grid';
 
 body {
   font-family: $font-stack;
   font-size: $text-size;
   color: $font-color;
   margin: 0;
+  background-color: rgba(229, 229, 229, 1);
 }
 
 .wrapper {

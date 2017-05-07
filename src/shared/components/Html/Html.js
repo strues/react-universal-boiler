@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/html-has-lang, react/forbid-prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
+import { object, node, string } from 'prop-types';
 
 function Html(props) {
   const { htmlAttributes, headerElements, bodyElements, appBodyString } = props;
@@ -19,10 +19,10 @@ function Html(props) {
 }
 
 Html.propTypes = {
-  htmlAttributes: PropTypes.object,
-  headerElements: PropTypes.node,
-  bodyElements: PropTypes.node,
-  appBodyString: PropTypes.string,
+  htmlAttributes: object,
+  headerElements: node,
+  bodyElements: node,
+  appBodyString: string,
 };
 
 Html.defaultProps = {

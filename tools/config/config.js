@@ -15,7 +15,7 @@ module.exports = {
     'redux-logger',
     'react-router-redux',
     'react-router-config',
-    'isomorphic-fetch',
-    'styled-components',
-  ],
+    'axios',
+    'styled-components'
+  ]
 };

@@ -1,8 +1,8 @@
-import fetch from 'unfetch';
+import axios from 'axios';
 
-export const FETCH_DATA_REQUEST = '@boldr/FETCH_DATA_REQUEST';
-export const FETCH_DATA_SUCCESS = '@boldr/FETCH_DATA_SUCCESS';
-export const FETCH_DATA_FAILURE = '@boldr/FETCH_DATA_FAILURE';
+export const FETCH_DATA_REQUEST = '@app/FETCH_DATA_REQUEST';
+export const FETCH_DATA_SUCCESS = '@app/FETCH_DATA_SUCCESS';
+export const FETCH_DATA_FAILURE = '@app/FETCH_DATA_FAILURE';
 
 function requestDataStart() {
   return { type: FETCH_DATA_REQUEST };
@@ -21,13 +21,14 @@ function failedToGetData(err) {
     error: err.response.status,
   };
 }
+
 export const getAppData = () => {
-  return (dispatch, getState) => {
+  return dispatch => {
     dispatch(requestDataStart());
-    fetch('http://jsonplaceholder.typicode.com/posts')
-      .then(r => r.json())
-      .then(data => {
-        dispatch(gotRequestData(data));
+    return axios.get('http://jsonplaceholder.typicode.com/posts')
+      .then(res => {
+        const { data } = res;
+        return dispatch(gotRequestData(data));
       })
       .catch(err => dispatch(failedToGetData(err)));
   };

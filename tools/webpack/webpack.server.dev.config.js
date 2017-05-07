@@ -77,7 +77,7 @@ module.exports = options => {
               ['transform-runtime', {
                 helpers: true,
                 polyfill: false,
-                regenerator: false,
+                regenerator: true,
               }],
               ['transform-regenerator', {
                 // babel-preset-env handles async to generator
@@ -97,7 +97,7 @@ module.exports = options => {
               loader: 'postcss-loader',
             },
             {
-              loader: 'fast-sass-loader',
+              loader: 'sass-loader',
             },
           ],
         },

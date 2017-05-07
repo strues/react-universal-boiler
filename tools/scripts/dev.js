@@ -49,7 +49,7 @@ function startCompilation() {
       },
       lazy: false,
       hot: true,
-      serverSideRender: true,
+      serverSideRender: false,
       watchOptions: {
         aggregateTimeout: 300,
         poll: true,

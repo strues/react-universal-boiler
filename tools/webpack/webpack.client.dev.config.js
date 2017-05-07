@@ -103,7 +103,7 @@ module.exports = options => {
                 {
                   helpers: true,
                   polyfill: false,
-                  regenerator: false,
+                  regenerator: true,
                 },
               ],
               [
@@ -143,12 +143,8 @@ module.exports = options => {
         {
           loader: 'postcss-loader',
         },
-        // Tremendous speed increases when compiling SCSS/Sass files.
-        // However, by doing so, sacrifices are made.
-        // @NOTE: No loader config options or source maps
-        // https://github.com/yibn2008/fast-sass-loader
         {
-          loader: 'fast-sass-loader',
+          loader: 'sass-loader',
         },
       ]),
       happyPackPlugin('happycss', [
@@ -191,10 +187,7 @@ module.exports = options => {
       rules: [
         {
           test: /\.(js|jsx)$/,
-          loader: 'happypack/loader',
-          options: {
-            id: 'happyjs',
-          },
+          use: ['cache-loader', 'happypack/loader?id=happyjs'],
           exclude: [
             /node_modules/,
             paths.happyPackDir,

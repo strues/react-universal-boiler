@@ -1,7 +1,5 @@
 /* @flow */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { getAppData } from '../../state/modules/app';
 import Home from './Home';
@@ -24,7 +22,9 @@ class HomeContainer extends Component {
   render() {
     const { data } = this.props;
 
-    return <Home posts={data} />;
+    return (
+      <Home posts={data} />
+    );
   }
 }
 const mapStateToProps = state => {

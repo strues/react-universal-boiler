@@ -16,6 +16,7 @@ const { clientConfig, serverConfig } = compileConfigs(config, 'production');
 const buildServer = () => {
   serverCompiler = webpackCompiler(serverConfig, stats => {
     if (stats.hasErrors()) {
+      logger.info(stats.hasErrors())
       process.exit(1);
     }
     logger.end('Built server.');
@@ -25,6 +26,7 @@ const buildServer = () => {
 
 const clientCompiler = webpackCompiler(clientConfig, stats => {
   if (stats.hasErrors()) {
+    logger.info(stats)
     process.exit(1);
   }
   logger.info('Assets:');

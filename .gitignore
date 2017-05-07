@@ -4,4 +4,5 @@ public/assets/
 *.log
 .env
 coverage/
-lib/main.js
+build/
+.cache-loader

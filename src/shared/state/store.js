@@ -1,14 +1,20 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import { logger } from 'redux-logger';
+import axios from 'axios';
 import rootReducer from './reducers';
 
 const inBrowser = typeof window === 'object';
 
 export default function configureStore(preloadedState, history) {
-  const middleware = [thunkMiddleware, logger];
+  const middleware = [thunkMiddleware.withExtraArgument(axios)];
 
   const enhancers = [applyMiddleware(...middleware)];
+  // Here we only want to include redux-logger during development.
+  /* istanbul ignore next */
+  if (process.env.NODE_ENV === `development`) {
+    const { logger } = require(`redux-logger`);
+    middleware.push(logger);
+  }
 
   /* istanbul ignore next */
   const devEnhancers = process.env.NODE_ENV !== 'production' &&
@@ -23,6 +29,7 @@ export default function configureStore(preloadedState, history) {
     preloadedState,
     devEnhancers(...enhancers),
   );
+
   if (process.env.NODE_ENV === 'development' && module.hot) {
     module.hot.accept('./reducers', () => {
       const nextRootReducer = require('./reducers').default; // eslint-disable-line

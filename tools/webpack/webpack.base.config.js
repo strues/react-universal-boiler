@@ -6,7 +6,9 @@ import DefinePlugin from 'webpack/lib/DefinePlugin';
 import OccurrenceOrderPlugin from 'webpack/lib/optimize/OccurrenceOrderPlugin';
 import IgnorePlugin from 'webpack/lib/IgnorePlugin';
 import LoaderOptionsPlugin from 'webpack/lib/LoaderOptionsPlugin';
+
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
+
 import { removeNil, mergeDeep, ifElse } from 'boldr-utils';
 import paths from '../config/paths';
 import getPostCSSConfig from '../config/postCssConfig';
@@ -69,7 +71,7 @@ module.exports = options => {
       // Helps with case insensitive OS like macOS where ~/Code/Project is
       // the same as ~/code/project
       new CaseSensitivePathsPlugin(),
-      new IgnorePlugin(/^\.\/locale$/, /moment$/),
+
       new LoaderOptionsPlugin({
         minimize: isProd,
         debug: !isProd,

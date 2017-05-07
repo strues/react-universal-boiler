@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { object, array } from 'prop-types';
 import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
 import Redirect from 'react-router-dom/Redirect';
@@ -10,7 +10,7 @@ const renderRoute = (store, route, props) => {
 };
 
 renderRoute.propTypes = {
-  staticContext: PropTypes.object,
+  staticContext: object,
 };
 
 renderRoute.defaultProps = {
@@ -32,11 +32,11 @@ const RouteManager = (props, context) => (
 );
 
 RouteManager.propTypes = {
-  routes: PropTypes.array.isRequired,
+  routes: array.isRequired,
 };
 
 RouteManager.contextTypes = {
-  store: PropTypes.object,
+  store: object,
 };
 
 export default routes => {

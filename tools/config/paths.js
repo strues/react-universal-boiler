@@ -47,7 +47,7 @@ module.exports = {
   sharedDir: resolveProject('src/shared'),
 
   publicDir: resolveProject('public'),
-  serverCompiledDir: resolveProject('lib'),
+  serverCompiledDir: resolveProject('build'),
   assetsDir: resolveProject('public/assets'),
   dllDir: resolveProject('public/assets/dlls'),
 };

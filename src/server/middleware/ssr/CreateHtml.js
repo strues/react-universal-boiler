@@ -1,7 +1,6 @@
 /* eslint-disable react/no-danger, react/no-array-index-key, react/jsx-key */
 /* @flow */
 import React, { Children } from 'react';
-import PropTypes from 'prop-types';
 import serialize from 'serialize-javascript';
 import { ifElse, removeNil } from 'boldr-utils';
 import type { Head } from 'react-helmet';
