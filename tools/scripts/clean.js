@@ -1,14 +1,13 @@
-import { resolve as pathResolve } from 'path';
-import rimraf from 'rimraf';
-import config from '../config/config';
-import paths from '../config/paths';
+const path = require('path');
+const rimraf = require('rimraf');
+const config = require('../config');
 
 function clean() {
-  rimraf(pathResolve(paths.serverCompiledDir), () => {
-    console.log(`Cleaned ${paths.serverCompiledDir}`);
+  rimraf(path.resolve(config.serverCompiledDir), () => {
+    console.log(`Cleaned ${config.serverCompiledDir}`);
   });
-  rimraf(pathResolve(paths.assetsDir), () => {
-    console.log(`Cleaned ${paths.assetsDir}`);
+  rimraf(path.resolve(config.assetsDir), () => {
+    console.log(`Cleaned ${config.assetsDir}`);
   });
 }
 

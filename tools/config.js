@@ -1,5 +1,5 @@
-import path from 'path';
-import fs from 'fs';
+const path = require('path');
+const fs = require('fs');
 
 /**
  * Path of the current working directory, with symlinks taken
@@ -18,8 +18,9 @@ function resolveProject(...args) {
 }
 
 /**
- * Enables resolving paths via NODE_PATH. Shout out to create-react-app
- * https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/config/paths.js#L24
+ * Enables resolving paths via NODE_PATH.
+ * Shout out to create-react-app where this was borrowed
+ * https://github.com/facebookincubator/create-react-app
  * @type {String}
  */
 const nodePaths = (process.env.NODE_PATH || '')
@@ -29,25 +30,39 @@ const nodePaths = (process.env.NODE_PATH || '')
   .map(resolveProject);
 
 module.exports = {
+  serveAssetsFrom: '/assets/',
+  serverPort: 3000,
+  serverHost: 'localhost',
+  isVerbose: true,
+  isDebug: false,
+  useBabili: true,
+  nodeTarget: 'current',
   rootDir,
   nodePaths,
   // <PROJECT_ROOT>/node_modules
   nodeModules: resolveProject('node_modules'),
-  // <PROJECT_ROOT>/.happypack
-  happyPackDir: resolveProject('.happypack'),
   // <PROJECT_ROOT>/package.json
   pkgPath: resolveProject('package.json'),
-  userbabelRc: resolveProject('.babelrc'),
-  userEslintRc: resolveProject('.eslintrc'),
-  userStylelintRc: resolveProject('.stylelintrc'),
-
   srcDir: resolveProject('src'),
-  serverSrcDir: resolveProject('src/server'),
-  clientSrcDir: resolveProject('src/client'),
-  sharedDir: resolveProject('src/shared'),
-
   publicDir: resolveProject('public'),
   serverCompiledDir: resolveProject('build'),
-  assetsDir: resolveProject('public/assets'),
-  dllDir: resolveProject('public/assets/dlls'),
+  assetsDir: resolveProject('build/assets'),
+
+  vendorFiles: [
+    'react',
+    'react-dom',
+    'react-router-dom',
+    'redux',
+    'react-redux',
+    'redux-thunk',
+    'redux-logger',
+    'react-router-redux',
+    'react-router-config',
+    'axios',
+    'styled-components',
+    'react-helmet',
+    'lodash',
+    'hedron',
+    'serialize-javascript',
+  ],
 };

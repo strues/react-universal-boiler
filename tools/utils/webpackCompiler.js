@@ -1,5 +1,5 @@
-import webpack from 'webpack';
-import logger from 'boldr-utils/es/logger';
+const webpack = require('webpack');
+const logger = require('boldr-utils/lib/logger');
 
 module.exports = (webpackConfig, cb) => {
   let webpackCompiler;

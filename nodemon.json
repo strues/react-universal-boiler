@@ -1,0 +1,4 @@
+{
+  "watch": ["./server"],
+  "exec": "babel-node server/index.js"
+}

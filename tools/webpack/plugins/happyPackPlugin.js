@@ -1,8 +1,7 @@
 /* eslint-disable babel/new-cap */
-import path from 'path';
-import os from 'os';
-import HappyPack from 'happypack';
-import paths from '../../config/paths';
+const os = require('os');
+const path = require('path');
+const HappyPack = require('happypack');
 
 /**
  * Creates a new HappyPack loader instance
@@ -11,14 +10,13 @@ import paths from '../../config/paths';
  * @param  {Array} loaders  Webpack loaders used by this instance
  * @return {function}         a HappyPack plugin
  */
-export default function happyPackPlugin(id, loaders) {
+module.exports = function happyPackPlugin({ name, loaders }) {
   // ThreadPools are worker threads shared amongst all HappyPack loaders
   const compilerThreadPool = HappyPack.ThreadPool({
     size: os.cpus().length,
   });
   return new HappyPack({
-    id,
-    tempDir: paths.happyPackDir,
+    id: name,
     verbose: false,
     threadPool: compilerThreadPool,
     loaders,

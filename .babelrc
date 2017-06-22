@@ -2,5 +2,5 @@
 // configuration happens in each specific Webpack config.
 {
   "presets": ["env"],
-  "plugins": ["syntax-flow", "syntax-dynamic-import"],
+  "plugins": ["syntax-dynamic-import"],
 }

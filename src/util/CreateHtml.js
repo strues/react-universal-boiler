@@ -1,10 +1,9 @@
 /* eslint-disable react/no-danger, react/no-array-index-key, react/jsx-key */
-/* @flow */
 import React, { Children } from 'react';
 import serialize from 'serialize-javascript';
+import { string, object, node, element } from 'prop-types';
 import { ifElse, removeNil } from 'boldr-utils';
-import type { Head } from 'react-helmet';
-import Html from '../../../shared/components/Html';
+import Html from '../components/Html';
 
 // This is output by Webpack after the bundle is compiled. It contains
 // information about the files Webpack bundled. ASSETS_MANIFEST is
@@ -17,7 +16,6 @@ function KeyedComponent({ children }) {
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
-const devDlls = '/assets/dlls/__boldr_dlls__.js';
 
 /**
  * Takes a stylesheet file path and creates an html
@@ -25,14 +23,9 @@ const devDlls = '/assets/dlls/__boldr_dlls__.js';
  * @param  {string} stylesheetFilePath path of the file
  * @return {element}                    dom element
  */
-function createStyleElement(stylesheetFilePath: string) {
+function createStyleElement(stylesheetFilePath) {
   return (
-    <link
-      href={stylesheetFilePath}
-      media="screen, projection"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <link href={stylesheetFilePath} media="screen, projection" rel="stylesheet" type="text/css" />
   );
 }
 
@@ -42,29 +35,16 @@ function createStyleElement(stylesheetFilePath: string) {
  * @param  {string} jsFilePath          path of the file
  * @return {element}                    dom element
  */
-function createScriptElement(jsFilePath: string) {
+function createScriptElement(jsFilePath) {
   return <script type="text/javascript" src={jsFilePath} />;
 }
 
-type Props = {
-  reactAppString: string,
-  nonce: string,
-  preloadedState: Object,
-  styles: ?Object,
-  helmet: ?Head,
-};
-
-export default function CreateHtml(props: Props) {
-  const { reactAppString, nonce, preloadedState, styles, helmet } = props;
+export default function CreateHtml(props) {
+  const { reactAppString, nonce, preloadedState, styledCss, helmet } = props;
 
   // Creates an inline script definition that is protected by the nonce.
-  const inlineScript = body => (
-    <script
-      nonce={nonce}
-      type="text/javascript"
-      dangerouslySetInnerHTML={{ __html: body }}
-    />
-  ); // eslint-disable-line
+  const inlineScript = body =>
+    <script nonce={nonce} type="text/javascript" dangerouslySetInnerHTML={{ __html: body }} />; // eslint-disable-line
 
   const headerElements = removeNil([
     // if React Helmet component, render the helmet data
@@ -88,40 +68,39 @@ export default function CreateHtml(props: Props) {
   const bodyElements = removeNil([
     // Places the Redux store data on the window available at
     // window.__PRELOADED_STATE__
-    inlineScript(
-      `window.__PRELOADED_STATE__=${serialize(props.preloadedState)};`,
-    ),
+    inlineScript(`window.__PRELOADED_STATE__=${serialize(props.preloadedState)};`),
     // Polyfill whatever the browser doesnt provide that is necessary
     // for the application to run. Much lighter than using babel-polyfill
     // and results in smaller bundles.
-    createScriptElement(
-      'https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Symbol',
+    createScriptElement('https://cdn.polyfill.io/v2/polyfill.min.js?features=default,Symbol'),
+     ifElse(isProd && clientAssets && clientAssets.common.js)(() =>
+      createScriptElement(clientAssets.common.js),
     ),
     ifElse(isProd && clientAssets && clientAssets.vendor.js)(() =>
       createScriptElement(clientAssets.vendor.js),
     ),
-    ifElse(isDev)(() =>
-      createScriptElement(`/assets/dlls/__vendor_dlls__.js?t=${Date.now()}`),
-    ),
-    ifElse(clientAssets && clientAssets.main.js)(() =>
-      createScriptElement(clientAssets.main.js),
-    ),
+    ifElse(isDev)(() => createScriptElement(`/__vendor_dlls__.js?t=${Date.now()}`)),
+    ifElse(clientAssets && clientAssets.main.js)(() => createScriptElement(clientAssets.main.js)),
     ...ifElse(helmet)(() => helmet.script.toComponent(), []),
   ]);
 
   return (
     <Html
-      htmlAttributes={ifElse(helmet)(
-        () => helmet.htmlAttributes.toComponent(),
-        null,
+      htmlAttributes={ifElse(helmet)(() => helmet.htmlAttributes.toComponent(), null)}
+      headerElements={headerElements.map((x, idx) =>
+        <KeyedComponent key={idx}>{x}</KeyedComponent>,
       )}
-      headerElements={headerElements.map((x, idx) => (
-        <KeyedComponent key={idx}>{x}</KeyedComponent>
-      ))}
-      bodyElements={bodyElements.map((x, idx) => (
-        <KeyedComponent key={idx}>{x}</KeyedComponent>
-      ))}
+      bodyElements={bodyElements.map((x, idx) => <KeyedComponent key={idx}>{x}</KeyedComponent>)}
       appBodyString={reactAppString}
     />
   );
 }
+const propTypes = {
+  reactAppString: string,
+  nonce: string,
+  preloadedState: object,
+  styledCss: object,
+  helmet: element,
+};
+
+CreateHtml.propTypes = propTypes;

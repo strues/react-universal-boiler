@@ -1,22 +1,22 @@
-import logger from 'boldr-utils/es/logger';
-
-import printAssets from '../utils/printAssets';
-import compileConfigs from '../utils/compileConfigs';
-import webpackCompiler from '../utils/webpackCompiler';
-import paths from '../config/paths';
-import config from '../config/config';
+const logger = require('boldr-utils/lib/logger');
+const printAssets = require('../utils/printAssets');
+const createServerConfig = require('../webpack/createServerConfig');
+const createClientConfig = require('../webpack/createClientConfig');
+const webpackCompiler = require('../utils/webpackCompiler');
+const config = require('../config');
 
 logger.start('Starting production build...');
 
 let serverCompiler;
 
-const { clientConfig, serverConfig } = compileConfigs(config, 'production');
+const clientConfig = createClientConfig();
+const serverConfig = createServerConfig();
 
 // Compiles server code using the prod.server config
 const buildServer = () => {
   serverCompiler = webpackCompiler(serverConfig, stats => {
     if (stats.hasErrors()) {
-      logger.info(stats.hasErrors())
+      logger.info(stats.hasErrors());
       process.exit(1);
     }
     logger.end('Built server.');
@@ -26,7 +26,7 @@ const buildServer = () => {
 
 const clientCompiler = webpackCompiler(clientConfig, stats => {
   if (stats.hasErrors()) {
-    logger.info(stats)
+    logger.info(stats);
     process.exit(1);
   }
   logger.info('Assets:');

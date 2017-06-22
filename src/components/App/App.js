@@ -1,25 +1,24 @@
-/* @flow */
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { object } from 'prop-types';
 import { injectGlobal } from 'styled-components';
-import renderRoutes from '../../core/addRoutes';
+
+import renderRoutes from '../../util/addRoutes';
 import '../../styles/main.scss';
 
 injectGlobal`
   body {
+    font-family: sans-serif;
     margin: 0;
   }
 `;
 
-type Props = {
-  route: Object,
-};
-
 class App extends Component {
   static displayName = 'AppComponent';
-  props: Props;
+  static propTypes = {
+    route: object,
+  };
   render() {
     const { route } = this.props;
     return (

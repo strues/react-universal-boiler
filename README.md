@@ -34,8 +34,8 @@ Running the two commands below will compile your application and serve the produ
 **Run:** `yarn start`
 
 ## Notes
-> Configuring the production vendor assets bundle requires adding your dependencies
-for the browser to the vendorFiles array within tools/config/config.js
+> Configuring the development DLLs and production vendor assets bundle requires adding your dependencies
+for the browser to the vendorFiles array within tools/config.js
 
 
 ## Resources
@@ -48,9 +48,6 @@ A starter kit giving you the minimum requirements for a modern universal React a
 
 - [`ReactGo`](https://github.com/reactGo/reactGo)
 Your One-Stop solution for a full-stack app with ES6/ES2015 React.js featuring universal Redux, React Router, React Router Redux Hot reloading, CSS modules, Express 4.x, and multiple ORMs.
-
-- [`React Redux Universal Hot - Fork`](https://github.com/bertho-zero/react-redux-universal-hot-example)
-This is a fork of the very popular, but no longer maintained project from Erikas.
 
 - [`React Cool Starter`](https://github.com/wellyshen/react-cool-starter)
 A simple but feature rich starter boilerplate for you to build an universal web app with the best development experience and a focus on performance and best practices.

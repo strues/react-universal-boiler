@@ -14,10 +14,7 @@ export default [
         exact: true,
         component: HomeContainer,
         // This is important for fetching data asynchronously.
-        loadData: async (dispatch) =>
-          Promise.all([
-            await dispatch(getAppData()),
-          ]),
+        loadData: async dispatch => Promise.all([await dispatch(getAppData())]),
       },
       {
         path: '/tools',

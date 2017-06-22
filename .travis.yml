@@ -1,6 +1,8 @@
 language: node_js
+dist: trusty
 node_js:
-  - 6
+  - 7
+  - 8
 cache:
   directories:
   - node_modules
@@ -8,8 +10,13 @@ sudo: false
 git:
   depth: 3
 install:
-- npm install
+- yarn
 script:
-- npm run test
+- yarn test
 
-after_success: npm run coverage
+after_success: yarn coverage
+
+cache:
+  yarn: true
+  directories:
+  - node_modules

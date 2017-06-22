@@ -2,16 +2,13 @@ const babelJest = require('babel-jest');
 
 module.exports = babelJest.createTransformer({
   babelrc: false,
-  presets: [['env', { targets: { node: true } }], 'react'],
+  presets: [['env', { targets: { node: 'current' }, modules: 'commonjs' }], 'react'],
   plugins: [
     'syntax-dynamic-import',
-    'syntax-flow',
+    ['fast-async', { spec: true }],
     'transform-class-properties',
     'transform-decorators-legacy',
     'dynamic-import-node',
-    'dynamic-import-webpack',
     'transform-object-rest-spread',
-    'transform-regenerator',
-    'transform-runtime',
   ],
 });

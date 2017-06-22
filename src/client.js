@@ -1,4 +1,3 @@
-/* @flow */
 /* eslint-disable global-require */
 
 import React from 'react';
@@ -7,10 +6,11 @@ import { Provider } from 'react-redux';
 import createHistory from 'history/createBrowserHistory';
 import ConnectedRouter from 'react-router-redux/ConnectedRouter';
 import WebFontLoader from 'webfontloader';
-import renderRoutes from '../shared/core/addRoutes';
-import routes from '../shared/routes';
-import configureStore from '../shared/state/store';
-import ReactHotLoader from './ReactHotLoader';
+
+import configureStore from './state/store';
+import renderRoutes from './util/addRoutes';
+import ReactHotLoader from './util/ReactHotLoader';
+import routes from './routes';
 
 WebFontLoader.load({
   google: { families: ['Rubik:300,400,700'] },
@@ -40,14 +40,14 @@ if (process.env.NODE_ENV !== 'production') {
 if (module.hot) {
   const reRenderApp = () => {
     try {
-      renderApp(require('../shared/routes'));
+      renderApp(require('./routes'));
     } catch (error) {
       const RedBox = require('redbox-react').default;
 
       render(<RedBox error={error} />, MOUNT_POINT);
     }
   };
-  module.hot.accept('../shared/routes', () => {
+  module.hot.accept('./routes', () => {
     setImmediate(() => {
       // Preventing the hot reloading error from react-router
       unmountComponentAtNode(MOUNT_POINT);

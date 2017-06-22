@@ -1,6 +1,6 @@
-/* @flow */
 import React from 'react';
 import styled from 'styled-components';
+import { string } from 'prop-types';
 
 const PostCard = styled.div`
   background-color: #fff;
@@ -21,12 +21,7 @@ const Body = styled.p`
   font-size: 1rem;
 `;
 
-type Props = {
-  title: string,
-  body: string,
-};
-
-const Post = ({ title, body }: Props) => {
+const Post = ({ title, body }) => {
   return (
     <PostCard>
       <Head>{title}</Head>
@@ -34,5 +29,11 @@ const Post = ({ title, body }: Props) => {
     </PostCard>
   );
 };
+
+const propTypes = {
+  title: string,
+  body: string,
+};
+Post.propTypes = propTypes;
 
 export default Post;

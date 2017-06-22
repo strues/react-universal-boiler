@@ -1,19 +1,20 @@
-import fs from 'fs';
-import path from 'path';
-import logger from 'boldr-utils/es/logger';
-import filesize from 'filesize';
-import gzipSize from 'gzip-size';
-import stripAnsi from 'strip-ansi';
+const path = require('path');
+const fs = require('fs');
+const logger = require('boldr-utils/lib/logger');
+const filesize = require('filesize');
+const gzipSize = require('gzip-size');
+const stripAnsi = require('strip-ansi');
 
 module.exports = (stats, clientConfig) => {
   const assetPath = clientConfig.output.path;
-  const assets = stats.toJson().assets
-    .filter(asset => /\.(js|css)$/.test(asset.name))
-    .map((asset) => {
+  const assets = stats
+    .toJson()
+    .assets.filter(asset => /\.(js|css)$/.test(asset.name))
+    .map(asset => {
       const file = fs.readFileSync(path.resolve(assetPath, asset.name));
       const gzSize = gzipSize.sync(file);
       return {
-        folder: path.join('public/assets', path.dirname(asset.name)),
+        folder: path.join('build/assets', path.dirname(asset.name)),
         gzSize,
         gzSizeLabel: `(${filesize(gzSize)} gzip)`,
         name: path.basename(asset.name),
@@ -24,11 +25,15 @@ module.exports = (stats, clientConfig) => {
 
   assets.sort((a, b) => b.size - a.size);
 
-  const longestSizeLabelLength = Reflect.apply(Math.max, null,
+  const longestSizeLabelLength = Reflect.apply(
+    Math.max,
+    null,
     assets.map(a => stripAnsi(a.sizeLabel).length),
   );
 
-  const longestGzSizeLabelLength = Reflect.apply(Math.max, null,
+  const longestGzSizeLabelLength = Reflect.apply(
+    Math.max,
+    null,
     assets.map(a => stripAnsi(a.gzSizeLabel).length),
   );
 
@@ -42,7 +47,7 @@ module.exports = (stats, clientConfig) => {
     return padded;
   };
 
-  assets.forEach((asset) => {
+  assets.forEach(asset => {
     const sizeLabel = addLabelPadding(asset.sizeLabel, longestSizeLabelLength);
     const gzSizeLabel = addLabelPadding(asset.gzSizeLabel, longestGzSizeLabelLength); // eslint-disable-line
     logger.log(`    ${sizeLabel}    ${gzSizeLabel}    ${asset.folder + path.sep + asset.name}`); // eslint-disable-line

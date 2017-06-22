@@ -1,17 +1,17 @@
-import path from 'path';
-import fs from 'fs';
-import webpack from 'webpack';
-import md5 from 'md5';
-import Promise from 'bluebird';
-import logger from 'boldr-utils/es/logger';
+const path = require('path');
+const fs = require('fs');
+const webpack = require('webpack');
+const md5 = require('md5');
+const Promise = require('bluebird');
+const logger = require('boldr-utils/lib/logger');
 
-import paths from '../config/paths';
-import config from '../config/config';
+const config = require('../config');
 
-const pkg = require(paths.pkgPath);
+// const pkg = require(config.pkgPath);
 
 function buildWebpackDlls() {
   logger.start('Building Webpack vendor DLLs');
+  const pkg = JSON.parse(fs.readFileSync(`${process.cwd()}/package.json`, 'utf8'));
 
   const dllConfig = config.vendorFiles;
 
@@ -22,21 +22,14 @@ function buildWebpackDlls() {
   // the vendor dll.
   const currentDependenciesHash = md5(
     JSON.stringify(
-      devDLLDependencies.map(dep => [
-        dep,
-        pkg.dependencies[dep],
-        pkg.devDependencies[dep],
-      ]),
+      devDLLDependencies.map(dep => [dep, pkg.dependencies[dep], pkg.devDependencies[dep]]),
       // We do this to include any possible version numbers we may have for
       // a dependency. If these change then our hash should too, which will
       // result in a new dev dll build.
     ),
   );
 
-  const vendorDLLHashFilePath = path.resolve(
-    paths.dllDir,
-    '__vendor_dlls__hash',
-  );
+  const vendorDLLHashFilePath = path.resolve(config.assetsDir, '__vendor_dlls__hash');
 
   function webpackInstance() {
     return {
@@ -46,14 +39,15 @@ function buildWebpackDlls() {
         ['__vendor_dlls__']: devDLLDependencies,
       },
       output: {
-        path: paths.dllDir,
+        path: config.assetsDir,
         filename: '__vendor_dlls__.js',
         library: '__vendor_dlls__',
       },
       plugins: [
         new webpack.DllPlugin({
-          path: path.resolve(paths.dllDir, '__vendor_dlls__.json'),
+          path: path.resolve(config.assetsDir, '__vendor_dlls__.json'),
           name: '__vendor_dlls__',
+          context: config.rootDir,
         }),
       ],
     };
@@ -104,4 +98,4 @@ function buildWebpackDlls() {
   });
 }
 
-export default buildWebpackDlls;
+module.exports = buildWebpackDlls;
