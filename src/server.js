@@ -6,7 +6,6 @@ import createHistory from 'history/createMemoryHistory';
 import StaticRouter from 'react-router-dom/StaticRouter';
 import matchRoutes from 'react-router-config/matchRoutes';
 import { ServerStyleSheet } from 'styled-components';
-import { flushWebpackRequireWeakIds } from 'react-loadable';
 import Helmet from 'react-helmet';
 
 import configureStore from './state/store';
@@ -27,12 +26,12 @@ function render(req, routerContext, store, sheet, nonce, stats) {
   const head = Helmet.renderStatic();
 
   const initialState = store.getState();
-
   return renderToStaticMarkup(
     <CreateHtml
       reactAppString={markup}
       helmet={Helmet.renderStatic()}
       nonce={nonce}
+      styledCss={sheet}
       preloadedState={store.getState()}
       initialState={initialState}
     />,
@@ -55,7 +54,7 @@ export default ({ clientStats }) => {
     return chunks;
   }, {});
   const assetsByChunkName = clientStats.assetsByChunkName;
-
+  // console.log(JSON.stringify(clientStats, null, 4))
   /**
      * @param  {object}     req Express request object
      * @param  {object}     res Express response object
@@ -100,17 +99,14 @@ export default ({ clientStats }) => {
       } catch (ex) {
         return next(ex);
       }
+      // Check if the render result contains a redirect, if so we need to set
+      // the specific status and redirect header and end the response
       if (routerContext.url) {
         res.status(301).setHeader('Location', routerContext.url);
         res.end();
 
         return;
       }
-      // Check if the render result contains a redirect, if so we need to set
-      // the specific status and redirect header and end the response
-
-      // Checking if the response status is 404.
-      // const status = routerContext.status === '404' ? 404 : 200;
 
       // Pass the route and initial state into html template
       res.status(routerContext.missed ? 404 : 200).send(`<!doctype html>${html}`);

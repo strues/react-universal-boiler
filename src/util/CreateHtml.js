@@ -41,7 +41,6 @@ function createScriptElement(jsFilePath) {
 
 export default function CreateHtml(props) {
   const { reactAppString, nonce, preloadedState, styledCss, helmet } = props;
-
   // Creates an inline script definition that is protected by the nonce.
   const inlineScript = body =>
     <script nonce={nonce} type="text/javascript" dangerouslySetInnerHTML={{ __html: body }} />; // eslint-disable-line
@@ -90,6 +89,7 @@ export default function CreateHtml(props) {
       headerElements={headerElements.map((x, idx) =>
         <KeyedComponent key={idx}>{x}</KeyedComponent>,
       )}
+      css={styledCss.getStyleTags()}
       bodyElements={bodyElements.map((x, idx) => <KeyedComponent key={idx}>{x}</KeyedComponent>)}
       appBodyString={reactAppString}
     />
@@ -99,8 +99,8 @@ const propTypes = {
   reactAppString: string,
   nonce: string,
   preloadedState: object,
-  styledCss: object,
-  helmet: element,
+  styledCss: string,
+  helmet: object,
 };
 
 CreateHtml.propTypes = propTypes;
