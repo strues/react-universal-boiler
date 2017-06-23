@@ -1,10 +1,18 @@
 import { combineReducers } from 'redux';
-import appReducer from './modules/app';
 import { routerReducer } from 'react-router-redux';
+import postsReducer from './modules/posts';
 
-const rootReducer = combineReducers({
-  app: appReducer,
+const appReducer = combineReducers({
+  posts: postsReducer,
   router: routerReducer,
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === 'RESET') {
+    state = undefined;
+  }
+
+  return appReducer(state, action);
+};
 
 export default rootReducer;

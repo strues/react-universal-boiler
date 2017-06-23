@@ -23,10 +23,12 @@ const Body = styled.p`
 
 const Post = ({ title, body }) => {
   return (
-    <PostCard>
-      <Head>{title}</Head>
-      <Body>{body}</Body>
-    </PostCard>
+    <div>
+      <PostCard>
+        <Head>{title}</Head>
+        <Body>{body}</Body>
+      </PostCard>
+    </div>
   );
 };
 

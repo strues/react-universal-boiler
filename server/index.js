@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === 'development') {
   const setupHotDev = require('./middleware/hot');
   setupHotDev(app);
 } else {
-  const clientStats = require('../build/assets/stats.json');
+  const clientStats = require('../build/assets/client-stats.json');
   const serverRender = require('../build/server.js').default;
 
   // server.use(publicPath, express.static(outputPath))

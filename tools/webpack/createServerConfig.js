@@ -4,7 +4,7 @@ const fs = require('fs');
 const debug = require('debug')('webpack:serverConfig');
 const webpack = require('webpack');
 const { removeNil, ifElse } = require('boldr-utils');
-const nodeExternals = require('webpack-node-externals');
+const StatsPlugin = require('stats-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const config = require('../config');
@@ -23,6 +23,16 @@ module.exports = function createServerConfig(options) {
   const _PROD = process.env.NODE_ENV === 'production';
   const ifDev = ifElse(_DEV);
   const ifProd = ifElse(_PROD);
+  const nodeModules = path.join(CWD, 'node_modules');
+  const serverExternals = fs
+    .readdirSync(nodeModules)
+    .filter(
+      x => !/\.bin|react-universal-component|require-universal-module|webpack-flush-chunks/.test(x),
+    )
+    .reduce((externals, request) => {
+      externals[request] = `commonjs ${request}`;
+      return externals;
+    }, {});
 
   const nodeConfig = {
     // pass either node or web
@@ -65,17 +75,7 @@ module.exports = function createServerConfig(options) {
       modules: [config.nodeModules, config.srcDir],
       moduleExtensions: ['-loader'],
     },
-    externals: nodeExternals({
-      whitelist: [
-        'source-map-support/register',
-        'react-loadable',
-        /\.(eot|woff|woff2|ttf|otf)$/,
-        /\.(svg|png|jpg|jpeg|gif|ico)$/,
-        /\.(mp4|mp3|ogg|swf|webp)$/,
-        /\.(css|scss)$/,
-      ],
-      modulesDir: config.nodeModules,
-    }),
+    externals: serverExternals,
     module: {
       noParse: [/\.min\.js/],
       strictExportPresence: true,
@@ -259,7 +259,9 @@ module.exports = function createServerConfig(options) {
       }),
     ],
   };
-
+  if (_PROD) {
+    nodeConfig.plugins.push(new StatsPlugin('server-stats.json'));
+  }
   if (_DEV) {
     nodeConfig.stats = 'none';
     nodeConfig.watch = true;
