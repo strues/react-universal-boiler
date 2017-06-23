@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { string } from 'prop-types';
+import { Row, Column } from 'hedron';
+import { string, arrayOf, object } from 'prop-types';
 
 const PostCard = styled.div`
   background-color: #fff;
@@ -21,20 +22,23 @@ const Body = styled.p`
   font-size: 1rem;
 `;
 
-const Post = ({ title, body }) => {
+const Post = ({ posts }) => {
   return (
-    <div>
-      <PostCard>
-        <Head>{title}</Head>
-        <Body>{body}</Body>
-      </PostCard>
-    </div>
+    <Row>
+      {posts.map(p =>
+        <Column fluid sm={12} md={4} key={p.id}>
+          <PostCard>
+            <Head>{p.title}</Head>
+            <Body>{p.body}</Body>
+          </PostCard>
+        </Column>,
+      )}
+    </Row>
   );
 };
 
 const propTypes = {
-  title: string,
-  body: string,
+  posts: arrayOf(object),
 };
 Post.propTypes = propTypes;
 

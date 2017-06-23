@@ -151,16 +151,6 @@ module.exports = function createServerConfig(options) {
                       ssr: true,
                     },
                   ],
-                  // @NOTE:
-                  // Dont want to use react-loadable?
-                  // remove this babel plugin
-                  [
-                    'babel-plugin-import-inspector',
-                    {
-                      serverSideRequirePath: true,
-                      webpackRequireWeakId: true,
-                    },
-                  ],
                   'dynamic-import-node',
                 ],
               },

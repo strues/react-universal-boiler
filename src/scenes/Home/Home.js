@@ -2,10 +2,15 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { Page, Row, Column } from 'hedron';
 import { connect } from 'react-redux';
+import universal from 'react-universal-component';
 import { object, arrayOf, func } from 'prop-types';
 import { fetchPosts, fetchPostsIfNeeded } from '../../state/modules/posts';
 import Loading from '../../components/Loading';
 import Post from '../../components/Post';
+
+const UniversalExample = universal(() => import('./Example'), {
+  resolve: () => require.resolveWeak('./Example'),
+});
 
 class Home extends Component {
   static displayName = 'Home';
@@ -13,12 +18,24 @@ class Home extends Component {
     posts: object,
     dispatch: func,
   };
+
   static fetchData({ store }) {
     return store.dispatch(fetchPosts());
   }
 
+  state = {
+    show: false,
+  };
   componentDidMount() {
     this.props.dispatch(fetchPostsIfNeeded());
+    if (this.state.show) {
+      return;
+    }
+
+    setTimeout(() => {
+      console.log('now showing <Example />');
+      this.setState({ show: true });
+    }, 1500);
   }
 
   refresh = () => {
@@ -38,8 +55,8 @@ class Home extends Component {
   render() {
     return (
       <div>
+        <Helmet title="Home" />
         <Page>
-          <Helmet title="Home" />
           <Row>
             <Column sm={8} smShift={2} lg={6} lgShift={3}>
               <div className="wrapper">
@@ -48,9 +65,11 @@ class Home extends Component {
               </div>
             </Column>
           </Row>
+          {!this.state.show && 'Async Component Not Requested Yet'}
+          {this.state.show && <UniversalExample />}
           <p><button onClick={this.refresh}>Refresh</button></p>
           <div>
-            {this.props.posts.isFetching ? <Loading /> : this.renderPosts()}
+            {this.props.posts.isFetching ? <Loading /> : <Post posts={this.props.posts.list} />}
           </div>
         </Page>
       </div>

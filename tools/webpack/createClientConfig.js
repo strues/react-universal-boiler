@@ -7,7 +7,6 @@ const webpack = require('webpack');
 const StatsPlugin = require('stats-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { removeNil, ifElse, mergeDeep, filterEmpty, appRoot, onlyIf } = require('boldr-utils');
-const AssetsPlugin = require('assets-webpack-plugin');
 const BabiliPlugin = require('babili-webpack-plugin');
 const UglifyPlugin = require('uglifyjs-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
@@ -223,7 +222,7 @@ module.exports = function createClientConfig(options) {
         },
       ]),
     },
-    plugins: removeNil([
+    plugins: [
       new webpack.LoaderOptionsPlugin({
         minimize: _PROD,
         debug: _DEV,
@@ -241,17 +240,14 @@ module.exports = function createClientConfig(options) {
         IS_DEV: JSON.stringify(_DEV),
         IS_SERVER: JSON.stringify('false'),
         IS_CLIENT: JSON.stringify('true'),
-        ASSETS_MANIFEST: JSON.stringify(
-          path.join(config.assetsDir || '', 'assets-manifest.json' || ''),
-        ),
       }),
 
       new webpack.optimize.CommonsChunkPlugin({
         names: ['bootstrap'],
-        filename: '[name].js',
+        filename: _DEV ? '[name].js' : '[name]-[chunkhash].js',
         minChunks: Infinity,
       }),
-
+      new ExtractCssChunks(),
       /**
        * HappyPack Plugins are used as caching mechanisms to reduce the amount
        * of time Webpack spends rebuilding, during your bundling during
@@ -269,7 +265,7 @@ module.exports = function createClientConfig(options) {
               compact: true,
               sourceMaps: true,
               comments: false,
-              cacheDirectory: !!_DEV,
+              cacheDirectory: _DEV,
               presets: [
                 [
                   'env',
@@ -312,8 +308,6 @@ module.exports = function createClientConfig(options) {
                     useBuiltIns: true,
                   },
                 ],
-
-                'dynamic-import-webpack',
                 // Adds component stack to warning messages
                 ifDev('transform-react-jsx-source'),
                 // Adds __self attribute to JSX which React
@@ -328,29 +322,12 @@ module.exports = function createClientConfig(options) {
                     ssr: true,
                   },
                 ],
-                // @NOTE:
-                // Dont want to use react-loadable?
-                // remove this babel plugin
-                [
-                  'babel-plugin-import-inspector',
-                  {
-                    serverSideRequirePath: true,
-                    webpackRequireWeakId: true,
-                  },
-                ],
               ]),
             },
           },
         ],
       }),
-      new ExtractCssChunks(),
-      new AssetsPlugin({
-        filename: 'assets-manifest.json',
-        path: config.assetsDir,
-        fullPath: true,
-        prettyPrint: true,
-      }),
-    ]),
+    ],
   };
 
   if (_DEV) {
@@ -361,6 +338,7 @@ module.exports = function createClientConfig(options) {
       new webpack.HotModuleReplacementPlugin(),
       // Readable module names for development
       // https://github.com/webpack/webpack.js.org/issues/652#issuecomment-273023082
+      // @NOTE: if using flushChunkNames rather than flushModuleIds you must disable this...
       new webpack.NamedModulesPlugin(),
       // Detect modules with circular dependencies when bundling with webpack.
       // @see https://github.com/aackerman/circular-dependency-plugin
@@ -386,7 +364,7 @@ module.exports = function createClientConfig(options) {
     browserConfig.plugins.push(
       // Use HashedModuleIdsPlugin to generate IDs that preserves over builds
       // @see https://github.com/webpack/webpack.js.org/issues/652#issuecomment-273324529
-      // new webpack.optimize.ModuleConcatenationPlugin(),
+      // @NOTE: if using flushChunkNames rather than flushModuleIds you must disable this...
       new webpack.HashedModuleIdsPlugin(),
       new StatsPlugin('client-stats.json'),
       config.useBabili

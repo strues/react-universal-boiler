@@ -5,10 +5,11 @@ import serialize from 'serialize-javascript';
 import { compose } from 'redux';
 import createHistory from 'history/createMemoryHistory';
 import StaticRouter from 'react-router-dom/StaticRouter';
+import uuid from 'uuid/v4';
 import matchPath from 'react-router-dom/matchPath';
 import { ServerStyleSheet } from 'styled-components';
 import Helmet from 'react-helmet';
-import { flushChunkNames } from 'react-universal-component/server';
+import { flushModuleIds } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 
 import configureStore from './state/store';
@@ -78,8 +79,8 @@ export default ({ clientStats, outputPath }) => {
       const markup = renderToString(sheet.collectStyles(appComponent));
 
       const helmet = Helmet.renderStatic();
-
-      const chunkNames = flushChunkNames();
+      const moduleIds = flushModuleIds();
+      // const chunkNames = flushChunkNames();
       const {
         // react components:
         Js,
@@ -101,7 +102,7 @@ export default ({ clientStats, outputPath }) => {
 
         publicPath,
       } = flushChunks(clientStats, {
-        chunkNames,
+        moduleIds,
         before: ['bootstrap'],
         after: ['main'],
         outputPath,
@@ -109,7 +110,7 @@ export default ({ clientStats, outputPath }) => {
 
       const preloadedState = store.getState();
 
-      const styleTags = sheet.getStyleTags();
+      const styleTags = sheet.getStyleElement();
       if (routerContext.url) {
         res.status(301).setHeader('Location', routerContext.url);
         res.redirect(routerContext.url);
@@ -118,51 +119,37 @@ export default ({ clientStats, outputPath }) => {
       store.dispatch({
         type: 'RESET',
       });
-      if (process.env.NODE_ENV === 'development') {
-        res.status(status).send(
-          `<!doctype html>
-        <html ${helmet.htmlAttributes.toString()}>
-          <head>
-            ${helmet.title.toString()}
-            ${helmet.meta.toString()}
-            ${helmet.link.toString()}
-            ${styles}
-            ${styleTags}
-          </head>
-          <body>
-            <div id="app">${markup}</div>
 
-          <script nonce=${nonce} type="text/javascript" src="/__vendor_dlls__.js?t=${Date.now()}"></script>
-          ${js}
-          <script nonce=${nonce} type="text/javascript">window.__PRELOADED_STATE__=${serialize(
-            preloadedState,
-            { json: true },
-          )}</script>
-        </body>
-        </html>`,
-        );
-      } else {
-        res.status(status).send(
-          `<!doctype html>
-        <html ${helmet.htmlAttributes.toString()}>
+      const html = renderToStaticMarkup(
+        <html>
           <head>
-            ${helmet.title.toString()}
-            ${helmet.meta.toString()}
-            ${helmet.link.toString()}
-            ${styles}
-            ${styleTags}
+            {helmet.title.toComponent()}
+            {helmet.meta.toComponent()}
+            {helmet.link.toComponent()}
+            {styleTags}
+            {stylesheets.map(file =>
+              <link key={uuid()} rel="stylesheet" href={`${publicPath}/${file}`} />,
+            )}
           </head>
           <body>
-            <div id="app">${markup}</div>
-          ${js}
-          <script nonce=${nonce} type="text/javascript">window.__PRELOADED_STATE__=${serialize(
-            preloadedState,
-            { json: true },
-          )}</script>
-        </body>
-        </html>`,
-        );
-      }
+            <div id="app" dangerouslySetInnerHTML={{ __html: markup }} />
+            {isDev
+              ? <script nonce={nonce} type="text/javascript" src="/__vendor_dlls__.js" />
+              : null}
+            {scripts.map(file =>
+              <script key={uuid()} type="text/javascript" src={`${publicPath}/${file}`} />,
+            )}
+            <script
+              nonce={nonce}
+              type="text/javascript"
+              dangerouslySetInnerHTML={{
+                __html: `window.__PRELOADED_STATE__=${serialize(preloadedState, { json: true })}`,
+              }}
+            />
+          </body>
+        </html>,
+      );
+      res.send(`<!DOCTYPE html>${html}`);
     });
   };
 };

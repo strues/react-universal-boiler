@@ -33,9 +33,7 @@ function renderApp(TheApp) {
     MOUNT_POINT,
   );
 }
-if (process.env.NODE_ENV !== 'production') {
-  window.React = React;
-}
+
 if (module.hot) {
   const reRenderApp = () => {
     try {

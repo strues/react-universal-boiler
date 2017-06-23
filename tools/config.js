@@ -57,7 +57,6 @@ module.exports = {
     'redux-thunk',
     'redux-logger',
     'react-router-redux',
-    'react-router-config',
     'axios',
     'styled-components',
     'react-helmet',
