@@ -1,7 +1,6 @@
 /* eslint-disable max-lines, prefer-template */
 const path = require('path');
 const fs = require('fs');
-const debug = require('debug')('webpack:serverConfig');
 const webpack = require('webpack');
 const { removeNil, ifElse } = require('boldr-utils');
 const StatsPlugin = require('stats-webpack-plugin');
@@ -23,6 +22,7 @@ module.exports = function createServerConfig(options) {
   const _PROD = process.env.NODE_ENV === 'production';
   const ifDev = ifElse(_DEV);
   const ifProd = ifElse(_PROD);
+
   const nodeModules = path.join(CWD, 'node_modules');
   const serverExternals = fs
     .readdirSync(nodeModules)

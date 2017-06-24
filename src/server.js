@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderToString, renderToStaticMarkup } from 'react-dom/server';
+import { renderToString } from 'react-dom/server';
 import { Provider } from 'react-redux';
 import serialize from 'serialize-javascript';
 import { compose } from 'redux';
@@ -20,7 +20,7 @@ const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
 
 /**
- * Express middleware to render HTML using react-router
+ * Express middleware to render HTML
  * @param  {object}     stats Webpack stats output
  * @return {function}   middleware function
  */
@@ -80,28 +80,7 @@ export default ({ clientStats, outputPath }) => {
 
       const helmet = Helmet.renderStatic();
       const moduleIds = flushModuleIds();
-      // const chunkNames = flushChunkNames();
-      const {
-        // react components:
-        Js,
-        // external stylesheets
-        Styles,
-        // raw css
-        Css,
-
-        // strings:
-        js,
-        // external stylesheets
-        styles,
-        // raw css
-        css,
-
-        // arrays of file names (not including publicPath):
-        scripts,
-        stylesheets,
-
-        publicPath,
-      } = flushChunks(clientStats, {
+      const { js, styles, publicPath } = flushChunks(clientStats, {
         moduleIds,
         before: ['bootstrap'],
         after: ['main'],
@@ -110,7 +89,7 @@ export default ({ clientStats, outputPath }) => {
 
       const preloadedState = store.getState();
 
-      const styleTags = sheet.getStyleElement();
+      const styleTags = sheet.getStyleTags();
       if (routerContext.url) {
         res.status(301).setHeader('Location', routerContext.url);
         res.redirect(routerContext.url);
@@ -119,37 +98,48 @@ export default ({ clientStats, outputPath }) => {
       store.dispatch({
         type: 'RESET',
       });
-
-      const html = renderToStaticMarkup(
-        <html>
-          <head>
-            {helmet.title.toComponent()}
-            {helmet.meta.toComponent()}
-            {helmet.link.toComponent()}
-            {styleTags}
-            {stylesheets.map(file =>
-              <link key={uuid()} rel="stylesheet" href={`${publicPath}/${file}`} />,
-            )}
-          </head>
-          <body>
-            <div id="app" dangerouslySetInnerHTML={{ __html: markup }} />
-            {isDev
-              ? <script nonce={nonce} type="text/javascript" src="/__vendor_dlls__.js" />
-              : null}
-            {scripts.map(file =>
-              <script key={uuid()} type="text/javascript" src={`${publicPath}/${file}`} />,
-            )}
-            <script
-              nonce={nonce}
-              type="text/javascript"
-              dangerouslySetInnerHTML={{
-                __html: `window.__PRELOADED_STATE__=${serialize(preloadedState, { json: true })}`,
-              }}
-            />
-          </body>
-        </html>,
-      );
-      res.send(`<!DOCTYPE html>${html}`);
+      // Two different HTML templates here so that we can server DLLs during development
+      // @TODO: figure out how to conditionally add dlls without duplicating the code
+      if (isDev) {
+        res.status(status).send(`
+        <!doctype html>
+          <html ${helmet.htmlAttributes.toString()}>
+            <head>
+              ${helmet.title.toString()}
+              ${helmet.meta.toString()}
+              ${helmet.link.toString()}
+              ${styleTags}
+              ${styles}
+            </head>
+            <body ${helmet.bodyAttributes.toString()}>
+              <div id="app">${markup}</div>
+              <script nonce=${nonce} type="text/javascript" src="/__vendor_dlls__.js"></script>
+              ${js}
+              <script type="text/javascript" nonce=${nonce}>
+                window.__PRELOADED_STATE__=${serialize(preloadedState, { json: true })}
+              </script>
+            </body>
+          </html>`);
+      } else {
+        res.status(status).send(`
+        <!doctype html>
+          <html>
+            <head>
+              ${helmet.title.toString()}
+              ${helmet.meta.toString()}
+              ${helmet.link.toString()}
+              ${styleTags}
+              ${styles}
+            </head>
+            <body>
+              <div id="app">${markup}</div>
+              ${js}
+              <script type="text/javascript" nonce=${nonce}>
+                window.__PRELOADED_STATE__=${serialize(preloadedState, { json: true })}
+              </script>
+            </body>
+          </html>`);
+      }
     });
   };
 };

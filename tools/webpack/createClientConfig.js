@@ -2,11 +2,10 @@
 
 const path = require('path');
 const fs = require('fs');
-const debug = require('debug')('webpack:clientConfig');
 const webpack = require('webpack');
 const StatsPlugin = require('stats-webpack-plugin');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
-const { removeNil, ifElse, mergeDeep, filterEmpty, appRoot, onlyIf } = require('boldr-utils');
+const { removeNil, ifElse } = require('boldr-utils');
 const BabiliPlugin = require('babili-webpack-plugin');
 const UglifyPlugin = require('uglifyjs-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
