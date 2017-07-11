@@ -13,8 +13,11 @@ const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 const config = require('../config');
 const happyPackPlugin = require('./plugins/happyPackPlugin');
+const WebpackDigestHash = require('./plugins/ChunkHash');
+const ChunkNames = require('./plugins/ChunkNames');
+const VerboseProgress = require('./plugins/VerboseProgress');
 
-const LOCAL_IDENT = '[name]__[local]___[hash:base64:5]';
+const LOCAL_IDENT = '[local]-[hash:base62:8]';
 const EXCLUDES = [/node_modules/, config.assetsDir, config.serverCompiledDir];
 
 module.exports = function createClientConfig(options) {
@@ -56,7 +59,7 @@ module.exports = function createClientConfig(options) {
       // build/assets/*
       path: config.assetsDir,
       filename: _DEV ? '[name].js' : '[name]-[chunkhash].js',
-      chunkFilename: _DEV ? '[name]-[hash].js' : '[name]-[chunkhash].js',
+      chunkFilename: _DEV ? '[name].js' : '[name]-[chunkhash].js',
       // Full URL in dev otherwise we expect our bundled output to be served from /assets/
       publicPath: '/',
       // only dev
@@ -246,7 +249,12 @@ module.exports = function createClientConfig(options) {
         filename: _DEV ? '[name].js' : '[name]-[chunkhash].js',
         minChunks: Infinity,
       }),
-      new ExtractCssChunks(),
+      // Custom progress plugin
+      new VerboseProgress(),
+
+      new ExtractCssChunks({ filename: _DEV ? '[name].css' : '[name].[contenthash:base62:8].css' }),
+      // Automatically assign quite useful and matching chunk names based on file names.
+      new ChunkNames(),
       /**
        * HappyPack Plugins are used as caching mechanisms to reduce the amount
        * of time Webpack spends rebuilding, during your bundling during
@@ -361,6 +369,7 @@ module.exports = function createClientConfig(options) {
   }
   if (_PROD) {
     browserConfig.plugins.push(
+      new WebpackDigestHash(),
       // Use HashedModuleIdsPlugin to generate IDs that preserves over builds
       // @see https://github.com/webpack/webpack.js.org/issues/652#issuecomment-273324529
       // @NOTE: if using flushChunkNames rather than flushModuleIds you must disable this...

@@ -7,6 +7,7 @@ const StatsPlugin = require('stats-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const config = require('../config');
+const ChunkNames = require('./plugins/ChunkNames');
 
 const CWD = fs.realpathSync(process.cwd());
 
@@ -234,6 +235,7 @@ module.exports = function createServerConfig(options) {
         NODE_ENV: _PROD ? 'production' : 'development',
         DEBUG: JSON.stringify(process.env.DEBUG || false),
       }),
+      new ChunkNames(),
       new webpack.DefinePlugin({
         IS_DEV: JSON.stringify(_DEV),
         IS_SERVER: JSON.stringify('true'),
