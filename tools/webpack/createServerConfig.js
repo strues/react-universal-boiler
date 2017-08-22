@@ -83,7 +83,7 @@ module.exports = function createServerConfig(options) {
       rules: [
         // js
         {
-          test: /\.js$/,
+          test: /\.jsx?$/,
           include: config.srcDir,
           // exclude: EXCLUDES,
           use: removeNil([
@@ -199,15 +199,15 @@ module.exports = function createServerConfig(options) {
         },
         // url
         {
-          test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
+          test: /\.(png|jpg|jpeg|gif|ttf|woff|woff2)$/,
           loader: 'url-loader',
           exclude: EXCLUDES,
           options: { limit: 10000, emitFile: false },
         },
         {
-          test: /\.svg(\?v=\d+.\d+.\d+)?$/,
+          test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
           exclude: EXCLUDES,
-          loader: 'url-loader?limit=10000&mimetype=image/svg+xml&name=[name].[ext]', // eslint-disable-line
+          loader: "url-loader?limit=10000&mimetype=image/svg+xml"
         },
         // file
         {
