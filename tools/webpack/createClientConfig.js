@@ -121,7 +121,7 @@ module.exports = function createClientConfig(options) {
       rules: removeNil([
         // js
         {
-          test: /\.(js|jsx)$/,
+          test: /\.jsx?$/,
           exclude: EXCLUDES,
           include: [config.srcDir],
           use: removeNil([
@@ -172,6 +172,27 @@ module.exports = function createClientConfig(options) {
               },
             ],
           }),
+        },
+        // url
+        {
+          test: /\.(png|jpg|jpeg|gif|ttf|woff|woff2)$/,
+          loader: 'url-loader',
+          exclude: EXCLUDES,
+          options: { limit: 10000, emitFile: false },
+        },
+        {
+          test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+          exclude: EXCLUDES,
+          loader: "url-loader?limit=10000&mimetype=image/svg+xml"
+        },
+        // file
+        {
+          test: /\.(ico|eot|ttf|otf|mp4|mp3|ogg|pdf|html)$/, // eslint-disable-line
+          loader: 'file-loader',
+          exclude: EXCLUDES,
+          options: {
+            emitFile: false,
+          },
         },
         // scss
         {
