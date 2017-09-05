@@ -6,3 +6,5 @@ public/assets/
 coverage/
 build/
 .cache-loader
+.idea
+.idea/*
