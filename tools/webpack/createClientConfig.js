@@ -175,10 +175,15 @@ module.exports = function createClientConfig(options) {
         },
         // url
         {
-          test: /\.(png|jpg|jpeg|gif|ttf|woff|woff2)$/,
+          test: /\.(ttf|woff|woff2)$/,
           loader: 'url-loader',
           exclude: EXCLUDES,
           options: { limit: 10000, emitFile: false },
+        },
+        {
+          test: /\.(jpe?g|png|gif)$/,
+          exclude: EXCLUDES,
+          loader: "file-loader",
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
