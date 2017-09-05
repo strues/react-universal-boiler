@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Route from 'react-router-dom/Route';
+import Helmet from 'react-helmet';
 import Switch from 'react-router-dom/Switch';
 import Redirect from 'react-router-dom/Redirect';
 import uuid from 'uuid';
@@ -17,16 +18,18 @@ injectGlobal`
     margin: 0;
   }
 `;
-const App = props =>
+const App = props => (
   <Layout>
-    <Switch>
-      {routes.map(route =>
-        // pass in the initialData from the server for this specific route
-        <Route {...route} key={uuid.v4()} />,
-      )}
-
-      <Route component={NotFound} />
-    </Switch>
-  </Layout>;
+    <div>
+      <Switch>
+        {routes.map(route => (
+          // pass in the initialData from the server for this specific route
+          <Route {...route} key={uuid.v4()} />
+        ))}
+        <Route component={NotFound} />
+      </Switch>
+    </div>
+  </Layout>
+);
 
 export default App;

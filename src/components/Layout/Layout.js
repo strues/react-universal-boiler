@@ -3,7 +3,7 @@ import Link from 'react-router-dom/Link';
 import Helmet from 'react-helmet';
 import PropTypes from 'prop-types';
 
-const Layout = props =>
+const Layout = props => (
   <div>
     <Helmet titleTemplate="React Universal Boiler - %s">
       <html lang="en" />
@@ -16,10 +16,9 @@ const Layout = props =>
       <meta name="msapplication-TileColor" content="#2b2b2b" />
     </Helmet>
     <Link to="/tools">Tools</Link>
-    <section>
-      {props.children}
-    </section>
-  </div>;
+    {props.children}
+  </div>
+);
 
 const propTypes = {
   children: PropTypes.object,

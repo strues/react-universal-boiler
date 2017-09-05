@@ -1,12 +1,12 @@
-/* eslint-disable max-lines, prefer-template */
+/* eslint-disable max-lines, prefer-template, complexity */
 
 const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
-const StatsPlugin = require('stats-webpack-plugin');
+
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const { removeNil, ifElse } = require('boldr-utils');
-const BabiliPlugin = require('babili-webpack-plugin');
+const BabelMinifyPlugin = require('babel-minify-webpack-plugin');
 const UglifyPlugin = require('uglifyjs-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
@@ -16,6 +16,7 @@ const happyPackPlugin = require('./plugins/happyPackPlugin');
 const WebpackDigestHash = require('./plugins/ChunkHash');
 const ChunkNames = require('./plugins/ChunkNames');
 const VerboseProgress = require('./plugins/VerboseProgress');
+const StatsPlugin = require('./plugins/StatsPlugin');
 
 const LOCAL_IDENT = '[local]-[hash:base62:8]';
 const EXCLUDES = [/node_modules/, config.assetsDir, config.serverCompiledDir];
@@ -134,45 +135,6 @@ module.exports = function createClientConfig(options) {
             { loader: 'happypack/loader?id=hp-js' },
           ]),
         },
-        // css
-        {
-          test: /\.css$/,
-          exclude: EXCLUDES,
-          include: config.srcDir,
-          use: ExtractCssChunks.extract({
-            use: [
-              {
-                loader: 'css-loader',
-                options: {
-                  autoprefixer: false,
-                  modules: true,
-                  importLoaders: 2,
-                  localIdentName: LOCAL_IDENT,
-                  context: config.rootDir,
-                },
-              },
-              { loader: 'resolve-url-loader' },
-              {
-                loader: 'postcss-loader',
-                options: {
-                  // https://webpack.js.org/guides/migrating/#complex-options
-                  ident: 'postcss',
-                  plugins: () => [
-                    require('postcss-import')({
-                      root: path.resolve(config.rootDir),
-                    }),
-                    require('postcss-flexbugs-fixes'),
-                    require('postcss-cssnext')({
-                      browsers: ['> .5% in US', 'last 1 versions'],
-                      flexbox: 'no-2009',
-                    }),
-                    require('postcss-discard-duplicates'),
-                  ],
-                },
-              },
-            ],
-          }),
-        },
         // url
         {
           test: /\.(ttf|woff|woff2)$/,
@@ -183,12 +145,12 @@ module.exports = function createClientConfig(options) {
         {
           test: /\.(jpe?g|png|gif)$/,
           exclude: EXCLUDES,
-          loader: "file-loader",
+          loader: 'file-loader',
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
           exclude: EXCLUDES,
-          loader: "url-loader?limit=10000&mimetype=image/svg+xml"
+          loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
         },
         // file
         {
@@ -201,7 +163,7 @@ module.exports = function createClientConfig(options) {
         },
         // scss
         {
-          test: /\.scss$/,
+          test: /\.(scss|css)$/,
           include: config.srcDir,
           exclude: EXCLUDES,
           use: ExtractCssChunks.extract({
@@ -341,6 +303,7 @@ module.exports = function createClientConfig(options) {
                     useBuiltIns: true,
                   },
                 ],
+                'babel-plugin-universal-import',
                 // Adds component stack to warning messages
                 ifDev('transform-react-jsx-source'),
                 // Adds __self attribute to JSX which React
@@ -402,7 +365,7 @@ module.exports = function createClientConfig(options) {
       new webpack.HashedModuleIdsPlugin(),
       new StatsPlugin('client-stats.json'),
       config.useBabili
-        ? new BabiliPlugin()
+        ? new BabelMinifyPlugin()
         : new UglifyPlugin({
             compress: true,
             mangle: true,

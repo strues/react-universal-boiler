@@ -80,7 +80,7 @@ export default ({ clientStats, outputPath }) => {
 
       const helmet = Helmet.renderStatic();
       const moduleIds = flushModuleIds();
-      const { js, styles, publicPath } = flushChunks(clientStats, {
+      const { js, styles, publicPath, cssHash } = flushChunks(clientStats, {
         moduleIds,
         before: ['bootstrap'],
         after: ['main'],
@@ -98,10 +98,10 @@ export default ({ clientStats, outputPath }) => {
       store.dispatch({
         type: 'RESET',
       });
+      const dllString = `<script nonce=${nonce} type="text/javascript" src="/__vendor_dlls__.js"></script>`;
       // Two different HTML templates here so that we can server DLLs during development
       // @TODO: figure out how to conditionally add dlls without duplicating the code
-      if (isDev) {
-        res.status(status).send(`
+      res.status(status).send(`
         <!doctype html>
           <html ${helmet.htmlAttributes.toString()}>
             <head>
@@ -113,33 +113,14 @@ export default ({ clientStats, outputPath }) => {
             </head>
             <body ${helmet.bodyAttributes.toString()}>
               <div id="app">${markup}</div>
-              <script nonce=${nonce} type="text/javascript" src="/__vendor_dlls__.js"></script>
+              ${isDev ? dllString : null}
               ${js}
               <script type="text/javascript" nonce=${nonce}>
                 window.__PRELOADED_STATE__=${serialize(preloadedState, { json: true })}
               </script>
+              ${cssHash}
             </body>
           </html>`);
-      } else {
-        res.status(status).send(`
-        <!doctype html>
-          <html>
-            <head>
-              ${helmet.title.toString()}
-              ${helmet.meta.toString()}
-              ${helmet.link.toString()}
-              ${styleTags}
-              ${styles}
-            </head>
-            <body>
-              <div id="app">${markup}</div>
-              ${js}
-              <script type="text/javascript" nonce=${nonce}>
-                window.__PRELOADED_STATE__=${serialize(preloadedState, { json: true })}
-              </script>
-            </body>
-          </html>`);
-      }
     });
   };
 };

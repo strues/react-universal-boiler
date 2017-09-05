@@ -44,11 +44,11 @@ class Home extends Component {
   renderPosts = () => {
     return (
       <Row>
-        {this.props.posts.list.map(p =>
+        {this.props.posts.list.map(p => (
           <Column fluid sm={12} md={4} key={p.id}>
             <Post title={p.title} body={p.body} />
-          </Column>,
-        )}
+          </Column>
+        ))}
       </Row>
     );
   };
@@ -56,22 +56,21 @@ class Home extends Component {
     return (
       <div>
         <Helmet title="Home" />
-        <Page>
-          <Row>
-            <Column sm={8} smShift={2} lg={6} lgShift={3}>
-              <div className="wrapper">
-                <h1>React Universal Boiler</h1>
-                <p>A server rendering React project.</p>
-              </div>
-            </Column>
-          </Row>
-          {!this.state.show && 'Async Component Not Requested Yet'}
-          {this.state.show && <UniversalExample />}
-          <p><button onClick={this.refresh}>Refresh</button></p>
-          <div>
-            {this.props.posts.isFetching ? <Loading /> : <Post posts={this.props.posts.list} />}
-          </div>
-        </Page>
+        <Row>
+          <Column sm={8} smShift={2} lg={6} lgShift={3}>
+            <div className="wrapper">
+              <h1>React Universal Boiler</h1>
+              <p>A server rendering React project.</p>
+            </div>
+          </Column>
+        </Row>
+
+        <p>
+          <button onClick={this.refresh}>Refresh</button>
+        </p>
+        <div>
+          {this.props.posts.isFetching ? <Loading /> : <Post posts={this.props.posts.list} />}
+        </div>
       </div>
     );
   }

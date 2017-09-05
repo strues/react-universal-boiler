@@ -3,12 +3,13 @@ const path = require('path');
 const fs = require('fs');
 const webpack = require('webpack');
 const { removeNil, ifElse } = require('boldr-utils');
-const StatsPlugin = require('stats-webpack-plugin');
+
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const config = require('../config');
 const ChunkNames = require('./plugins/ChunkNames');
+const StatsPlugin = require('./plugins/StatsPlugin');
 
 const CWD = fs.realpathSync(process.cwd());
 const LOCAL_IDENT = '[name]-[local]-[hash:base62:8]';
@@ -137,7 +138,7 @@ module.exports = function createServerConfig(options) {
                   // @connect()
                   // class Foo extends Component {}
                   'transform-decorators-legacy',
-
+                  'babel-plugin-universal-import',
                   // ...foo
                   [
                     'transform-object-rest-spread',
@@ -161,7 +162,7 @@ module.exports = function createServerConfig(options) {
           ]),
         },
         {
-          test: /\.css$/,
+          test: /\.(scss|css)$/,
           exclude: EXCLUDES,
           use: [
             {
@@ -174,57 +175,10 @@ module.exports = function createServerConfig(options) {
               loader: 'resolve-url-loader',
             },
             { loader: 'postcss-loader' },
+            { loader: 'sass-loader' },
           ],
         },
         // scss
-        {
-          test: /\.scss$/,
-          include: config.srcDir,
-          exclude: EXCLUDES,
-          use: ExtractCssChunks.extract({
-            use: [
-              {
-                loader: 'css-loader',
-                options: {
-                  importLoaders: 3,
-                  localIdentName: LOCAL_IDENT,
-                  // sourceMap: true,
-                  modules: true,
-                  context: config.rootDir,
-                },
-              },
-              {
-                loader: 'resolve-url-loader',
-              },
-              {
-                loader: 'postcss-loader',
-                options: {
-                  // https://webpack.js.org/guides/migrating/#complex-options
-                  ident: 'postcss',
-                  parser: 'postcss-scss',
-                  options: {
-                    // sourceMap: true,
-                  },
-                  plugins: () => [
-                    require('postcss-flexbugs-fixes'),
-                    require('postcss-cssnext')({
-                      browsers: ['> 1%', 'last 2 versions'],
-                      flexbox: 'no-2009',
-                    }),
-                    require('postcss-discard-duplicates'),
-                  ],
-                },
-              },
-              {
-                loader: 'sass-loader',
-                options: {
-                  // sourceMap: true,
-                  includePaths: [config.srcDir],
-                },
-              },
-            ],
-          }),
-        },
 
         // json
         {
@@ -241,12 +195,12 @@ module.exports = function createServerConfig(options) {
         {
           test: /\.(jpe?g|png|gif)$/,
           exclude: EXCLUDES,
-          loader: "file-loader",
+          loader: 'file-loader',
         },
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
           exclude: EXCLUDES,
-          loader: "url-loader?limit=10000&mimetype=image/svg+xml"
+          loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
         },
         // file
         {
