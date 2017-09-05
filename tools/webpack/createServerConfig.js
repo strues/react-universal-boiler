@@ -4,12 +4,14 @@ const fs = require('fs');
 const webpack = require('webpack');
 const { removeNil, ifElse } = require('boldr-utils');
 const StatsPlugin = require('stats-webpack-plugin');
+const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const config = require('../config');
 const ChunkNames = require('./plugins/ChunkNames');
 
 const CWD = fs.realpathSync(process.cwd());
+const LOCAL_IDENT = '[name]-[local]-[hash:base62:8]';
 
 const cache = {
   'server-production': {},
@@ -177,21 +179,53 @@ module.exports = function createServerConfig(options) {
         // scss
         {
           test: /\.scss$/,
+          include: config.srcDir,
           exclude: EXCLUDES,
-          use: [
-            {
-              loader: 'css-loader/locals',
-              options: {
-                importLoaders: 1,
+          use: ExtractCssChunks.extract({
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  importLoaders: 3,
+                  localIdentName: LOCAL_IDENT,
+                  // sourceMap: true,
+                  modules: true,
+                  context: config.rootDir,
+                },
               },
-            },
-            {
-              loader: 'resolve-url-loader',
-            },
-            { loader: 'postcss-loader' },
-            { loader: 'sass-loader' },
-          ],
+              {
+                loader: 'resolve-url-loader',
+              },
+              {
+                loader: 'postcss-loader',
+                options: {
+                  // https://webpack.js.org/guides/migrating/#complex-options
+                  ident: 'postcss',
+                  parser: 'postcss-scss',
+                  options: {
+                    // sourceMap: true,
+                  },
+                  plugins: () => [
+                    require('postcss-flexbugs-fixes'),
+                    require('postcss-cssnext')({
+                      browsers: ['> 1%', 'last 2 versions'],
+                      flexbox: 'no-2009',
+                    }),
+                    require('postcss-discard-duplicates'),
+                  ],
+                },
+              },
+              {
+                loader: 'sass-loader',
+                options: {
+                  // sourceMap: true,
+                  includePaths: [config.srcDir],
+                },
+              },
+            ],
+          }),
         },
+
         // json
         {
           test: /\.json$/,
@@ -235,6 +269,7 @@ module.exports = function createServerConfig(options) {
         NODE_ENV: _PROD ? 'production' : 'development',
         DEBUG: JSON.stringify(process.env.DEBUG || false),
       }),
+      new ExtractCssChunks({ filename: _DEV ? '[name].css' : '[name].[contenthash:base62:8].css' }),
       new ChunkNames(),
       new webpack.DefinePlugin({
         IS_DEV: JSON.stringify(_DEV),
