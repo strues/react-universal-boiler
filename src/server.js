@@ -86,9 +86,6 @@ export default ({ clientStats, outputPath }) => {
         after: ['main'],
         outputPath,
       });
-
-      const preloadedState = store.getState();
-
       const styleTags = sheet.getStyleTags();
       if (routerContext.url) {
         res.status(301).setHeader('Location', routerContext.url);
@@ -98,6 +95,9 @@ export default ({ clientStats, outputPath }) => {
       store.dispatch({
         type: 'RESET',
       });
+
+      const preloadedState = store.getState();
+
       const dllString = `<script nonce=${nonce} type="text/javascript" src="/__vendor_dlls__.js"></script>`;
       // Two different HTML templates here so that we can server DLLs during development
       // @TODO: figure out how to conditionally add dlls without duplicating the code
@@ -113,11 +113,11 @@ export default ({ clientStats, outputPath }) => {
             </head>
             <body ${helmet.bodyAttributes.toString()}>
               <div id="app">${markup}</div>
-              ${isDev ? dllString : null}
-              ${js}
               <script type="text/javascript" nonce=${nonce}>
                 window.__PRELOADED_STATE__=${serialize(preloadedState, { json: true })}
               </script>
+              ${isDev ? dllString : null}
+              ${js}
               ${cssHash}
             </body>
           </html>`);
