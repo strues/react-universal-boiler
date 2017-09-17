@@ -29,21 +29,19 @@ class Home extends Component {
     return (
       <div>
         <Helmet title="Home" />
-        <div className="container">
-          <div className="row">
-            <div className="column column-50 column-offset-25">
-              <div className={styles.hero}>
-                <h1>React Universal Boiler</h1>
-                <p>A server rendering React project.</p>
-                <button className="button" onClick={this.refresh}>
-                  Refresh Posts
-                </button>
-              </div>
+        <div className="row">
+          <div className="column column-50 column-offset-25">
+            <div className={styles.hero}>
+              <h1>React Universal Boiler</h1>
+              <p>A server rendering React project.</p>
+              <button className="button" onClick={this.refresh}>
+                Refresh Posts
+              </button>
             </div>
           </div>
         </div>
 
-        <div className="container">
+        <div className="posts-list">
           {this.props.posts.list.map(p => (
             <div className="column column-30" key={p.id}>
               <Post title={p.title} body={p.body} />

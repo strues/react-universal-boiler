@@ -9,13 +9,14 @@ import configureStore from '../shared/state/store';
 import App from '../shared/components/App';
 import ReactHotLoader from './ReactHotLoader';
 
-const MOUNT_POINT = document.getElementById('app');
-
 const history = createHistory();
 const preloadedState = window.__PRELOADED_STATE__;
 const store = configureStore(preloadedState, history);
 
-function renderApp() {
+const renderApp = App => {
+  const MOUNT_POINT = document.getElementById('app');
+  // in React 16 ReactDOM.render becomes ReactDOM.hydrate
+  // when used for SSR.
   ReactDOM.hydrate(
     <ReactHotLoader>
       <Provider store={store}>
@@ -26,24 +27,13 @@ function renderApp() {
     </ReactHotLoader>,
     MOUNT_POINT,
   );
-}
+};
 
-if (module.hot) {
-  const reRenderApp = () => {
-    try {
-      renderApp(require('./components/App'));
-    } catch (error) {
-      const RedBox = require('redbox-react').default;
+renderApp(App);
 
-      render(<RedBox error={error} />, MOUNT_POINT);
-    }
-  };
-  module.hot.accept('./components/App', () => {
-    setImmediate(() => {
-      // Preventing the hot reloading error from react-router
-      ReactDOM.unmountComponentAtNode(MOUNT_POINT);
-      reRenderApp();
-    });
+if (module.hot && process.env.NODE_ENV === 'development') {
+  module.hot.accept('../shared/components/App', () => {
+    const App = require('../shared/components/App').default;
+    renderApp(App);
   });
 }
-renderApp();

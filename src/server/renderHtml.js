@@ -14,7 +14,7 @@ import Helmet from 'react-helmet';
  * @returns The full HTML page in the form of a React element.
  */
 
-export default function renderPage({ preloadedState, markup, styleTags, styles, scripts }) {
+export default function renderHtml({ preloadedState, markup, styleTags, styles, scripts }) {
   if (typeof preloadedState !== 'object') {
     throw new Error('Rendering requires a preloaded state object!');
   }

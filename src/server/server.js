@@ -11,7 +11,7 @@ import flushChunks from 'webpack-flush-chunks';
 import configureStore from '../shared/state/store';
 import routes from '../shared/routes';
 import App from '../shared/components/App';
-import renderPage from './renderPage';
+import renderHtml from './renderHtml';
 
 /**
  * Express middleware to render HTML
@@ -64,6 +64,8 @@ export default ({ clientStats }) => {
           </StaticRouter>
         </Provider>
       );
+      // render the applicaation to a string and let styled-components
+      // create stylesheet tags
       const markup = renderToString(sheet.collectStyles(appComponent));
 
       console.log('Flushing chunks...');
@@ -72,7 +74,8 @@ export default ({ clientStats }) => {
       const { js, styles, cssHash } = flushChunks(clientStats, { chunkNames });
       console.log(`Flushed JS tags:\n${js.toString()}\n`);
       console.log(`Flushed CSS Tags:\n${styles.toString()}\n`);
-
+      // get the stylesheet tags from what styled-components created during
+      // render to string
       const styleTags = sheet.getStyleTags();
       if (routerContext.url) {
         res.status(301).setHeader('Location', routerContext.url);
@@ -82,18 +85,19 @@ export default ({ clientStats }) => {
 
       console.log('Rendering Page...');
       const preloadedState = store.getState();
-      const renderedPage = renderPage({
+      // creates the HTML we send back down to the browser.
+      const pageHtml = renderHtml({
         preloadedState,
         markup,
         styleTags,
         styles: styles.toString(),
         scripts: cssHash + js.toString(),
       });
-
+      // Dont cache dynamic content.
       res.setHeader('Cache-Control', 'no-cache');
 
       console.log('Sending Page...');
-      res.status(status).send(renderedPage);
+      res.status(status).send(pageHtml);
     });
   };
 };
