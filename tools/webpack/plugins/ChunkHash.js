@@ -1,4 +1,4 @@
-const loaderUtils = require('loader-utils');
+import { getHashDigest } from 'loader-utils';
 
 function compareModules(left, right) {
   if (left.resource < right.resource) {
@@ -26,17 +26,20 @@ function ChunkHash() {
 const hashType = 'sha256';
 const digestType = 'base62';
 const digestLength = 8;
-
+// eslint-disable-next-line
 ChunkHash.prototype.apply = function(compiler) {
   compiler.plugin('compilation', compilation => {
     compilation.plugin('chunk-hash', (chunk, chunkHash) => {
-      const source = chunk.modules
+      // eslint-disable-next-line
+      var source = chunk
+        .mapModules(module => module)
         .sort(compareModules)
         .map(getModuleSource)
         // we provide an initialValue in case there is an empty module source. Ref: http://es5.github.io/#x15.4.4.21
         .reduce(concatenateSource, '');
-
-      const generatedHash = loaderUtils.getHashDigest(source, hashType, digestType, digestLength);
+      // eslint-disable-next-line
+      var generatedHash = getHashDigest(source, hashType, digestType, digestLength);
+      // eslint-disable-next-line
       chunkHash.digest = function() {
         return generatedHash;
       };
@@ -44,4 +47,4 @@ ChunkHash.prototype.apply = function(compiler) {
   });
 };
 
-module.exports = ChunkHash;
+export default ChunkHash;

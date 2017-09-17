@@ -4,10 +4,13 @@
 > Completely rewritten and improved for React 15.5 and React Router 4. Better documentation is in the works.
 
 ## Features
+- [React 16](https://github.com/facebook/react/issues/10294)
 - [React-Router 4](https://github.com/ReactTraining/react-router) configured with async data loading.
 - A pleasant 😍 developer experience with 🔥 fast bundling, so you can get shit done. This starter takes advantage of tools like, [HappyPack](https://github.com/amireh/happypack) and the [DLL capabilities](http://webpack.github.io/docs/list-of-plugins.html#dllplugin) within Webpack itself. Your rebuilds happen fast because, nobody enjoys waiting around like a  🐢  while assets recompile.
 - [React-Hot-Loader](https://github.com/gaearon/react-hot-loader): Build your React components with less full page reloads thanks to hot module replacement and React Hot Loader.
 - Code Splitting: Give your visitors the best experience possible by allowing their browsers to only download what's necessary.
+- [React-Universal-Component](https://github.com/faceyspacey/react-universal-component) The final answer to a React Universal Component: simultaneous SSR + Code Splitting 
+- [Webpack Flush Chunks](https://github.com/faceyspacey/webpack-flush-chunks) flushes an array of rendered moduleIds or chunkNames.
 
 ## Demo
 

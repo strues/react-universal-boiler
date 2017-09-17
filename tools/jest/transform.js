@@ -6,8 +6,8 @@ module.exports = babelJest.createTransformer({
   plugins: [
     'syntax-dynamic-import',
     ['fast-async', { spec: true }],
-    'transform-class-properties',
     'transform-decorators-legacy',
+    'transform-class-properties',
     'dynamic-import-node',
     'transform-object-rest-spread',
   ],

@@ -1,17 +1,19 @@
-const path = require('path');
-const http = require('http');
-const express = require('express');
-const compression = require('compression');
-const uuid = require('uuid');
+import path from 'path';
+import http from 'http';
+import express from 'express';
+import compression from 'compression';
+import uuid from 'uuid';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const app = express();
 const server = http.createServer(app);
-const host = process.env.SERVER_HOST || 'localhost';
+
 const processPort = process.env.PORT;
 
 // If the port is set using an env variable, convert it to an int
 // fallback to 3000.
-const port = processPort ? parseInt(processPort, 10) : 3000;
+const port = parseInt(processPort, 10) || 3000;
 
 // Remove annoying Express header addition.
 app.disable('x-powered-by');
@@ -25,23 +27,29 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.resolve(process.cwd(), './build/assets')));
-// Setup the public directory so that we can serve static assets.
-app.use(express.static(path.resolve(process.cwd(), './public')));
 // Pass any get request through the SSR middleware before sending it back
 // app.get('*', ssrMiddleware);
 if (process.env.NODE_ENV === 'development') {
   const setupHotDev = require('./middleware/hot');
   setupHotDev(app);
 } else {
-  const clientStats = require('../build/assets/client-stats.json');
-  const serverRender = require('../build/server.js').default;
+  const clientStats = require('../build/assets/stats.json');
+  const serverRender = require('../build/main.js').default;
 
   // server.use(publicPath, express.static(outputPath))
   app.use(serverRender({ clientStats }));
 }
-const listener = server.listen(port, () => {
+
+// Without adding a "path" Express will serve files from the direcotry
+// as if they're coming form the root of the site.
+//      For example: app.use('/assets', express.static(....))
+//        -- will serve the files in the directory from websiteUrl/assets/
+app.use(express.static(path.resolve(process.cwd(), './build/assets')));
+// Setup the public directory so that we can serve static assets.
+app.use(express.static(path.resolve(process.cwd(), './public')));
+
+server.listen(port, () => {
   console.log(`🚀  Server running on port: ${port}`);
 });
 
-module.exports = app;
+export default app;

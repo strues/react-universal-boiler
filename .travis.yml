@@ -10,13 +10,12 @@ sudo: false
 git:
   depth: 3
 install:
-- yarn
+- npm install
 script:
-- yarn test
+- npm run test
 
-after_success: yarn coverage
+after_success: npm run coverage
 
 cache:
-  yarn: true
   directories:
   - node_modules

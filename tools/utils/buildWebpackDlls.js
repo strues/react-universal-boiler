@@ -1,19 +1,20 @@
-const path = require('path');
-const fs = require('fs');
-const webpack = require('webpack');
-const md5 = require('md5');
-const Promise = require('bluebird');
-const logger = require('boldr-utils/lib/logger');
+import path from 'path';
+import fs from 'fs-extra';
+import webpack from 'webpack';
+import dotenv from 'dotenv';
+import md5 from 'md5';
+import Promise from 'bluebird';
 
-const config = require('../config');
-
-// const pkg = require(config.pkgPath);
+dotenv.config();
+const ROOT = fs.realpathSync(process.cwd());
+const SRC_DIR = path.resolve(ROOT, 'src');
+const outputDir = process.env.CLIENT_OUTPUT;
 
 function buildWebpackDlls() {
-  logger.start('Building Webpack vendor DLLs');
-  const pkg = JSON.parse(fs.readFileSync(`${process.cwd()}/package.json`, 'utf8'));
+  console.log('Building Webpack vendor DLLs');
+  const pkg = JSON.parse(fs.readFileSync(`${ROOT}/package.json`, 'utf8'));
 
-  const dllConfig = config.vendorFiles;
+  const dllConfig = require(path.resolve(SRC_DIR, 'vendor.js'));
 
   const devDLLDependencies = dllConfig.sort();
 
@@ -29,25 +30,29 @@ function buildWebpackDlls() {
     ),
   );
 
-  const vendorDLLHashFilePath = path.resolve(config.assetsDir, '__vendor_dlls__hash');
+  const vendorDLLHashFilePath = path.resolve(outputDir, '__vendor_dlls__hash');
 
   function webpackInstance() {
     return {
+      target: 'web',
       // We only use this for development, so lets always include source maps.
       devtool: 'inline-source-map',
       entry: {
-        ['__vendor_dlls__']: devDLLDependencies,
+        __vendor_dlls__: devDLLDependencies,
       },
       output: {
-        path: config.assetsDir,
+        path: path.resolve(outputDir),
         filename: '__vendor_dlls__.js',
         library: '__vendor_dlls__',
       },
+      resolve: {
+        modules: ['node_modules', SRC_DIR, path.resolve(ROOT, 'node_modules')],
+      },
       plugins: [
         new webpack.DllPlugin({
-          path: path.resolve(config.assetsDir, '__vendor_dlls__.json'),
+          path: path.resolve(outputDir, '__vendor_dlls__.json'),
           name: '__vendor_dlls__',
-          context: config.rootDir,
+          context: ROOT,
         }),
       ],
     };
@@ -55,8 +60,8 @@ function buildWebpackDlls() {
 
   function buildVendorDLL() {
     return new Promise((resolve, reject) => {
-      logger.end('Vendor DLL build complete.');
-      logger.info(
+      console.log('Vendor DLL build complete.');
+      console.info(
         `The following dependencies have been
         included:\n\t-${devDLLDependencies.join('\n\t-')}\n`,
       );
@@ -79,23 +84,27 @@ function buildWebpackDlls() {
   return new Promise((resolve, reject) => {
     if (!fs.existsSync(vendorDLLHashFilePath)) {
       // builddll
-      logger.task('Generating a new Vendor DLL.');
-      buildVendorDLL().then(resolve).catch(reject);
+      console.log('Generating a new Vendor DLL.');
+      buildVendorDLL()
+        .then(resolve)
+        .catch(reject);
     } else {
       // first check if the md5 hashes match
       const dependenciesHash = fs.readFileSync(vendorDLLHashFilePath, 'utf8');
       const dependenciesChanged = dependenciesHash !== currentDependenciesHash;
 
       if (dependenciesChanged) {
-        logger.info('New vendor dependencies detected.');
-        logger.task('Regenerating the vendor dll...');
-        buildVendorDLL().then(resolve).catch(reject);
+        console.log('New vendor dependencies detected.');
+        console.log('Regenerating the vendor dll...');
+        buildVendorDLL()
+          .then(resolve)
+          .catch(reject);
       } else {
-        logger.end('Dependencies did not change. Using existing vendor dll.');
+        console.log('Dependencies did not change. Using existing vendor dll.');
         resolve();
       }
     }
   });
 }
 
-module.exports = buildWebpackDlls;
+export default buildWebpackDlls;

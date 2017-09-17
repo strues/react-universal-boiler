@@ -1,0 +1,21 @@
+.hero {
+  align-content: center;
+
+  padding-top: 25px;
+  text-align: center;
+  h1 {
+    vertical-align: middle;
+    font-size: 5em;
+    margin: 0;
+    text-align: center;
+  }
+
+  h1.heading__secondary {
+    font-size: 5em;
+    margin: 0;
+  }
+
+  p {
+    text-align: center;
+  }
+}

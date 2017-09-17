@@ -1,4 +1,4 @@
-const merge = require('lodash/merge');
+import merge from 'lodash.merge';
 // Credit to https://github.com/unindented/stats-webpack-plugin
 // outdated peer-deps result in copy-pasta
 
@@ -50,4 +50,4 @@ StatsPlugin.prototype.apply = function apply(compiler) {
   });
 };
 
-module.exports = StatsPlugin;
+export default StatsPlugin;
