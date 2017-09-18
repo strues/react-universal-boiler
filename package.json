@@ -45,6 +45,9 @@
       "\\.(css|scss)$": "identity-obj-proxy",
       ".*\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tools/jest/fileMock.js"
     },
+    "setupFiles": [
+      "raf/polyfill"
+    ],
     "collectCoverage": true,
     "coverageDirectory": "<rootDir>/coverage",
     "coveragePathIgnorePatterns": [
@@ -121,6 +124,7 @@
     "happypack": "^4.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^21.1.0",
+    "jest-cli": "^21.1.0",
     "loader-utils": "^1.1.0",
     "lodash.merge": "^4.6.0",
     "md5": "^2.2.1",
@@ -132,6 +136,7 @@
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.6",
     "prettier": "^1.7.0",
+    "raf": "^3.3.2",
     "react-dev-utils": "^4.0.1",
     "react-hot-loader": "3.0.0-beta.7",
     "react-test-renderer": "^16.0.0-rc.3",
