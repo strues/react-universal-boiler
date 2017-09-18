@@ -1,9 +1,9 @@
-import path from 'path';
-import http from 'http';
-import express from 'express';
-import compression from 'compression';
-import uuid from 'uuid';
-import dotenv from 'dotenv';
+const path = require('path');
+const http = require('http');
+const express = require('express');
+const compression = require('compression');
+const uuid = require('uuid');
+const dotenv = require('dotenv');
 
 dotenv.config();
 const app = express();
@@ -27,6 +27,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// Without adding a "path" Express will serve files = require(the direcotry
+// as if they're coming form the root of the site.
+//      For example: app.use('/assets', express.static(....))
+//        -- will serve the files in the directory = require(websiteUrl/assets/
+app.use('/assets', express.static(path.resolve(process.cwd(), './build/assets')));
+// Setup the public directory so that we can serve static assets.
+app.use(express.static(path.resolve(process.cwd(), './public')));
 // Pass any get request through the SSR middleware before sending it back
 // app.get('*', ssrMiddleware);
 if (process.env.NODE_ENV === 'development') {
@@ -40,16 +47,8 @@ if (process.env.NODE_ENV === 'development') {
   app.use(serverRender({ clientStats }));
 }
 
-// Without adding a "path" Express will serve files from the direcotry
-// as if they're coming form the root of the site.
-//      For example: app.use('/assets', express.static(....))
-//        -- will serve the files in the directory from websiteUrl/assets/
-app.use(express.static(path.resolve(process.cwd(), './build/assets')));
-// Setup the public directory so that we can serve static assets.
-app.use(express.static(path.resolve(process.cwd(), './public')));
-
 server.listen(port, () => {
   console.log(`🚀  Server running on port: ${port}`);
 });
 
-export default app;
+module.exports = app;

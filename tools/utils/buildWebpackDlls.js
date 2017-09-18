@@ -38,12 +38,14 @@ function buildWebpackDlls() {
       // We only use this for development, so lets always include source maps.
       devtool: 'inline-source-map',
       entry: {
+        // eslint-disable-next-line camelcase
         __vendor_dlls__: devDLLDependencies,
       },
       output: {
         path: path.resolve(outputDir),
         filename: '__vendor_dlls__.js',
         library: '__vendor_dlls__',
+        publicPath: '/assets/',
       },
       resolve: {
         modules: ['node_modules', SRC_DIR, path.resolve(ROOT, 'node_modules')],

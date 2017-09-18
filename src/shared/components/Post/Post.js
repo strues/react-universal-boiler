@@ -27,10 +27,8 @@ const Post = ({ title, body }) => {
   );
 };
 
-const propTypes = {
+Post.propTypes = {
   title: string,
   body: string,
 };
-Post.propTypes = propTypes;
-
 export default Post;

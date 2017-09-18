@@ -47,13 +47,21 @@ if (missingParameters.length > 0) {
 const relativeResolve = rootModuleRelativePath(require);
 const ROOT = fs.realpathSync(process.cwd());
 const SRC_DIR = path.resolve(ROOT, 'src');
-const SERVER_ENTRY = path.resolve(ROOT, 'src/server/server.js');
-const CLIENT_ENTRY = path.resolve(ROOT, 'src/client/client.js');
-const CLIENT_VENDOR = path.resolve(ROOT, 'src/vendor.js');
-const SERVER_OUTPUT = path.resolve(ROOT, 'build');
-const CLIENT_OUTPUT = path.resolve(ROOT, 'build/assets');
 
-const PUBLIC_PATH = process.env.PUBLIC_PATH;
+const SERVER_ENTRY_NAME = process.env.SERVER_ENTRY || 'src/server/server.js';
+const SERVER_ENTRY = path.resolve(ROOT, SERVER_ENTRY_NAME);
+
+const CLIENT_ENTRY_NAME = process.env.CLIENT_ENTRY || 'src/client/client.js';
+const CLIENT_ENTRY = path.resolve(ROOT, CLIENT_ENTRY_NAME);
+
+const VENDOR_NAME = process.env.VENDOR_FILE || 'src/vendor.js';
+const CLIENT_VENDOR = path.resolve(ROOT, VENDOR_NAME);
+
+const SERVER_OUT = process.env.SERVER_OUTPUT || 'build';
+const SERVER_OUTPUT = path.resolve(ROOT, SERVER_OUT);
+
+const CLIENT_OUT = process.env.CLIENT_OUTPUT || 'build/assets';
+const CLIENT_OUTPUT = path.resolve(ROOT, CLIENT_OUT);
 
 const defaults = {
   target: 'client',
@@ -87,6 +95,7 @@ export default function createWebpackConfig(options) {
     CACHE_DIGEST_LENGTH,
   );
 
+  // different cache dir for different environments and targets
   const CACHE_LOADER_DIRECTORY = path.resolve(
     ROOT,
     // $FlowIssue
@@ -96,6 +105,7 @@ export default function createWebpackConfig(options) {
   const browserTargets = {
     browsers: ['> .5% in US', 'last 1 versions'],
   };
+
   const serverTargets = {
     node: 'current',
   };
@@ -182,7 +192,6 @@ export default function createWebpackConfig(options) {
       pathinfo: _IS_DEV_,
       // Enable cross-origin loading without credentials - Useful for loading files from CDN
       crossOriginLoading: 'anonymous',
-
       devtoolModuleFilenameTemplate: _IS_DEV_
         ? info => path.resolve(info.absoluteResourcePath)
         : info => path.resolve(ROOT, info.absoluteResourcePath),
@@ -243,20 +252,23 @@ export default function createWebpackConfig(options) {
           options: {
             quiet: true,
           },
+          // these can be problematic loading sourcemaps that may/may not exist
           exclude: [/apollo-/, /zen-observable-ts/, /react-apollo/, /intl-/],
         },
-        // url
+        // url loader for webfonts
         {
           test: /\.(ttf|woff|woff2)$/,
           loader: 'url-loader',
           exclude: /node_modules/,
-          options: { limit: 10000, emitFile: false },
+          options: { limit: 10000, emitFile: _IS_CLIENT_ },
         },
+        // url loader for images
         {
           test: /\.(jpe?g|png|gif)$/,
           exclude: /node_modules/,
           loader: 'file-loader',
         },
+        // url loader to inline small svgs
         {
           test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
           exclude: /node_modules/,
@@ -281,6 +293,7 @@ export default function createWebpackConfig(options) {
           ],
           options: {
             name: _IS_PROD_ ? 'file-[hash:base62:8].[ext]' : '[name].[ext]',
+            // dont emit a file for the server
             emitFile: _IS_CLIENT_,
           },
         },
@@ -335,7 +348,7 @@ export default function createWebpackConfig(options) {
         debug: _IS_DEV_,
         context: ROOT,
       }),
-
+      // Whatever is passed here will be inlined during the bundling process.
       new webpack.DefinePlugin({
         __DEV__: JSON.stringify(_IS_DEV_),
         __SERVER__: JSON.stringify(_IS_SERVER_),

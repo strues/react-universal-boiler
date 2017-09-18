@@ -6,7 +6,7 @@ import { fetchPosts, fetchPostsIfNeeded } from '../../state/modules/posts';
 import Post from '../../components/Post';
 import styles from './style.scss';
 
-class Home extends Component {
+export class Home extends Component {
   static displayName = 'Home';
   static propTypes = {
     posts: object,

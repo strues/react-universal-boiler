@@ -32,7 +32,7 @@ export default function renderHtml({ preloadedState, markup, styleTags, styles, 
   }
 
   const helmet = Helmet.renderStatic();
-  const dllString = `<script type="text/javascript" src="/__vendor_dlls__.js"></script>`;
+  const dllString = `<script type="text/javascript" src="/assets/__vendor_dlls__.js"></script>`;
 
   const isDev = process.env.NODE_ENV === 'development';
   return `
@@ -55,7 +55,7 @@ export default function renderHtml({ preloadedState, markup, styleTags, styles, 
           <script type="text/javascript">
             window.__PRELOADED_STATE__=${serialize(preloadedState, { json: true })}
           </script>
-          ${isDev ? dllString : null}
+          ${isDev && dllString}
           ${scripts}
           ${helmet.script.toString()}
         </body>
