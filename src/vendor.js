@@ -12,4 +12,5 @@ module.exports = [
   'react-helmet',
   'serialize-javascript',
   'history',
+  'react-universal-component',
 ];

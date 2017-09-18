@@ -8,6 +8,8 @@ import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 import BabelMinifyPlugin from 'babel-minify-webpack-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
+import BundleAnalyzerPlugin from 'webpack-bundle-analyzer';
+import SriPlugin from 'webpack-subresource-integrity';
 import WriteFilePlugin from 'write-file-webpack-plugin';
 import { getHashDigest } from 'loader-utils';
 import {
@@ -167,7 +169,7 @@ export default function createWebpackConfig(options) {
     return entry;
   };
   const getServerEntry = () => {
-    const entry = [SERVER_ENTRY];
+    const entry = { server: SERVER_ENTRY };
     return entry;
   };
 
@@ -355,21 +357,6 @@ export default function createWebpackConfig(options) {
         'process.env.NODE_ENV': JSON.stringify(options.env),
         'process.env.TARGET': JSON.stringify(webpackTarget),
       }),
-
-      _IS_CLIENT_
-        ? new ExtractCssChunks({
-            filename: _IS_DEV_ ? '[name].css' : '[name]-[contenthash:base62:8].css',
-          })
-        : null,
-      // Extract Webpack bootstrap code with knowledge about chunks into separate cachable package.
-      _IS_CLIENT_
-        ? new webpack.optimize.CommonsChunkPlugin({
-            names: ['bootstrap'],
-            //   // needed to put webpack bootstrap code before chunks
-            filename: _IS_PROD_ ? '[name]-[chunkhash].js' : '[name].js',
-            minChunks: Infinity,
-          })
-        : null,
       _IS_DEV_
         ? new WriteFilePlugin({
             exitOnErrors: false,
@@ -378,8 +365,40 @@ export default function createWebpackConfig(options) {
             useHashIndex: false,
           })
         : null,
+      _IS_CLIENT_
+        ? new ExtractCssChunks({
+            filename: _IS_DEV_ ? '[name].css' : '[name]-[contenthash:base62:8].css',
+          })
+        : null,
+      // explicit named vendor chunk
+      _IS_CLIENT_
+        ? new webpack.optimize.CommonsChunkPlugin({
+            names: ['vendor'],
+            //   // needed to put webpack bootstrap code before chunks
+            filename: _IS_PROD_ ? '[name]-[chunkhash].js' : '[name].js',
+            minChunks: Infinity,
+          })
+        : null,
+      // Extract Webpack bootstrap code with knowledge about chunks into separate cachable package.
+      // explicit-webpack-runtime-chunk
+      _IS_CLIENT_
+        ? new webpack.optimize.CommonsChunkPlugin({
+            names: ['bootstrap'],
+            //   // needed to put webpack bootstrap code before chunks
+            filename: _IS_PROD_ ? '[name]-[chunkhash].js' : '[name].js',
+            minChunks: Infinity,
+          })
+        : null,
       // Custom progress plugin
       new ProgressPlugin({ prefix: PREFIX }),
+      // Subresource Integrity (SRI) is a security feature that enables browsers to verify that
+      // files they fetch (for example, from a CDN) are delivered without unexpected manipulation.
+      // https://www.npmjs.com/package/webpack-subresource-integrity
+      // Browser-Support: http://caniuse.com/#feat=subresource-integrity
+      new SriPlugin({
+        hashFuncNames: ['sha256', 'sha512'],
+        enabled: _IS_PROD_ && _IS_CLIENT_,
+      }),
 
       /**
        * HappyPack Plugins are used as caching mechanisms to reduce the amount
@@ -412,7 +431,6 @@ export default function createWebpackConfig(options) {
                 'react',
               ],
               plugins: [
-                // Babel will understand import()
                 'syntax-dynamic-import',
                 [
                   'fast-async',
@@ -420,10 +438,6 @@ export default function createWebpackConfig(options) {
                     spec: true,
                   },
                 ],
-                // @connect()
-                // class Foo extends Component {}
-                'transform-decorators-legacy',
-
                 // static defaultProps = {} or state = {}
                 [
                   'transform-class-properties',
@@ -439,19 +453,20 @@ export default function createWebpackConfig(options) {
                   },
                 ],
                 'babel-plugin-universal-import',
-                _IS_SERVER_ ? 'dynamic-import-node' : null,
                 // Adds component stack to warning messages
                 _IS_DEV_ ? 'transform-react-jsx-source' : null,
                 // Adds __self attribute to JSX which React
                 // will use for some warnings
                 _IS_DEV_ ? 'transform-react-jsx-self' : null,
+                _IS_DEV_ ? 'react-hot-loader/babel' : null,
                 // @NOTE:
                 // Dont want to use styled-components?
                 // remove this babel plugin
                 [
-                  'babel-plugin-styled-components',
+                  'styled-components',
                   {
                     ssr: true,
+                    preprocess: true,
                   },
                 ],
               ].filter(Boolean),
@@ -472,7 +487,7 @@ export default function createWebpackConfig(options) {
             failOnError: false,
           })
         : null,
-
+      _IS_PROD_ && _IS_CLIENT_ ? new WebpackDigestHash() : null,
       // Let the server side renderer know about our client side assets
       // https://github.com/FormidableLabs/webpack-stats-plugin
       _IS_PROD_ && _IS_CLIENT_ ? new StatsPlugin('stats.json') : null,
@@ -483,10 +498,30 @@ export default function createWebpackConfig(options) {
       // I would recommend using NamedModulesPlugin during development (better output).
       // Via: https://github.com/webpack/webpack.js.org/issues/652#issuecomment-273023082
       _IS_DEV_ ? new webpack.NamedModulesPlugin() : null,
+      // Analyse bundle in production
+      _IS_CLIENT_ && _IS_PROD_
+        ? new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            defaultSizes: 'gzip',
+            logLevel: 'silent',
+            openAnalyzer: false,
+            reportFilename: 'report.html',
+          })
+        : null,
 
+      // Analyse bundle in production
+      _IS_SERVER_ && _IS_PROD_
+        ? new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            defaultSizes: 'parsed',
+            logLevel: 'silent',
+            openAnalyzer: false,
+            reportFilename: 'report.html',
+          })
+        : null,
       _IS_SERVER_ ? new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }) : null,
-      _IS_PROD_ && _IS_CLIENT_ ? new WebpackDigestHash() : null,
-      _IS_PROD_ && _IS_CLIENT_ ? new BabelMinifyPlugin() : null,
+
+      _IS_PROD_ && _IS_CLIENT_ ? new BabelMinifyPlugin({}, { comments: false }) : null,
 
       _IS_PROD_ ? new webpack.optimize.ModuleConcatenationPlugin() : null,
       // Dll reference speeds up development by grouping all of your vendor dependencies

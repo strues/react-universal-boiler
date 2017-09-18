@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/strues/boldr-universal-react#readme",
   "scripts": {
-    "build": "npm run clean && NODE_ENV=production babel-node tools/scripts/build.js",
+    "build": "NODE_ENV=production babel-node tools/scripts/build.js",
     "clean": "rimraf build",
     "coverage": "codecov",
     "dev": "NODE_ENV=development PORT=3000 nodemon",
@@ -50,7 +50,6 @@
     ],
     "collectCoverage": true,
     "coverageDirectory": "<rootDir>/coverage",
-
     "coveragePathIgnorePatterns": [
       "<rootDir>/(tools|build|docs|public)/",
       "/flow-typed/",
@@ -100,11 +99,9 @@
     "babel-jest": "^21.0.2",
     "babel-loader": "^7.1.2",
     "babel-minify-webpack-plugin": "^0.2.0",
-    "babel-plugin-dynamic-import-node": "^1.1.0",
     "babel-plugin-styled-components": "^1.2.0",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx-self": "^6.22.0",
     "babel-plugin-transform-react-jsx-source": "^6.22.0",
@@ -113,6 +110,7 @@
     "babel-preset-react": "^6.24.1",
     "cache-loader": "^1.0.3",
     "case-sensitive-paths-webpack-plugin": "^2.1.1",
+    "chalk": "^2.1.0",
     "circular-dependency-plugin": "^4.2.0",
     "codecov": "^2.3.0",
     "css-loader": "^0.28.7",
@@ -151,10 +149,12 @@
     "source-map-loader": "^0.2.1",
     "url-loader": "^0.5.9",
     "webpack": "3.6.0",
+    "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-middleware": "^1.12.0",
     "webpack-flush-chunks": "^1.1.23",
     "webpack-hot-middleware": "^2.19.1",
     "webpack-hot-server-middleware": "^0.1.0",
+    "webpack-subresource-integrity": "^1.0.1",
     "write-file-webpack-plugin": "^4.1.0"
   }
 }
