@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders and matches the snapshot 1`] = `
+<div
+  className="sc-bdVaJa kAPAHy"
+>
+  <div
+    className="sc-bwzfXH kHYkBk"
+  />
+  <div
+    className="sc-htpNat jSPapt"
+  />
+  <div
+    className="sc-bxivhb leTqfi"
+  />
+  <div
+    className="sc-ifAKCX lkOVGt"
+  />
+  <div
+    className="sc-EHOje chnvPL"
+  />
+  <div
+    className="sc-bZQynM iqYbZJ"
+  />
+  <div
+    className="sc-gzVnrw CCqTk"
+  />
+  <div
+    className="sc-htoDjs bWxymj"
+  />
+  <div
+    className="sc-dnqmqq ieSRwc"
+  />
+  <div
+    className="sc-iwsKbI cdedUB"
+  />
+  <div
+    className="sc-gZMcBi bhuLmD"
+  />
+  <div
+    className="sc-gqjmRU kpUady"
+  />
+</div>
+`;

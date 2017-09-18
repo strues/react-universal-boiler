@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import createHistory from 'history/createBrowserHistory';
 import ConnectedRouter from 'react-router-redux/ConnectedRouter';
+// internal
 import configureStore from '../shared/state/store';
 import App from '../shared/components/App';
 import ReactHotLoader from './ReactHotLoader';

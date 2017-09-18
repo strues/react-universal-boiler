@@ -39,7 +39,7 @@ export default ({ clientStats }) => {
           match,
           promise: route.component.fetchData
             ? route.component.fetchData({ store, params: match.params })
-            : Promise.resolve(null),
+            : Promise.resolve(),
         });
       }
       return matches;
@@ -56,7 +56,7 @@ export default ({ clientStats }) => {
     });
 
     // Resolve the AJAX calls and render
-    Promise.all(promises).then(() => {
+    Promise.all(promises).then(async () => {
       const appComponent = (
         <Provider store={store}>
           <StaticRouter location={req.url} context={routerContext}>
@@ -64,9 +64,15 @@ export default ({ clientStats }) => {
           </StaticRouter>
         </Provider>
       );
-      // render the applicaation to a string and let styled-components
-      // create stylesheet tags
-      const markup = renderToString(sheet.collectStyles(appComponent));
+
+      let markup = '';
+      try {
+        // render the applicaation to a string and let styled-components
+        // create stylesheet tags
+        markup = await renderToString(sheet.collectStyles(appComponent));
+      } catch (err) {
+        console.error('Unable to render server side React:', err);
+      }
 
       console.log('Flushing chunks...');
       const chunkNames = flushChunkNames();

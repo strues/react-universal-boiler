@@ -2,8 +2,8 @@ import React from 'react';
 import Route from 'react-router-dom/Route';
 import Helmet from 'react-helmet';
 import Switch from 'react-router-dom/Switch';
-
 import uuid from 'uuid';
+// internal
 import Layout from '../Layout';
 import NotFound from '../NotFound';
 import routes from '../../routes';

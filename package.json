@@ -50,6 +50,7 @@
     ],
     "collectCoverage": true,
     "coverageDirectory": "<rootDir>/coverage",
+
     "coveragePathIgnorePatterns": [
       "<rootDir>/(tools|build|docs|public)/",
       "/flow-typed/",
@@ -128,6 +129,7 @@
     "loader-utils": "^1.1.0",
     "lodash.merge": "^4.6.0",
     "md5": "^2.2.1",
+    "moxios": "^0.4.0",
     "node-sass": "^4.5.3",
     "nodemon": "^1.12.1",
     "ora": "^1.3.0",
@@ -145,6 +147,7 @@
     "resolve-url-loader": "^2.1.0",
     "rimraf": "^2.6.2",
     "sass-loader": "^6.0.6",
+    "sinon": "^3.3.0",
     "source-map-loader": "^0.2.1",
     "url-loader": "^0.5.9",
     "webpack": "3.6.0",

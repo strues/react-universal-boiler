@@ -30,8 +30,10 @@ export default function renderHtml({ preloadedState, markup, styleTags, styles, 
   if (typeof scripts !== 'string' || scripts.length === 0) {
     throw new Error('Rendering requires javascript assets string');
   }
-
+  // render Helmet meta tags to static
+  // prevents memory leak
   const helmet = Helmet.renderStatic();
+  // include our DLL bundle
   const dllString = `<script type="text/javascript" src="/assets/__vendor_dlls__.js"></script>`;
 
   const isDev = process.env.NODE_ENV === 'development';

@@ -1,8 +1,12 @@
 import universal from 'react-universal-component';
 import Home from './scenes/Home';
+import Loader from './components/Loader';
+import NotFound from './components/NotFound';
 
-const UniversalTools = universal(() => import('./scenes/Tools'), {
-  resolve: () => require.resolveWeak('./scenes/Tools'),
+const Tools = universal(() => import('./scenes/Tools'), {
+  minDelay: 1200,
+  loading: Loader,
+  error: NotFound,
 });
 
 export default [
@@ -14,6 +18,6 @@ export default [
   {
     path: '/tools',
     exact: true,
-    component: UniversalTools,
+    component: Tools,
   },
 ];

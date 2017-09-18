@@ -11,10 +11,8 @@ const Layout = props => (
   </div>
 );
 
-const propTypes = {
+Layout.propTypes = {
   children: PropTypes.object,
 };
-
-Layout.propTypes = propTypes;
 
 export default Layout;

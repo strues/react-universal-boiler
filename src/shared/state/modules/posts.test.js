@@ -1,5 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import moxios from 'moxios';
+import sinon from 'sinon';
 
 import postsReducer, {
   FETCH_POSTS_REQUEST,
@@ -78,6 +80,13 @@ describe('postsReducer', () => {
 });
 
 describe('postsReducer actions', () => {
+  beforeEach(() => {
+    moxios.install();
+  });
+
+  afterEach(() => {
+    moxios.uninstall();
+  });
   it('should dispatch the correct action to begin fetching posts', () => {
     const mockStore = configureMockStore([thunk]);
     const store = mockStore({
@@ -140,6 +149,16 @@ describe('postsReducer actions', () => {
         error: null,
       },
     });
+    const expectedPosts = [
+      { id: 1, title: 'abc', body: 'def' },
+      { id: 2, title: 'ghi', body: 'jkl' },
+    ];
+
+    moxios.stubRequest('https://jsonplaceholder.typicode.com/posts', {
+      status: 200,
+      response: expectedPosts,
+    });
+
     store.dispatch(fetchPosts());
     const action = store.getActions()[0];
     expect(action).toEqual({

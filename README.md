@@ -1,18 +1,18 @@
 # React Universal Boiler
-[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier) [![Build Status](https://travis-ci.org/strues/react-universal-boiler.svg?branch=master)](https://travis-ci.org/strues/react-universal-boiler) 
 
-> Completely rewritten and improved for React 15.5 and React Router 4. Better documentation is in the works.
+
 
 ## Features
-- [React 16](https://github.com/facebook/react/issues/10294)
-- [React-Router 4](https://github.com/ReactTraining/react-router) configured with async data loading.
+- React 16
 - A pleasant 😍 developer experience with 🔥 fast bundling, so you can get shit done. This starter takes advantage of tools like, [HappyPack](https://github.com/amireh/happypack) and the [DLL capabilities](http://webpack.github.io/docs/list-of-plugins.html#dllplugin) within Webpack itself. Your rebuilds happen fast because, nobody enjoys waiting around like a  🐢  while assets recompile.
+- [React-Router 4](https://github.com/ReactTraining/react-router): configured with async data loading.
 - [React-Hot-Loader](https://github.com/gaearon/react-hot-loader): Build your React components with less full page reloads thanks to hot module replacement and React Hot Loader.
 - Code Splitting: Give your visitors the best experience possible by allowing their browsers to only download what's necessary.
-- [React-Universal-Component](https://github.com/faceyspacey/react-universal-component) The final answer to a React Universal Component: simultaneous SSR + Code Splitting 
-- [Webpack Flush Chunks](https://github.com/faceyspacey/webpack-flush-chunks) flushes an array of rendered moduleIds or chunkNames.
+- [React-Universal-Component](https://github.com/faceyspacey/react-universal-component): The final answer to a React Universal Component: simultaneous SSR + Code Splitting 
+- [Webpack Flush Chunks](https://github.com/faceyspacey/webpack-flush-chunks): flushes an array of rendered moduleIds or chunkNames.
 
-## Demo
+### Demo
 
 [https://boiler.strues.io](https://boiler.strues.io)   
 
@@ -25,16 +25,18 @@ Getting up and running for development is easy.
 
 `cd react-universal-boiler`
 
-Install the dependencies `yarn`
+Install the dependencies `npm install`.   
+    
+Copy the env file `cp .env.example .env`.  
 
-Start the development process with `yarn dev`
+Start development `npm run dev` and your universal React application is running on port 3000.   
 
 ### Production
 Running the two commands below will compile your application and serve the production ready build.
 
-**Build:** `yarn build`
+**Build:** `npm run build`
 
-**Run:** `yarn start`
+**Run:** `npm run start`
 
 ## Notes
 > Configuring the development DLLs and production vendor assets bundle requires adding your dependencies
@@ -47,7 +49,7 @@ for the browser to the vendorFiles array within tools/config.js
 
 ## Alternatives
 - [`React, Universally`](https://github.com/ctrlplusb/react-universally)
-A starter kit giving you the minimum requirements for a modern universal React application.
+A starter kit giving you the minimum requirements for a modern universal React application. I contribute to React Universally frequently.
 
 - [`ReactGo`](https://github.com/reactGo/reactGo)
 Your One-Stop solution for a full-stack app with ES6/ES2015 React.js featuring universal Redux, React Router, React Router Redux Hot reloading, CSS modules, Express 4.x, and multiple ORMs.
