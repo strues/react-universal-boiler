@@ -36,7 +36,8 @@
     "nuke": "rimraf node_modules/.cache && npm run clean",
     "prettier": "prettier --single-quote --print-width=100 --jsx-bracket-same-line=true --trailing-comma=all --parser=flow -w src/**/*.js",
     "start": "NODE_ENV=production node server/index.js",
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest",
+    "test:ci": "NODE_ENV=test ./node_modules/.bin/jest"
   },
   "jest": {
     "timers": "fake",
