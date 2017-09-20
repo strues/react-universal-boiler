@@ -38,9 +38,9 @@ Running the two commands below will compile your application and serve the produ
 
 **Run:** `npm run start`
 
-## Notes
+### Notes
 > Configuring the development DLLs and production vendor assets bundle requires adding your dependencies
-for the browser to the vendorFiles array within tools/config.js
+for the browser to the `vendor.js` array located in `src/`.
 
 
 ## Resources

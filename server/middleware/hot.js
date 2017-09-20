@@ -44,6 +44,7 @@ async function setupHotDev(app) {
 
   app.use(
     webpackHotServerMiddleware(multiCompiler, {
+      chunkName: 'server',
       serverRendererOptions: { outputPath },
     }),
   );
