@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 //      For example: app.use('/assets', express.static(....))
 //        -- will serve the files in the directory = require(websiteUrl/assets/
 const assetDir = process.env.CLIENT_OUTPUT;
-app.use('/assets', express.static(path.resolve(process.cwd(), assetDir)));
+app.use(process.env.PUBLIC_PATH, express.static(path.resolve(process.cwd(), assetDir)));
 // Setup the public directory so that we can serve static assets.
 app.use(express.static(path.resolve(process.cwd(), './public')));
 // Pass any get request through the SSR middleware before sending it back

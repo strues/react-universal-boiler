@@ -1,7 +1,7 @@
 /* eslint-disable max-lines, prefer-template, complexity */
 
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs-extra';
 import webpack from 'webpack';
 import dotenv from 'dotenv';
 import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
@@ -45,13 +45,13 @@ const relativeResolve = rootModuleRelativePath(require);
 const ROOT = fs.realpathSync(process.cwd());
 const SRC_DIR = path.resolve(ROOT, 'src');
 
-const SERVER_ENTRY_NAME = process.env.SERVER_ENTRY || 'src/server/server.js';
+const SERVER_ENTRY_NAME = process.env.SERVER_ENTRY || 'src/entry/server.js';
 const SERVER_ENTRY = path.resolve(ROOT, SERVER_ENTRY_NAME);
-
-const CLIENT_ENTRY_NAME = process.env.CLIENT_ENTRY || 'src/client/client.js';
+const SERVE_FROM = process.env.PUBLIC_PATH;
+const CLIENT_ENTRY_NAME = process.env.CLIENT_ENTRY || 'src/entry/client.js';
 const CLIENT_ENTRY = path.resolve(ROOT, CLIENT_ENTRY_NAME);
 
-const VENDOR_NAME = process.env.VENDOR_FILE || 'src/vendor.js';
+const VENDOR_NAME = process.env.VENDOR_FILE || 'src/entry/vendor.js';
 const CLIENT_VENDOR = path.resolve(ROOT, VENDOR_NAME);
 
 const SERVER_OUT = process.env.SERVER_OUTPUT || 'build';
@@ -89,6 +89,7 @@ export default function createWebpackConfig(options) {
     CACHE_DIGEST_TYPE,
     CACHE_DIGEST_LENGTH,
   );
+
   const NODE_EXTERNALS = fs
     .readdirSync(path.resolve(ROOT, 'node_modules'))
     .filter(
@@ -124,6 +125,7 @@ export default function createWebpackConfig(options) {
       cacheDirectory: CACHE_LOADER_DIRECTORY,
     },
   };
+
   const cssLoaderOptions = {
     modules: true,
     localIdentName: LOCAL_IDENT,
@@ -148,6 +150,7 @@ export default function createWebpackConfig(options) {
       ],
     },
   };
+
   const sassLoaderRule = {
     loader: 'sass-loader',
     options: {
@@ -170,6 +173,7 @@ export default function createWebpackConfig(options) {
 
     return entry;
   };
+
   const getServerEntry = () => {
     const entry = { server: SERVER_ENTRY };
     return entry;
@@ -183,6 +187,14 @@ export default function createWebpackConfig(options) {
     context: ROOT,
     // sourcemap
     devtool,
+    // fail on err
+    bail: !_IS_DEV_,
+    // cache dev
+    // Cache the generated webpack modules and chunks to improve build speed.
+    cache: _IS_DEV_,
+    // true if prod & enabled in settings
+    profile: false,
+
     entry: _IS_SERVER_ ? getServerEntry() : getClientEntry(),
     output: {
       // build/assets/*
@@ -191,7 +203,8 @@ export default function createWebpackConfig(options) {
       filename: _IS_DEV_ || _IS_SERVER_ ? '[name].js' : '[name]-[chunkhash].js',
       chunkFilename: _IS_DEV_ || _IS_SERVER_ ? '[name].js' : '[name]-[chunkhash].js',
       // Full URL in dev otherwise we expect our bundled output to be served from /assets/
-      publicPath: '/assets/',
+      // process.env.PUBLIC_PATH
+      publicPath: SERVE_FROM,
       // only dev
       pathinfo: _IS_DEV_,
       // Enable cross-origin loading without credentials - Useful for loading files from CDN
@@ -200,13 +213,7 @@ export default function createWebpackConfig(options) {
         ? info => path.resolve(info.absoluteResourcePath)
         : info => path.resolve(ROOT, info.absoluteResourcePath),
     },
-    // fail on err
-    bail: !_IS_DEV_,
-    // cache dev
-    // Cache the generated webpack modules and chunks to improve build speed.
-    cache: _IS_DEV_,
-    // true if prod & enabled in settings
-    profile: false,
+    // server externals
     externals: _IS_SERVER_ ? NODE_EXTERNALS : undefined,
     // Include polyfills and/or mocks for node features unavailable in browser
     // environments. These are typically necessary because package's will
@@ -357,6 +364,7 @@ export default function createWebpackConfig(options) {
         __DEV__: JSON.stringify(_IS_DEV_),
         __SERVER__: JSON.stringify(_IS_SERVER_),
         'process.env.NODE_ENV': JSON.stringify(options.env),
+        'process.env.PUBLIC_PATH': JSON.stringify(SERVE_FROM),
         'process.env.TARGET': JSON.stringify(webpackTarget),
       }),
       _IS_DEV_
@@ -445,7 +453,7 @@ export default function createWebpackConfig(options) {
                     useBuiltIns: true,
                   },
                 ],
-                'babel-plugin-universal-import',
+                'universal-import',
                 // Adds component stack to warning messages
                 _IS_DEV_ ? 'transform-react-jsx-source' : null,
                 // Adds __self attribute to JSX which React
@@ -537,6 +545,7 @@ export default function createWebpackConfig(options) {
                 'styled-components',
                 'react-helmet',
                 'serialize-javascript',
+                'fontfaceobserver',
                 'history',
                 'react-universal-component',
               ],

@@ -5,7 +5,7 @@
 
 /* eslint-disable no-magic-numbers */
 import { relative } from 'path';
-import fs from 'fs';
+import fs from 'fs-extra';
 import ora from 'ora';
 
 const ROOT = fs.realpathSync(process.cwd());

@@ -5,12 +5,12 @@ exports[`renders correctly 1`] = `
   className="sc-bdVaJa fAKHaP"
 >
   <h2
-    className="sc-bwzfXH iCphUe"
+    className="sc-bwzfXH jNlFWo"
   >
     Foo
   </h2>
   <p
-    className="sc-htpNat kJWDli"
+    className="sc-htpNat efAdPk"
   >
     Bar
   </p>

@@ -15,8 +15,11 @@ const PostCard = styled.div`
 const Head = styled.h2`
   font-size: 20px;
   font-weight: 300;
+  font-family: 'Rubik';
 `;
-const Body = styled.p`font-size: 1rem;`;
+const Body = styled.p`
+  font-size: 16px;
+`;
 
 const Post = ({ title, body }) => {
   return (

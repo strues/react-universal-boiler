@@ -10,3 +10,4 @@ import 'styled-components';
 import 'axios';
 import 'history';
 import 'serialize-javascript';
+import 'fontfaceobserver';

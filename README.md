@@ -9,8 +9,9 @@
 - [React-Router 4](https://github.com/ReactTraining/react-router): configured with async data loading.
 - [React-Hot-Loader](https://github.com/gaearon/react-hot-loader): Build your React components with less full page reloads thanks to hot module replacement and React Hot Loader.
 - Code Splitting: Give your visitors the best experience possible by allowing their browsers to only download what's necessary.
-- [React-Universal-Component](https://github.com/faceyspacey/react-universal-component): The final answer to a React Universal Component: simultaneous SSR + Code Splitting 
+- [React-Universal-Component](https://github.com/faceyspacey/react-universal-component): The final answer to a React Universal Component: simultaneous SSR + Code Splitting.
 - [Webpack Flush Chunks](https://github.com/faceyspacey/webpack-flush-chunks): flushes an array of rendered moduleIds or chunkNames.
+- [Styled-Components](https://github.com/styled-components/styled-components): Visual primitives for the component age. Use the best bits of ES6 and CSS to style your apps without stress.   
 
 ### Demo
 
@@ -31,6 +32,7 @@ Copy the env file `cp .env.example .env`.
 
 Start development `npm run dev` and your universal React application is running on port 3000.   
 
+
 ### Production
 Running the two commands below will compile your application and serve the production ready build.
 
@@ -38,9 +40,29 @@ Running the two commands below will compile your application and serve the produ
 
 **Run:** `npm run start`
 
+
 ### Notes
-> Configuring the development DLLs and production vendor assets bundle requires adding your dependencies
-for the browser to the `vendor.js` array located in `src/`.
+> Configuring the development DLLs is handled in `tools/webpack/createWebpackConfig.js` at the bottom in the AutoDLLWebpackPlugin options. Adding dependencies here allows Webpack to bundle them once, and not again during development. This dramatically speeds up rebundle times.
+
+For production, vendor assets bundle requires additional input. Simply import (`import 'react';`) your preferred dependency in `vendor.js` located in `src/entry/vendor.js`.
+
+
+### Env Variables
+```yaml
+PORT=3000
+# where assets will be "served" from
+PUBLIC_PATH=/assets/
+# Entry file for Webpack on the server
+SERVER_ENTRY=src/entry/server.js
+# Entry file for the client
+CLIENT_ENTRY=src/entry/client.js
+# Vendor dependencies
+VENDOR_FILE=src/entry/vendor.js
+# Output directory for clientside 
+CLIENT_OUTPUT=build/assets
+# Output directory for the server bundle
+SERVER_OUTPUT=build
+```
 
 
 ## Resources
