@@ -20,7 +20,6 @@ StatsPlugin.prototype.apply = function apply(compiler) {
   const output = this.output;
   const options = this.options;
   let cache = this.cache;
-
   compiler.plugin('emit', function onEmit(compilation, done) {
     let result;
 
