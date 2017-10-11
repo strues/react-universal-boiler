@@ -1,5 +1,5 @@
 {
-  "extends": ["boldr", "boldr/react"],
+  "extends": ["boldr", "boldr/react", "boldr/jsx-a11y"],
   "globals": {
     "__DEV__": true,
     "__SERVER__": true
