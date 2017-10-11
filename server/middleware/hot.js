@@ -4,15 +4,8 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackHotServerMiddleware from 'webpack-hot-server-middleware';
 import formatWebpackMessages from 'react-dev-utils/formatWebpackMessages';
 import createWebpackConfig from '../../tools/webpack/createWebpackConfig';
-import buildWebpackDlls from '../../tools/utils/buildWebpackDlls';
 
-async function setupHotDev(app) {
-  try {
-    await buildWebpackDlls();
-  } catch (err) {
-    throw Error(`Unable to build dlls ${err}`);
-  }
-
+function setupHotDev(app) {
   const clientConfig = createWebpackConfig({
     target: 'client',
     env: 'development',

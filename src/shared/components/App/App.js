@@ -24,13 +24,16 @@ function App() {
       </Helmet>
       <Layout>
         <Switch>
-          {routes.map(({ component: Component, ...route }) =>
+          {routes.map(({ component: Component, ...route }) => (
             // pass in the initialData from the server for this specific route
             // there is no `staticContext` on the client, so
             // we need to guard against that here
-            <Route {...route} key={uuid.v4()} component={({ staticContext, ...props }) =>
-              <Component {...props} />} />
-          )}
+            <Route
+              {...route}
+              key={uuid.v4()}
+              component={({ staticContext, ...props }) => <Component {...props} />}
+            />
+          ))}
           <Route component={NotFound} />
         </Switch>
       </Layout>

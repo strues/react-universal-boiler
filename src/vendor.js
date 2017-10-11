@@ -1,16 +1,12 @@
-module.exports = [
-  'react',
-  'react-dom',
-  'react-router-dom',
-  'redux',
-  'react-redux',
-  'redux-thunk',
-  'redux-logger',
-  'react-router-redux',
-  'axios',
-  'styled-components',
-  'react-helmet',
-  'serialize-javascript',
-  'history',
-  'react-universal-component',
-];
+import 'react';
+import 'react-dom';
+import 'react-router-dom';
+import 'react-helmet';
+import 'redux';
+import 'react-redux';
+import 'redux-thunk';
+import 'react-universal-component';
+import 'styled-components';
+import 'axios';
+import 'history';
+import 'serialize-javascript';

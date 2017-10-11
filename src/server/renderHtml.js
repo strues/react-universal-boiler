@@ -34,7 +34,7 @@ export default function renderHtml({ preloadedState, markup, styleTags, styles, 
   // prevents memory leak
   const helmet = Helmet.renderStatic();
   // include our DLL bundle
-  const dllString = `<script type="text/javascript" src="/assets/__vendor_dlls__.js"></script>`;
+  const dllString = `<script type="text/javascript" src="/assets/vendor.js"></script>`;
   const empty = '<span></span>';
   const isDev = process.env.NODE_ENV === 'development';
   return `
