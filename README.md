@@ -41,12 +41,6 @@ Running the two commands below will compile your application and serve the produ
 **Run:** `npm run start`
 
 
-### Notes
-> Configuring the development DLLs is handled in `tools/webpack/createWebpackConfig.js` at the bottom in the AutoDLLWebpackPlugin options. Adding dependencies here allows Webpack to bundle them once, and not again during development. This dramatically speeds up rebundle times.
-
-For production, vendor assets bundle requires additional input. Simply import (`import 'react';`) your preferred dependency in `vendor.js` located in `src/entry/vendor.js`.
-
-
 ### Env Variables
 ```yaml
 PORT=3000
@@ -65,6 +59,16 @@ SERVER_OUTPUT=build
 ```
 
 
+### Notes
+> Configuring the development DLLs is handled in `tools/webpack/createWebpackConfig.js` at the bottom in the AutoDLLWebpackPlugin options. Adding dependencies here allows Webpack to bundle them once, and not again during development. This dramatically speeds up rebundle times.
+
+For production, vendor assets bundle requires additional input. Simply import (`import 'react';`) your preferred dependency in `vendor.js` located in `src/entry/vendor.js`.
+
+This boilerplate uses babel 7, which is currently in beta. If you plan on using `babel-plugin-transform-decorators-legacy`, please see the [Planning for Babel 7](http://babeljs.io/blog/2017/09/12/planning-for-7.0), particularly Stage 3: Class Properties (from Stage 2)
+
+
+
+
 ## Resources
 - [`React Redux Links`](https://github.com/markerikson/react-redux-links)
 
@@ -81,5 +85,3 @@ A simple but feature rich starter boilerplate for you to build an universal web 
 
 ## Contributing
 Pull requests are welcome and encouraged. If I made a mistake, raise an issue and/or fix it and submit a PR. Have a question? I'll do what I can to answer it for you.
-
-## Dependencies

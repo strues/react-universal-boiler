@@ -1,4 +1,4 @@
 {
   "watch": ["./server"],
-  "exec": "babel-node server/index.js"
+  "exec": "node server/index.js"
 }

@@ -393,7 +393,7 @@ export default function createWebpackConfig(options) {
           })
         : null,
       // Custom progress plugin
-      new ProgressPlugin({ prefix: PREFIX }),
+      process.stdout.isTTY ? new ProgressPlugin({ prefix: PREFIX }) : null,
       // Subresource Integrity (SRI) is a security feature that enables browsers to verify that
       // files they fetch (for example, from a CDN) are delivered without unexpected manipulation.
       // https://www.npmjs.com/package/webpack-subresource-integrity
@@ -417,7 +417,6 @@ export default function createWebpackConfig(options) {
             path: 'babel-loader',
             query: {
               babelrc: false,
-              sourceMaps: true,
               comments: false,
               cacheDirectory: _IS_DEV_,
               compact: _IS_PROD_,
@@ -435,12 +434,7 @@ export default function createWebpackConfig(options) {
               ],
               plugins: [
                 'syntax-dynamic-import',
-                [
-                  'fast-async',
-                  {
-                    spec: true,
-                  },
-                ],
+
                 // static defaultProps = {} or state = {}
                 [
                   'transform-class-properties',

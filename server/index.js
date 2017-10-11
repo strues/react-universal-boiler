@@ -38,6 +38,7 @@ app.use(express.static(path.resolve(process.cwd(), './public')));
 // Pass any get request through the SSR middleware before sending it back
 // app.get('*', ssrMiddleware);
 if (process.env.NODE_ENV === 'development') {
+  require('babel-register')();
   const setupHotDev = require('./middleware/hot');
   setupHotDev(app);
 } else {
