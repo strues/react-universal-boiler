@@ -7,7 +7,6 @@ const Html = props => {
   const head = Helmet.renderStatic();
   const htmlAttrs = head.htmlAttributes.toComponent();
 
-  const isDev = process.env.NODE_ENV === 'development';
   return (
     <html lang="en" {...htmlAttrs}>
       <head>
@@ -25,16 +24,14 @@ const Html = props => {
           crossOrigin="anonymous"
         />
         {styleTags}
-        {styles.map(name => (
-          <link rel="stylesheet" href={`${process.env.PUBLIC_PATH}${name}`} key={name} />
-        ))}
+        {styles.map(name => <link rel="stylesheet" href={`${__PUB_PATH__}${name}`} key={name} />)}
         <link
           href="https://fonts.googleapis.com/css?family=Rubik:300,400,700|Roboto:300,400"
           rel="stylesheet"
         />
       </head>
       <body>
-        <div id="app" nonce={nonce} dangerouslySetInnerHTML={{ __html: component }} />
+        <div id="app" dangerouslySetInnerHTML={{ __html: component }} />
         <script
           type="text/javascript"
           nonce={nonce}
@@ -52,7 +49,7 @@ const Html = props => {
           charSet="UTF-8"
         />
 
-        {isDev ? (
+        {__DEV__ ? (
           <script type="text/javascript" nonce={nonce} charSet="UTF-8" src="/assets/vendor.js" />
         ) : (
           <span />
@@ -61,7 +58,7 @@ const Html = props => {
           <script
             type="text/javascript"
             nonce={nonce}
-            src={`${process.env.PUBLIC_PATH}${name}`}
+            src={`${__PUB_PATH__}${name}`}
             key={name}
             charSet="UTF-8"
           />

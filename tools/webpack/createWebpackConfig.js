@@ -220,9 +220,11 @@ export default function createWebpackConfig(options) {
     // occasionally include node only code.
     node: _IS_CLIENT_
       ? {
-          console: true,
-          __filename: true,
-          __dirname: true,
+          dgram: 'empty',
+          fs: 'empty',
+          net: 'empty',
+          tls: 'empty',
+          child_process: 'empty',
         }
       : {
           Buffer: false,
@@ -363,8 +365,8 @@ export default function createWebpackConfig(options) {
       new webpack.DefinePlugin({
         __DEV__: JSON.stringify(_IS_DEV_),
         __SERVER__: JSON.stringify(_IS_SERVER_),
+        __PUB_PATH__: JSON.stringify(SERVE_FROM),
         'process.env.NODE_ENV': JSON.stringify(options.env),
-        'process.env.PUBLIC_PATH': JSON.stringify(SERVE_FROM),
         'process.env.TARGET': JSON.stringify(webpackTarget),
       }),
       _IS_DEV_
@@ -522,6 +524,18 @@ export default function createWebpackConfig(options) {
         : null,
       _IS_SERVER_ ? new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }) : null,
       _IS_PROD_ && _IS_CLIENT_ ? new BabelMinifyPlugin({}, { comments: false }) : null,
+      _IS_PROD_ && _IS_SERVER_
+        ? new BabelMinifyPlugin(
+            {
+              booleans: false,
+              deadcode: true,
+              flipComparisons: false,
+              mangle: false,
+              mergeVars: false,
+            },
+            { comments: false },
+          )
+        : null,
 
       _IS_PROD_ ? new webpack.optimize.ModuleConcatenationPlugin() : null,
       // Dll reference speeds up development by grouping all of your vendor dependencies
