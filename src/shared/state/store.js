@@ -33,12 +33,12 @@ const composeEnhancers =
 export default function configureStore(preloadedState, history) {
   const middleware = [thunkMiddleware.withExtraArgument(axios), routerMiddleware(history)];
 
-  const enhancers = [applyMiddleware(...middleware)];
   // Here we only want to include redux-logger during development.
   /* istanbul ignore next */
   if (process.env.NODE_ENV === 'development' && process.env.TARGET === 'web') {
     middleware.push(require('redux-logger').createLogger({ collapsed: true }));
   }
+  const enhancers = [applyMiddleware(...middleware)];
 
   // Creating the store
   const store = createStore(rootReducer, preloadedState, composeEnhancers(...enhancers));
