@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'react-router-dom/Link';
-import PropTypes from 'prop-types';
+import { object } from 'prop-types';
 
 const Layout = props => (
   <div>
@@ -12,7 +12,7 @@ const Layout = props => (
 );
 
 Layout.propTypes = {
-  children: PropTypes.object,
+  children: object,
 };
 
 export default Layout;

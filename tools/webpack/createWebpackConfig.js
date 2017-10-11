@@ -12,13 +12,8 @@ import BundleAnalyzerPlugin from 'webpack-bundle-analyzer';
 import SriPlugin from 'webpack-subresource-integrity';
 import WriteFilePlugin from 'write-file-webpack-plugin';
 import { getHashDigest } from 'loader-utils';
-import {
-  StatsPlugin,
-  happyPackPlugin,
-  ProgressPlugin,
-  WebpackDigestHash,
-  getNodeExternals,
-} from './plugins';
+import AutoDllPlugin from 'autodll-webpack-plugin';
+import { StatsPlugin, happyPackPlugin, ProgressPlugin, WebpackDigestHash } from './plugins';
 
 import rootModuleRelativePath from '../utils/rootModuleRelativePath';
 
@@ -72,8 +67,6 @@ const defaults = {
   useSourceMaps: true,
 };
 
-const useLightNodeBundle = false;
-
 export default function createWebpackConfig(options) {
   const config = { ...defaults, ...options };
   // process.env.NODE_ENV should be defined, but if it's not we'll set it here
@@ -96,6 +89,15 @@ export default function createWebpackConfig(options) {
     CACHE_DIGEST_TYPE,
     CACHE_DIGEST_LENGTH,
   );
+  const NODE_EXTERNALS = fs
+    .readdirSync(path.resolve(ROOT, 'node_modules'))
+    .filter(
+      x => !/\.bin|react-universal-component|require-universal-module|webpack-flush-chunks/.test(x),
+    )
+    .reduce((NODE_EXTERNALS, mod) => {
+      NODE_EXTERNALS[mod] = `commonjs ${mod}`;
+      return NODE_EXTERNALS;
+    }, {});
 
   // different cache dir for different environments and targets
   const CACHE_LOADER_DIRECTORY = path.resolve(
@@ -205,7 +207,7 @@ export default function createWebpackConfig(options) {
     cache: _IS_DEV_,
     // true if prod & enabled in settings
     profile: false,
-    externals: _IS_SERVER_ ? getNodeExternals(useLightNodeBundle) : undefined,
+    externals: _IS_SERVER_ ? NODE_EXTERNALS : undefined,
     // Include polyfills and/or mocks for node features unavailable in browser
     // environments. These are typically necessary because package's will
     // occasionally include node only code.
@@ -370,22 +372,13 @@ export default function createWebpackConfig(options) {
             filename: _IS_DEV_ ? '[name].css' : '[name]-[contenthash:base62:8].css',
           })
         : null,
-      // explicit named vendor chunk
-      _IS_CLIENT_
-        ? new webpack.optimize.CommonsChunkPlugin({
-            names: ['vendor'],
-            //   // needed to put webpack bootstrap code before chunks
-            filename: _IS_PROD_ ? '[name]-[chunkhash].js' : '[name].js',
-            minChunks: Infinity,
-          })
-        : null,
       // Extract Webpack bootstrap code with knowledge about chunks into separate cachable package.
       // explicit-webpack-runtime-chunk
       _IS_CLIENT_
         ? new webpack.optimize.CommonsChunkPlugin({
-            names: ['bootstrap'],
+            names: _IS_DEV_ ? ['bootstrap'] : ['vendor', 'bootstrap'],
             //   // needed to put webpack bootstrap code before chunks
-            filename: _IS_PROD_ ? '[name]-[chunkhash].js' : '[name].js',
+            filename: _IS_DEV_ ? '[name].js' : '[name]-[chunkhash].js',
             minChunks: Infinity,
           })
         : null,
@@ -520,7 +513,6 @@ export default function createWebpackConfig(options) {
           })
         : null,
       _IS_SERVER_ ? new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }) : null,
-
       _IS_PROD_ && _IS_CLIENT_ ? new BabelMinifyPlugin({}, { comments: false }) : null,
 
       _IS_PROD_ ? new webpack.optimize.ModuleConcatenationPlugin() : null,
@@ -528,9 +520,27 @@ export default function createWebpackConfig(options) {
       // in a DLL file. This is not compiled again, unless package.json contents
       // have changed.
       _IS_DEV_ && _IS_CLIENT_
-        ? new webpack.DllReferencePlugin({
+        ? new AutoDllPlugin({
             context: ROOT,
-            manifest: require(path.resolve(CLIENT_OUTPUT, '__vendor_dlls__.json')),
+            filename: '[name].js',
+            entry: {
+              vendor: [
+                'react',
+                'react-dom',
+                'react-router-dom',
+                'redux',
+                'react-redux',
+                'redux-thunk',
+                'redux-logger',
+                'react-router-redux',
+                'axios',
+                'styled-components',
+                'react-helmet',
+                'serialize-javascript',
+                'history',
+                'react-universal-component',
+              ],
+            },
           })
         : null,
       _IS_DEV_ ? new webpack.NoEmitOnErrorsPlugin() : null,
