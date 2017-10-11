@@ -3,7 +3,7 @@
 {
   "presets": [["env", {
     "targets": {
-      "node": "8.5"
+      "node": "8.6"
     }
   }], "react"],
   "plugins": [

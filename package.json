@@ -117,7 +117,7 @@
     "eslint": "^4.8.0",
     "eslint-config-boldr": "^0.13.2",
     "extract-css-chunks-webpack-plugin": "^2.0.17",
-    "fast-async": "^6.3.0",
+
     "file-loader": "^1.1.5",
     "fs-extra": "^4.0.2",
     "happypack": "^4.0.0",

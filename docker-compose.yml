@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+    environment:
+      - NODE_ENV=development
+    container_name: react_universal_boiler
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/build
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    ports:
+      - 3000:3000
+      - 8080:8080
+    user: node
+    command: >
+       sh -c '
+       yarn &&
+       exec yarn run dev
+       '
