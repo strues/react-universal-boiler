@@ -13,10 +13,7 @@ import SriPlugin from 'webpack-subresource-integrity';
 import WriteFilePlugin from 'write-file-webpack-plugin';
 import { getHashDigest } from 'loader-utils';
 import AutoDllPlugin from 'autodll-webpack-plugin';
-import { StatsPlugin, happyPackPlugin, ProgressPlugin, WebpackDigestHash } from './plugins';
-
-import rootModuleRelativePath from '../utils/rootModuleRelativePath';
-
+import { StatsPlugin, happyPackPlugin, WebpackDigestHash } from './plugins';
 import {
   REQUIRED_ENV_VARS,
   CACHE_HASH_TYPE,
@@ -29,36 +26,40 @@ import {
 
 const LOCAL_IDENT = '[local]-[hash:base62:8]';
 
-dotenv.config();
-
-const envParameters = Object.keys(process.env);
-// Fail early if our env vars arent set.
-const missingParameters = REQUIRED_ENV_VARS.filter(key => !envParameters.includes(key));
-if (missingParameters.length > 0) {
-  throw new Error(
-    `Missing environment parameters ${missingParameters.join(', ')}.\n` +
-      `Hint: Please provide a proper .env file`,
-  );
-}
-
-const relativeResolve = rootModuleRelativePath(require);
+// Root directory and src directory path
 const ROOT = fs.realpathSync(process.cwd());
 const SRC_DIR = path.resolve(ROOT, 'src');
 
+// Public path
+const SERVE_FROM = process.env.PUBLIC_PATH;
+
+// Assign a constant to paths resolved from env variables.
 const SERVER_ENTRY_NAME = process.env.SERVER_ENTRY || 'src/entry/server.js';
 const SERVER_ENTRY = path.resolve(ROOT, SERVER_ENTRY_NAME);
-const SERVE_FROM = process.env.PUBLIC_PATH;
+// client
 const CLIENT_ENTRY_NAME = process.env.CLIENT_ENTRY || 'src/entry/client.js';
 const CLIENT_ENTRY = path.resolve(ROOT, CLIENT_ENTRY_NAME);
-
+// vendor
 const VENDOR_NAME = process.env.VENDOR_FILE || 'src/entry/vendor.js';
 const CLIENT_VENDOR = path.resolve(ROOT, VENDOR_NAME);
 
+// Server/Client outputs
 const SERVER_OUT = process.env.SERVER_OUTPUT || 'build';
 const SERVER_OUTPUT = path.resolve(ROOT, SERVER_OUT);
-
+// client
 const CLIENT_OUT = process.env.CLIENT_OUTPUT || 'build/assets';
 const CLIENT_OUTPUT = path.resolve(ROOT, CLIENT_OUT);
+
+dotenv.config();
+const envVars = Object.keys(process.env);
+// Fail early if our env vars arent set.
+const missingEnv = REQUIRED_ENV_VARS.filter(key => !envVars.includes(key));
+if (missingEnv.length > 0) {
+  throw new Error(
+    `Missing environment variables ${missingEnv.join(', ')}.\n` +
+      `Hint: Check your .env file and ensure all variables have values.`,
+  );
+}
 
 const defaults = {
   target: 'client',
@@ -129,7 +130,7 @@ export default function createWebpackConfig(options) {
   const cssLoaderOptions = {
     modules: true,
     localIdentName: LOCAL_IDENT,
-    import: 3,
+    import: 2,
     minimize: false,
     sourceMap: true,
   };
@@ -224,6 +225,7 @@ export default function createWebpackConfig(options) {
           fs: 'empty',
           net: 'empty',
           tls: 'empty',
+          // eslint-disable-next-line
           child_process: 'empty',
         }
       : {
@@ -250,9 +252,6 @@ export default function createWebpackConfig(options) {
       descriptionFiles: ['package.json'],
       // We want files with the following extensions...
       extensions: ['.js', '.jsx', '.mjs', '.json', '.css', '.scss'],
-      alias: {
-        'babel-runtime': relativeResolve('babel-runtime/package.json'),
-      },
     },
     module: {
       strictExportPresence: true,
@@ -333,9 +332,6 @@ export default function createWebpackConfig(options) {
                     loader: 'css-loader',
                     options: cssLoaderOptions,
                   },
-                  {
-                    loader: 'resolve-url-loader',
-                  },
                   postCSSLoaderRule,
                   sassLoaderRule,
                 ].filter(Boolean),
@@ -345,9 +341,6 @@ export default function createWebpackConfig(options) {
                 {
                   loader: 'css-loader/locals',
                   options: cssLoaderOptions,
-                },
-                {
-                  loader: 'resolve-url-loader',
                 },
                 postCSSLoaderRule,
                 sassLoaderRule,
@@ -392,8 +385,7 @@ export default function createWebpackConfig(options) {
             minChunks: Infinity,
           })
         : null,
-      // Custom progress plugin
-      process.stdout.isTTY ? new ProgressPlugin({ prefix: PREFIX }) : null,
+
       // Subresource Integrity (SRI) is a security feature that enables browsers to verify that
       // files they fetch (for example, from a CDN) are delivered without unexpected manipulation.
       // https://www.npmjs.com/package/webpack-subresource-integrity
@@ -417,7 +409,7 @@ export default function createWebpackConfig(options) {
             path: 'babel-loader',
             query: {
               babelrc: false,
-              comments: false,
+              comments: true,
               cacheDirectory: _IS_DEV_,
               compact: _IS_PROD_,
               presets: [
@@ -545,10 +537,10 @@ export default function createWebpackConfig(options) {
                 'react-dom',
                 'react-router-dom',
                 'redux',
+                'bluebird',
                 'react-redux',
                 'redux-thunk',
                 'redux-logger',
-                'react-router-redux',
                 'axios',
                 'styled-components',
                 'react-helmet',

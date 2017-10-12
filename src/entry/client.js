@@ -4,12 +4,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import createHistory from 'history/createBrowserHistory';
-import ConnectedRouter from 'react-router-redux/ConnectedRouter';
+import BrowserRouter from 'react-router-dom/BrowserRouter';
 import FontFaceObserver from 'fontfaceobserver';
 import AppContainer from 'react-hot-loader/lib/AppContainer';
+
 // internal
-// global styled-components style injection
-import { injectGlobalStyle } from '../styles/globalStyle';
+import '../styles/main.scss';
 import configureStore from '../state/store';
 import App from '../components/App';
 
@@ -31,15 +31,14 @@ Promise.all([robotoObserver.load(), rubikObserver.load()]).then(
 
 const renderApp = App => {
   const MOUNT_POINT = document.getElementById('app');
-  injectGlobalStyle();
   // in React 16 ReactDOM.render becomes ReactDOM.hydrate
   // when used for SSR.
   ReactDOM.hydrate(
     <AppContainer>
       <Provider store={store}>
-        <ConnectedRouter history={history}>
+        <BrowserRouter history={history}>
           <App />
-        </ConnectedRouter>
+        </BrowserRouter>
       </Provider>
     </AppContainer>,
     MOUNT_POINT,

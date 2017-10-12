@@ -1,7 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import axios from 'axios';
-import { routerMiddleware } from 'react-router-redux';
 import rootReducer from './reducers';
 
 // This enables Redux Dev Tools chrome extension if it is available on the window.
@@ -31,11 +30,11 @@ const composeEnhancers =
  * @return {Object} store
  */
 export default function configureStore(preloadedState, history) {
-  const middleware = [thunkMiddleware.withExtraArgument(axios), routerMiddleware(history)];
+  const middleware = [thunkMiddleware.withExtraArgument(axios)];
 
   // Here we only want to include redux-logger during development.
   /* istanbul ignore next */
-  if (process.env.NODE_ENV === 'development' && process.env.TARGET === 'web') {
+  if (__DEV__ && process.env.TARGET === 'web') {
     middleware.push(require('redux-logger').createLogger({ collapsed: true }));
   }
   const enhancers = [applyMiddleware(...middleware)];
