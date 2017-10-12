@@ -7,7 +7,7 @@ import 'react-redux';
 import 'redux-thunk';
 import 'react-universal-component';
 import 'styled-components';
-import 'axios';
+import 'isomorphic-unfetch';
 import 'history';
 import 'serialize-javascript';
 import 'fontfaceobserver';

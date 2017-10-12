@@ -1,4 +1,4 @@
-import axios from 'axios';
+import fetch from 'isomorphic-unfetch';
 
 export const FETCH_POSTS_REQUEST = '@posts/FETCH_POSTS_REQUEST';
 export const FETCH_POSTS_SUCCESS = '@posts/FETCH_POSTS_SUCCESS';
@@ -25,12 +25,9 @@ export function requestPostsFail(err) {
 export const fetchPosts = () => {
   return dispatch => {
     dispatch(requestPostsStart());
-    return axios
-      .get('https://jsonplaceholder.typicode.com/posts')
-      .then(res => {
-        /* istanbul ignore next */
-        const { data } = res;
-        /* istanbul ignore next */
+    return fetch('https://jsonplaceholder.typicode.com/posts')
+      .then(r => r.json())
+      .then(data => {
         return dispatch(requestPostsDone(data));
       })
       .catch(err => dispatch(requestPostsFail(err)));

@@ -1,4 +1,5 @@
 /* eslint-disable global-require */
+import './clientPolyfill';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -38,7 +39,7 @@ const renderApp = App => {
   ReactDOM.hydrate(
     <AppContainer>
       <Provider store={store}>
-        <BrowserRouter history={history} forceRefresh={!supportsHistory}>
+        <BrowserRouter forceRefresh={!supportsHistory}>
           <App />
         </BrowserRouter>
       </Provider>

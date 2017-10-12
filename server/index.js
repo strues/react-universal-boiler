@@ -53,4 +53,8 @@ server.listen(port, () => {
   console.log(`🚀  Server running on port: ${port}`);
 });
 
+process.on('unhandledRejection', e => {
+  console.error(e);
+});
+
 module.exports = app;

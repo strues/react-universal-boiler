@@ -23,7 +23,7 @@ const Html = props => {
           href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css"
           crossOrigin="anonymous"
         />
-        {styleTags}
+        {styleTags.getStyleElement()}
         {styles.map(name => <link rel="stylesheet" href={`${__PUB_PATH__}${name}`} key={name} />)}
         <link
           href="https://fonts.googleapis.com/css?family=Rubik:300,700|Roboto:300,400"
@@ -31,7 +31,7 @@ const Html = props => {
         />
       </head>
       <body>
-        <div id="app" dangerouslySetInnerHTML={{ __html: component }} />
+        <div id="app">{component}</div>
         <script
           type="text/javascript"
           nonce={nonce}

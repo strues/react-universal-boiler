@@ -3,14 +3,18 @@
 exports[`renders correctly 1`] = `
 <div>
   <nav
-    className="navigation"
+    className="navbar"
   >
-    <a
-      href="/tools"
-      onClick={[Function]}
+    <div
+      className="wrapper"
     >
-      Tools
-    </a>
+      <a
+        href="/tools"
+        onClick={[Function]}
+      >
+        Tools
+      </a>
+    </div>
   </nav>
   <main
     className="container"

@@ -1,3 +1,5 @@
+import './serverPolyfill.js';
+
 import React from 'react';
 import { renderToString, renderToNodeStream } from 'react-dom/server';
 import { Provider } from 'react-redux';
@@ -24,13 +26,12 @@ export default ({ clientStats }) => (req, res, next) => {
   const history = createHistory({ initialEntries: [req.path] });
   const initialState = {};
   const store = configureStore(initialState, history);
-  //
   const sheet = new ServerStyleSheet();
-  const routerContext = {};
+  const reactRouterContext = {};
 
   const appComponent = (
-    <Provider store={store}>
-      <StaticRouter location={req.url} context={routerContext}>
+    <Provider store={store} key="provider">
+      <StaticRouter location={req.url} context={reactRouterContext}>
         <App />
       </StaticRouter>
     </Provider>
@@ -50,60 +51,43 @@ export default ({ clientStats }) => (req, res, next) => {
     return matches;
   }, []);
 
-  // No such route, send 404 status
-  if (matches.length === 0) {
-    routerContext.status = 404;
-  }
-
   // Any AJAX calls inside components
   const promises = matches.map(match => {
     return match.promise;
   });
 
   // Resolve the AJAX calls and render
-  Promise.all(promises).then(async () => {
-    let markup = '';
-    try {
-      // render the applicaation to a string and let styled-components
-      // create stylesheet tags
-      markup = await renderToString(sheet.collectStyles(appComponent));
-    } catch (err) {
-      console.error('Unable to render server side React:', err);
-    }
-
+  Promise.all(promises).then(() => {
     console.log('Flushing chunks...');
     const chunkNames = flushChunkNames();
-    console.log('Rendered the following chunks:', chunkNames.join(', '));
     const { scripts, stylesheets, cssHashRaw } = flushChunks(clientStats, { chunkNames });
-
-    // get the stylesheet elements from what styled-components created during
-    // render to string
-    const styleTags = sheet.getStyleElement();
-
-    console.log('Rendering page to stream...');
-    const preloadedState = store.getState();
+    // get our "finalState" containing data loaded on the server
+    const finalState = store.getState();
+    // render to stream, collect styled-components css, send assets, and "raw" application component.
     const html = renderToNodeStream(
-      <Html
-        styles={stylesheets}
-        cssHash={cssHashRaw}
-        js={scripts}
-        styleTags={styleTags}
-        nonce={res.locals.nonce}
-        component={markup}
-        state={preloadedState}
-      />,
+      sheet.collectStyles(
+        <Html
+          styles={stylesheets}
+          cssHash={cssHashRaw}
+          js={scripts}
+          styleTags={sheet}
+          nonce={res.locals.nonce}
+          component={appComponent}
+          state={finalState}
+        />,
+      ),
     );
 
-    console.log('Sending Page...');
-    switch (routerContext.status) {
+    console.log('Streaming page...');
+    switch (reactRouterContext.status) {
       case 301:
       case 302:
-        res.status(routerContext.status);
-        res.location(routerContext.url);
+        res.status(reactRouterContext.status);
+        res.location(reactRouterContext.url);
         res.end();
         break;
       case 404:
-        res.status(routerContext.status);
+        res.status(reactRouterContext.status);
         res.type('html');
         res.write('<!doctype html>');
         html.pipe(res);

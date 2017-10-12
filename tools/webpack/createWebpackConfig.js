@@ -79,7 +79,6 @@ export default function createWebpackConfig(options) {
   const _IS_PROD_ = config.env === 'production';
   const webpackTarget = _IS_SERVER_ ? 'node' : 'web';
 
-  const PREFIX = config.target.toUpperCase();
   const PKG_JSON = require(path.resolve(ROOT, './package.json'));
 
   const CACHE_HASH = getHashDigest(
@@ -174,7 +173,7 @@ export default function createWebpackConfig(options) {
   };
 
   const getServerEntry = () => {
-    const entry = { server: SERVER_ENTRY };
+    const entry = { server: [SERVER_ENTRY] };
     return entry;
   };
 
@@ -544,7 +543,7 @@ export default function createWebpackConfig(options) {
                 'react-redux',
                 'redux-thunk',
                 'redux-logger',
-                'axios',
+                'isomorphic-unfetch',
                 'styled-components',
                 'react-helmet',
                 'serialize-javascript',
