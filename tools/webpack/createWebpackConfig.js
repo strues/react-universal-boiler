@@ -9,6 +9,7 @@ import BabelMinifyPlugin from 'babel-minify-webpack-plugin';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
 import BundleAnalyzerPlugin from 'webpack-bundle-analyzer';
+import OfflinePlugin from 'offline-plugin';
 import SriPlugin from 'webpack-subresource-integrity';
 import WriteFilePlugin from 'write-file-webpack-plugin';
 import { getHashDigest } from 'loader-utils';
@@ -29,9 +30,6 @@ const LOCAL_IDENT = '[local]-[hash:base62:8]';
 // Root directory and src directory path
 const ROOT = fs.realpathSync(process.cwd());
 const SRC_DIR = path.resolve(ROOT, 'src');
-
-// Public path
-const SERVE_FROM = process.env.PUBLIC_PATH;
 
 // Assign a constant to paths resolved from env variables.
 const SERVER_ENTRY_NAME = process.env.SERVER_ENTRY || 'src/entry/server.js';
@@ -204,8 +202,7 @@ export default function createWebpackConfig(options) {
       filename: _IS_DEV_ || _IS_SERVER_ ? '[name].js' : '[name]-[chunkhash].js',
       chunkFilename: _IS_DEV_ || _IS_SERVER_ ? '[name].js' : '[name]-[chunkhash].js',
       // Full URL in dev otherwise we expect our bundled output to be served from /assets/
-      // process.env.PUBLIC_PATH
-      publicPath: SERVE_FROM,
+      publicPath: process.env.PUBLIC_PATH,
       // only dev
       pathinfo: _IS_DEV_,
       // Enable cross-origin loading without credentials - Useful for loading files from CDN
@@ -244,7 +241,7 @@ export default function createWebpackConfig(options) {
 
     resolve: {
       // look for files in the descendants of src/ then node_modules
-      modules: ['node_modules', SRC_DIR, path.resolve(ROOT, 'node_modules')],
+      modules: [SRC_DIR, path.resolve(ROOT, 'node_modules')],
       // Webpack will look for the following fields when searching for libraries
       mainFields: _IS_CLIENT_
         ? ['browser:modern', 'browser:esnext', 'web:modern', 'browser', 'module', 'main']
@@ -409,6 +406,9 @@ export default function createWebpackConfig(options) {
             path: 'babel-loader',
             query: {
               babelrc: false,
+              // @NOTE: comments are necessary for proper code splitting.
+              // without we're unable to match our css chunks w/ the correct
+              // universal component. instead all css will come through main.css :()
               comments: true,
               cacheDirectory: _IS_DEV_,
               compact: _IS_PROD_,
@@ -448,7 +448,10 @@ export default function createWebpackConfig(options) {
                 // will use for some warnings
                 _IS_DEV_ ? 'transform-react-jsx-self' : null,
                 _IS_DEV_ ? 'react-hot-loader/babel' : null,
-                // @NOTE:
+                _IS_PROD_ ? 'transform-react-constant-elements' : null,
+                _IS_PROD_ ? 'transform-react-inline-elements' : null,
+                _IS_PROD_ ? 'transform-react-remove-prop-types' : null,
+                // @NOTE: babel-plugin-transform-react-inline-elements@7.0.0-beta.2
                 // Dont want to use styled-components?
                 // remove this babel plugin
                 [
@@ -554,6 +557,25 @@ export default function createWebpackConfig(options) {
         : null,
       _IS_DEV_ ? new webpack.NoEmitOnErrorsPlugin() : null,
       _IS_CLIENT_ && _IS_DEV_ ? new webpack.HotModuleReplacementPlugin() : null,
+      _IS_CLIENT_ && _IS_PROD_
+        ? new OfflinePlugin({
+            relativePaths: false,
+            publicPath: process.env.PUBLIC_PATH,
+
+            // No need to cache .htaccess. See http://mxs.is/googmp,
+            // this is applied before any match in `caches` section
+            excludes: ['.htaccess', 'report.html', 'stats.json'],
+
+            caches: {
+              main: [':rest:'],
+            },
+
+            // Removes warning for about `additional` section usage
+            safeToUseOptionalCaches: true,
+
+            AppCache: false,
+          })
+        : null,
     ].filter(Boolean),
   };
 }

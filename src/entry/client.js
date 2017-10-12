@@ -29,6 +29,8 @@ Promise.all([robotoObserver.load(), rubikObserver.load()]).then(
   },
 );
 
+const supportsHistory = 'pushState' in window.history;
+
 const renderApp = App => {
   const MOUNT_POINT = document.getElementById('app');
   // in React 16 ReactDOM.render becomes ReactDOM.hydrate
@@ -36,7 +38,7 @@ const renderApp = App => {
   ReactDOM.hydrate(
     <AppContainer>
       <Provider store={store}>
-        <BrowserRouter history={history}>
+        <BrowserRouter history={history} forceRefresh={!supportsHistory}>
           <App />
         </BrowserRouter>
       </Provider>
@@ -52,4 +54,8 @@ if (module.hot && __DEV__) {
     const App = require('../components/App').default;
     renderApp(App);
   });
+}
+
+if (process.env.NODE_ENV === 'production') {
+  require('offline-plugin/runtime').install(); // eslint-disable-line global-require
 }
