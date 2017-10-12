@@ -20,6 +20,7 @@ import Html from '../components/Html';
  * @param  {object}     stats Webpack stats output
  * @return {function}   middleware function
  */
+// eslint-disable-next-line no-unused-vars
 export default ({ clientStats }) => (req, res, next) => {
   global.navigator = { userAgent: req.headers['user-agent'] };
 
