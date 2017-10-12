@@ -1,9 +1,15 @@
+// @flow
 import React from 'react';
+import type { Node } from 'react';
 import Link from 'react-router-dom/Link';
-import { object } from 'prop-types';
+// $FlowIssue
 import styles from './style.scss';
 
-const Layout = props => (
+type Props = {
+  children: Node,
+};
+
+const Layout = (props: Props) => (
   <div>
     <nav className={styles.navbar}>
       <div className={styles.wrapper}>
@@ -13,9 +19,5 @@ const Layout = props => (
     <main className="container">{props.children}</main>
   </div>
 );
-
-Layout.propTypes = {
-  children: object,
-};
 
 export default Layout;

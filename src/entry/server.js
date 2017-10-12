@@ -1,7 +1,7 @@
 import './serverPolyfill.js';
 
 import React from 'react';
-import { renderToString, renderToNodeStream } from 'react-dom/server';
+import ReactDOMServer from 'react-dom/server';
 import { Provider } from 'react-redux';
 import createHistory from 'history/createMemoryHistory';
 import StaticRouter from 'react-router-dom/StaticRouter';
@@ -64,7 +64,7 @@ export default ({ clientStats }) => (req, res, next) => {
     // get our "finalState" containing data loaded on the server
     const finalState = store.getState();
     // render to stream, collect styled-components css, send assets, and "raw" application component.
-    const html = renderToNodeStream(
+    const html = ReactDOMServer.renderToNodeStream(
       sheet.collectStyles(
         <Html
           styles={stylesheets}

@@ -1,8 +1,21 @@
+/* eslint-disable no-inline-comments */
+// @flow
 import React from 'react';
+import type { Node, Element } from 'react';
 import Helmet from 'react-helmet';
 import serialize from 'serialize-javascript';
 
-const Html = props => {
+type Props = {
+  styles: Array<string>,
+  cssHash: string,
+  js: Array<string>,
+  component: Node,
+  state: Object,
+  styleTags: Function,
+  nonce: string,
+};
+
+const Html = (props: Props): Element<'html'> => {
   const { styles, cssHash, js, component, state, styleTags, nonce } = props;
   const head = Helmet.renderStatic();
   const htmlAttrs = head.htmlAttributes.toComponent();
@@ -24,6 +37,7 @@ const Html = props => {
           crossOrigin="anonymous"
         />
         {styleTags.getStyleElement()}
+        {/* $FlowIssue */}
         {styles.map(name => <link rel="stylesheet" href={`${__PUB_PATH__}${name}`} key={name} />)}
         <link
           href="https://fonts.googleapis.com/css?family=Rubik:300,700|Roboto:300,400"
@@ -48,7 +62,7 @@ const Html = props => {
           }}
           charSet="UTF-8"
         />
-
+        {/* $FlowIssue */}
         {__DEV__ ? (
           <script type="text/javascript" nonce={nonce} charSet="UTF-8" src="/assets/vendor.js" />
         ) : (
@@ -58,6 +72,7 @@ const Html = props => {
           <script
             type="text/javascript"
             nonce={nonce}
+            /* $FlowIssue */
             src={`${__PUB_PATH__}${name}`}
             key={name}
             charSet="UTF-8"

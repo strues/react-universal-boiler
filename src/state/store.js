@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
+// @flow
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-
+import type { Store } from '../types';
 import rootReducer from './reducers';
 
 // This enables Redux Dev Tools chrome extension if it is available on the window.
@@ -9,7 +11,9 @@ import rootReducer from './reducers';
 // If Redux Dev Tools arent used, the regular compose function is used instead.
 /* istanbul ignore next */
 const composeEnhancers =
-  typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+  process.env.NODE_ENV === 'development' &&
+  typeof window === 'object' &&
+  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
         actionsBlacklist: [
           '@@redux-form/CHANGE',
@@ -29,7 +33,7 @@ const composeEnhancers =
  * @param {Object} history  Either memory history (server) or browser history
  * @return {Object} store
  */
-export default function configureStore(preloadedState, history) {
+export default function configureStore(preloadedState: Object, history?: Object): Store {
   const middleware = [thunkMiddleware];
 
   // Here we only want to include redux-logger during development.
@@ -38,11 +42,11 @@ export default function configureStore(preloadedState, history) {
     middleware.push(require('redux-logger').createLogger({ collapsed: true }));
   }
   const enhancers = [applyMiddleware(...middleware)];
-
   // Creating the store
-  const store = createStore(rootReducer, preloadedState, composeEnhancers(...enhancers));
+  const store: Store = createStore(rootReducer, preloadedState, composeEnhancers(...enhancers));
   /* istanbul ignore next */
   if (process.env.NODE_ENV === 'development' && module.hot) {
+    // $FlowIssue
     module.hot.accept('./reducers', () => {
       const nextRootReducer = require('./reducers').default; // eslint-disable-line
 

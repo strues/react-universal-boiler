@@ -1,24 +1,28 @@
+// @flow
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
-import { object, func } from 'prop-types';
+import type { Connector } from 'react-redux';
 import { fetchPosts, fetchPostsIfNeeded } from '../../state/modules/posts';
 import Post from '../../components/Post';
+import type { PostsReducer, Dispatch, Reducer } from '../../types';
+// $FlowIssue
 import styles from './style.scss';
 
-export class Home extends Component {
+type Props = {
+  posts: PostsReducer,
+  fetchPostsIfNeeded: () => void,
+};
+
+export class Home extends Component<Props, *> {
   static displayName = 'Home';
-  static propTypes = {
-    posts: object,
-    dispatch: func,
-  };
 
   static fetchData({ store }) {
     return store.dispatch(fetchPosts());
   }
 
   componentDidMount() {
-    this.props.dispatch(fetchPostsIfNeeded());
+    this.props.fetchPostsIfNeeded();
   }
 
   render() {
@@ -46,9 +50,11 @@ export class Home extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    posts: state.posts,
-  };
-};
-export default connect(mapStateToProps)(Home);
+const connector: Connector<{}, Props> = connect(
+  ({ posts }: Reducer) => ({ posts }),
+  (dispatch: Dispatch) => ({
+    fetchPostsIfNeeded: () => dispatch(fetchPostsIfNeeded()),
+  }),
+);
+
+export default connector(Home);

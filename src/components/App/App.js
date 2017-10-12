@@ -1,4 +1,6 @@
+// @flow
 import React from 'react';
+import type { Element } from 'react';
 import Route from 'react-router-dom/Route';
 import Helmet from 'react-helmet';
 import Switch from 'react-router-dom/Switch';
@@ -8,7 +10,7 @@ import Layout from '../Layout';
 import NotFound from '../NotFound';
 import routes from '../../routes';
 
-const App = () => (
+const App = (): Element<'div'> => (
   <div>
     <Helmet titleTemplate="%s | React Universal Boiler" defaultTitle="React Universal Boiler">
       <meta charSet="utf-8" />

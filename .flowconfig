@@ -1,0 +1,49 @@
+[ignore]
+<PROJECT_ROOT>/coverage/.*
+<PROJECT_ROOT>/build/.*
+<PROJECT_ROOT>/tools/.*
+<PROJECT_ROOT>/.*/__mocks__/.*
+<PROJECT_ROOT>/.*/__tests__/.*
+<PROJECT_ROOT>/node_modules/react-universal-component/dist/.*
+<PROJECT_ROOT>/node_modules/styled-components/.*
+<PROJECT_ROOT>/node_modules/webpack-flush-chunks/.*
+
+[include]
+
+[libs]
+flow-typed/npm
+tools/flow/defs
+
+[lints]
+
+[options]
+emoji=true
+module.system=node
+
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
+unsafe.enable_getters_and_setters=true
+# Set this to true and Flow will no longer complain when you use require() with something other than a string literal.
+module.ignore_non_literal_requires=true
+munge_underscores=false
+
+module.name_mapper='^\(.*\)\.\(css\|scss\)$' -> '<PROJECT_ROOT>/tools/flow/stubs/CSSModules.js.flow'
+module.name_mapper='.*\.\(html\|scss\|svg\|png\|jpg\|gif\)$' -> '<PROJECT_ROOT>/tools/flow/stubs/WebpackAssets.js.flow'
+
+suppress_type=$FlowIssue
+suppress_type=$FlowFixMe
+suppress_type=$FixMe
+suppress_type=$FlowToDo
+suppress_type=$FlowExpectedError
+
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
+suppress_comment= \\(.\\|\n\\)*\\$FlowIssue
+suppress_comment= \\(.\\|\n\\)*\\$FlowExpectedError
+
+
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(3[0-3]\\|[1-2][0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*www[a-z,_]*\\)?)\\)
+suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(3[0-3]\\|[1-2][0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*www[a-z,_]*\\)?)\\)?:? #[0-9]+
+suppress_comment=\\(.\\|\n\\)*\\$FlowExpectedError
+
+[version]
+^0.56.0

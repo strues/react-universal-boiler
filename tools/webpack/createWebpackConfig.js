@@ -347,7 +347,7 @@ export default function createWebpackConfig(options) {
     plugins: [
       new webpack.LoaderOptionsPlugin({
         minimize: _IS_PROD_,
-        debug: _IS_DEV_,
+        debug: !_IS_PROD_,
         context: ROOT,
       }),
       // Whatever is passed here will be inlined during the bundling process.
@@ -425,7 +425,7 @@ export default function createWebpackConfig(options) {
               ],
               plugins: [
                 'syntax-dynamic-import',
-
+                'transform-flow-strip-types',
                 // static defaultProps = {} or state = {}
                 [
                   'transform-class-properties',
@@ -478,6 +478,7 @@ export default function createWebpackConfig(options) {
             failOnError: false,
           })
         : null,
+
       _IS_PROD_ && _IS_CLIENT_ ? new WebpackDigestHash() : null,
       // Let the server side renderer know about our client side assets
       // https://github.com/FormidableLabs/webpack-stats-plugin
@@ -489,7 +490,8 @@ export default function createWebpackConfig(options) {
       // I would recommend using NamedModulesPlugin during development (better output).
       // Via: https://github.com/webpack/webpack.js.org/issues/652#issuecomment-273023082
       _IS_DEV_ ? new webpack.NamedModulesPlugin() : null,
-      // Analyse bundle in production
+
+      // Get useful information regarding whats in our bundles...
       _IS_CLIENT_ && _IS_PROD_
         ? new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
             analyzerMode: 'static',
@@ -499,8 +501,6 @@ export default function createWebpackConfig(options) {
             reportFilename: 'report.html',
           })
         : null,
-
-      // Analyse bundle in production
       _IS_SERVER_ && _IS_PROD_
         ? new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
             analyzerMode: 'static',
@@ -510,7 +510,9 @@ export default function createWebpackConfig(options) {
             reportFilename: 'report.html',
           })
         : null,
+      // only want a single file for server since it's essentially just a middleware
       _IS_SERVER_ ? new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }) : null,
+      // minify w/ babel minify
       _IS_PROD_ && _IS_CLIENT_ ? new BabelMinifyPlugin({}, { comments: false }) : null,
       _IS_PROD_ && _IS_SERVER_
         ? new BabelMinifyPlugin(
@@ -524,7 +526,7 @@ export default function createWebpackConfig(options) {
             { comments: false },
           )
         : null,
-
+      // condense modules
       _IS_PROD_ ? new webpack.optimize.ModuleConcatenationPlugin() : null,
       // Dll reference speeds up development by grouping all of your vendor dependencies
       // in a DLL file. This is not compiled again, unless package.json contents
@@ -554,8 +556,10 @@ export default function createWebpackConfig(options) {
             },
           })
         : null,
+      // dont let errors stop us during development
       _IS_DEV_ ? new webpack.NoEmitOnErrorsPlugin() : null,
       _IS_CLIENT_ && _IS_DEV_ ? new webpack.HotModuleReplacementPlugin() : null,
+      // Service worker for caching assets.
       _IS_CLIENT_ && _IS_PROD_
         ? new OfflinePlugin({
             relativePaths: false,
