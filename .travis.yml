@@ -18,6 +18,13 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
+  - echo 'PORT=3000
+          PUBLIC_PATH=/assets/
+          SERVER_ENTRY=src/entry/server.js
+          CLIENT_ENTRY=src/entry/client.js
+          VENDOR_FILE=src/entry/vendor.js
+          CLIENT_OUTPUT=build/assets
+          SERVER_OUTPUT=build'> .env
 
 script:
   - yarn lint
