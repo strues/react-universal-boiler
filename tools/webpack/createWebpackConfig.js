@@ -358,7 +358,7 @@ export default function createWebpackConfig(options) {
       new webpack.DefinePlugin({
         __DEV__: JSON.stringify(_IS_DEV_),
         __SERVER__: JSON.stringify(_IS_SERVER_),
-        __PUB_PATH__: JSON.stringify(SERVE_FROM),
+        __PUB_PATH__: JSON.stringify(process.env.PUBLIC_PATH),
         'process.env.NODE_ENV': JSON.stringify(options.env),
         'process.env.TARGET': JSON.stringify(webpackTarget),
       }),
