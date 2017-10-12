@@ -1,0 +1,19 @@
+
+.navbar {
+  background-color: #23252C;
+  color: #fff;
+  width: 100%;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid darken(#23252C, 5%);
+}
+
+.wrapper {
+  margin: 0 auto;
+	max-width: 112.0rem;
+	padding: 0 2.0rem;
+	position: relative;
+  width: 100%;
+}

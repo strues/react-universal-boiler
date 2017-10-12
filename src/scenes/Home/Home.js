@@ -21,22 +21,15 @@ export class Home extends Component {
     this.props.dispatch(fetchPostsIfNeeded());
   }
 
-  refresh = () => {
-    this.props.dispatch(fetchPosts());
-  };
-
   render() {
     return (
       <div>
         <Helmet title="Home" />
         <div className="row">
-          <div className="column column-50 column-offset-25">
+          <div className="column">
             <div className={styles.hero}>
               <h1>React Universal Boiler</h1>
               <p>A server rendering React project.</p>
-              <button className="button" onClick={this.refresh}>
-                Refresh Posts
-              </button>
             </div>
           </div>
         </div>

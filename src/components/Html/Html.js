@@ -26,7 +26,7 @@ const Html = props => {
         {styleTags}
         {styles.map(name => <link rel="stylesheet" href={`${__PUB_PATH__}${name}`} key={name} />)}
         <link
-          href="https://fonts.googleapis.com/css?family=Rubik:300,400,700|Roboto:300,400"
+          href="https://fonts.googleapis.com/css?family=Rubik:300,700|Roboto:300,400"
           rel="stylesheet"
         />
       </head>

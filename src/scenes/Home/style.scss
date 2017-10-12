@@ -1,22 +1,23 @@
 .hero {
   align-content: center;
-
-  padding-top: 25px;
+  padding: 1em;
   text-align: center;
+  background-color: #51c2f3;
+  margin-bottom: 3em;
 
   h1 {
     vertical-align: middle;
-    font-size: 5em;
+    font-size: 2em;
     margin: 0;
     text-align: center;
-  }
 
-  h1.heading__secondary {
-    font-size: 5em;
-    margin: 0;
+    @media screen and (min-width: 768px) {
+      font-size: 4em;
+    }
   }
 
   p {
     text-align: center;
   }
+
 }
