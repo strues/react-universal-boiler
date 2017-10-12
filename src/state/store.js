@@ -34,7 +34,7 @@ export default function configureStore(preloadedState, history) {
 
   // Here we only want to include redux-logger during development.
   /* istanbul ignore next */
-  if (__DEV__ && process.env.TARGET === 'web') {
+  if (process.env.NODE_ENV == 'development' && process.env.TARGET === 'web') {
     middleware.push(require('redux-logger').createLogger({ collapsed: true }));
   }
   const enhancers = [applyMiddleware(...middleware)];
@@ -42,7 +42,7 @@ export default function configureStore(preloadedState, history) {
   // Creating the store
   const store = createStore(rootReducer, preloadedState, composeEnhancers(...enhancers));
   /* istanbul ignore next */
-  if (process.env.NODE_ENV === 'development' && module.hot) {
+  if (process.env.NODE_ENV == 'development' && module.hot) {
     module.hot.accept('./reducers', () => {
       const nextRootReducer = require('./reducers').default; // eslint-disable-line
 

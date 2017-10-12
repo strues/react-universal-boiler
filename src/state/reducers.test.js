@@ -8,9 +8,6 @@ describe('rootReducer', () => {
         isFetching: false,
         error: null,
       },
-      router: {
-        location: null,
-      },
     });
   });
 });
