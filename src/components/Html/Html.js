@@ -6,9 +6,9 @@ import Helmet from 'react-helmet';
 import serialize from 'serialize-javascript';
 
 type Props = {
-  styles: Array<string>,
+  styles: $ReadOnlyArray<string>,
   cssHash: string,
-  js: Array<string>,
+  js: $ReadOnlyArray<string>,
   component: Node,
   state: Object,
   styleTags: Function,
@@ -64,14 +64,13 @@ const Html = (props: Props): Element<'html'> => {
         />
         {/* $FlowIssue */}
         {__DEV__ ? (
-          <script type="text/javascript" nonce={nonce} charSet="UTF-8" src="/assets/vendor.js" />
+          <script type="text/javascript" charSet="UTF-8" src="/assets/vendor.js" />
         ) : (
           <span />
         )}
         {js.map(name => (
           <script
             type="text/javascript"
-            nonce={nonce}
             /* $FlowIssue */
             src={`${__PUB_PATH__}${name}`}
             key={name}

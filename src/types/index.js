@@ -8,10 +8,10 @@ export type PostType = {
   body: string,
 };
 
-export type PostsType = Array<PostType>;
+export type PostsType = $ReadOnlyArray<PostType>;
 
 export type PostsReducer = {
-  list: Array<Object>,
+  list: $ReadOnlyArray<Object>,
   isFetching: boolean,
   error: any,
 };
@@ -22,12 +22,15 @@ export type Reducer = {
 
 export type Action =
   | { type: '@posts/FETCH_POSTS_REQUEST' }
-  | { type: '@posts/FETCH_POSTS_SUCCESS', payload: Array<Object> }
+  | { type: '@posts/FETCH_POSTS_SUCCESS', payload: $ReadOnlyArray<Object> }
   | { type: '@posts/FETCH_POSTS_FAILURE', error: any };
 
 export type Store = ReduxStore<Reducer, Action>;
-// eslint-disable-next-line no-use-before-define
-export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;
+
+export type Dispatch = (
+  // eslint-disable-next-line no-use-before-define
+  action: Action | ThunkAction | PromiseAction | $ReadOnlyArray<Action>,
+) => any;
 export type GetState = () => Object;
 export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
 export type PromiseAction = Promise<Action>;

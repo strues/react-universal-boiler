@@ -39,9 +39,6 @@ const SERVER_ENTRY = path.resolve(ROOT, SERVER_ENTRY_NAME);
 // client
 const CLIENT_ENTRY_NAME = process.env.CLIENT_ENTRY || 'src/entry/client.js';
 const CLIENT_ENTRY = path.resolve(ROOT, CLIENT_ENTRY_NAME);
-// vendor
-const VENDOR_NAME = process.env.VENDOR_FILE || 'src/entry/vendor.js';
-const CLIENT_VENDOR = path.resolve(ROOT, VENDOR_NAME);
 
 // Server/Client outputs
 const SERVER_OUT = process.env.SERVER_OUTPUT || 'build';
