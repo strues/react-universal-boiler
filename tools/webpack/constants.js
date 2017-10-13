@@ -16,3 +16,24 @@ export const REQUIRED_ENV_VARS = [
   'PUBLIC_PATH',
   'PORT',
 ];
+
+// CSS Nano options http://cssnano.co/
+export const CSSNANO_OPT = {
+  discardComments: { removeAll: true },
+};
+
+export const VENDOR_FILES = [
+  'react',
+  'react-dom',
+  'react-router-dom',
+  'redux',
+  'react-redux',
+  'redux-thunk',
+  'isomorphic-unfetch/browser',
+  'styled-components',
+  'react-helmet',
+  'serialize-javascript',
+  'fontfaceobserver',
+  'history',
+  'react-universal-component',
+];

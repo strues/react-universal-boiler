@@ -10,7 +10,7 @@ import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import CircularDependencyPlugin from 'circular-dependency-plugin';
 import BundleAnalyzerPlugin from 'webpack-bundle-analyzer';
 import OfflinePlugin from 'offline-plugin';
-import SriPlugin from 'webpack-subresource-integrity';
+
 import WriteFilePlugin from 'write-file-webpack-plugin';
 import { getHashDigest } from 'loader-utils';
 import AutoDllPlugin from 'autodll-webpack-plugin';
@@ -20,8 +20,10 @@ import {
   CACHE_HASH_TYPE,
   CACHE_DIGEST_TYPE,
   CACHE_DIGEST_LENGTH,
+  CSSNANO_OPT,
   JS_FILES,
   STYLE_FILES,
+  VENDOR_FILES,
   ASSET_FILES,
 } from './constants';
 
@@ -105,17 +107,13 @@ export default function createWebpackConfig(options) {
     `node_modules/.cache/loader-${CACHE_HASH}-${config.target}-${config.env}`,
   );
 
-  const browserTargets = {
-    browsers: ['> .5% in US', 'last 1 versions'],
-  };
-
   const serverTargets = {
     node: 'current',
   };
 
   const name = _IS_CLIENT_ ? 'client' : 'server';
   const target = _IS_CLIENT_ ? 'web' : 'node';
-  const devtool = _IS_DEV_ ? 'cheap-module-source-map' : 'source-map';
+  const devtool = _IS_DEV_ ? 'cheap-module-inline-source-map' : 'source-map';
 
   const cacheLoader = {
     loader: 'cache-loader',
@@ -126,10 +124,10 @@ export default function createWebpackConfig(options) {
 
   const cssLoaderOptions = {
     modules: true,
-    localIdentName: LOCAL_IDENT,
+    localIdentName: _IS_DEV_ ? LOCAL_IDENT : '[hash:base64:5]',
     import: 2,
-    minimize: false,
-    sourceMap: true,
+    minimize: _IS_DEV_ ? false : CSSNANO_OPT,
+    sourceMap: _IS_DEV_,
   };
 
   const postCSSLoaderRule = {
@@ -137,14 +135,13 @@ export default function createWebpackConfig(options) {
     options: {
       // https://webpack.js.org/guides/migrating/#complex-options
       ident: 'postcss',
-      sourceMap: true,
+      sourceMap: _IS_DEV_,
       plugins: () => [
         require('postcss-flexbugs-fixes'),
         require('postcss-cssnext')({
-          browsers: ['> 1%', 'last 2 versions'],
+          browsers: PKG_JSON.browserslist,
           flexbox: 'no-2009',
         }),
-        require('postcss-discard-duplicates'),
       ],
     },
   };
@@ -152,8 +149,8 @@ export default function createWebpackConfig(options) {
   const sassLoaderRule = {
     loader: 'sass-loader',
     options: {
-      sourceMap: true,
-      minimize: false,
+      sourceMap: _IS_DEV_,
+      minimize: _IS_DEV_ ? false : CSSNANO_OPT,
     },
   };
 
@@ -164,7 +161,7 @@ export default function createWebpackConfig(options) {
     let entry = ['react-hot-loader/patch', HMR_MIDDLEWARE, CLIENT_ENTRY];
     if (!_IS_DEV_) {
       entry = {
-        vendor: CLIENT_VENDOR,
+        vendor: VENDOR_FILES,
         main: CLIENT_ENTRY,
       };
     }
@@ -206,9 +203,8 @@ export default function createWebpackConfig(options) {
       pathinfo: _IS_DEV_,
       // Enable cross-origin loading without credentials - Useful for loading files from CDN
       crossOriginLoading: 'anonymous',
-      devtoolModuleFilenameTemplate: _IS_DEV_
-        ? info => path.resolve(info.absoluteResourcePath)
-        : info => path.resolve(ROOT, info.absoluteResourcePath),
+      devtoolModuleFilenameTemplate: info =>
+        path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
     },
     // server externals
     externals: _IS_SERVER_ ? NODE_EXTERNALS : undefined,
@@ -225,12 +221,12 @@ export default function createWebpackConfig(options) {
           child_process: 'empty',
         }
       : {
-          Buffer: false,
-          __dirname: false,
-          __filename: false,
           console: false,
-          global: true,
+          global: false,
           process: false,
+          Buffer: false,
+          __filename: false,
+          __dirname: false,
         },
     performance: _IS_DEV_
       ? false
@@ -240,7 +236,7 @@ export default function createWebpackConfig(options) {
 
     resolve: {
       // look for files in the descendants of src/ then node_modules
-      modules: [SRC_DIR, path.resolve(ROOT, 'node_modules')],
+      modules: ['node_modules', SRC_DIR],
       // Webpack will look for the following fields when searching for libraries
       mainFields: _IS_CLIENT_
         ? ['browser:modern', 'browser:esnext', 'web:modern', 'browser', 'module', 'main']
@@ -250,6 +246,7 @@ export default function createWebpackConfig(options) {
       extensions: ['.js', '.jsx', '.mjs', '.json', '.css', '.scss'],
     },
     module: {
+      // Throws an error rather than warning you on missing exports
       strictExportPresence: true,
 
       rules: [
@@ -352,8 +349,9 @@ export default function createWebpackConfig(options) {
       }),
       // Whatever is passed here will be inlined during the bundling process.
       new webpack.DefinePlugin({
-        __DEV__: JSON.stringify(_IS_DEV_),
-        __SERVER__: JSON.stringify(_IS_SERVER_),
+        __DEV__: _IS_DEV_,
+        __SERVER__: _IS_SERVER_,
+        __CLIENT__: _IS_CLIENT_,
         __PUB_PATH__: JSON.stringify(process.env.PUBLIC_PATH),
         'process.env.NODE_ENV': JSON.stringify(options.env),
         'process.env.TARGET': JSON.stringify(webpackTarget),
@@ -382,15 +380,6 @@ export default function createWebpackConfig(options) {
           })
         : null,
 
-      // Subresource Integrity (SRI) is a security feature that enables browsers to verify that
-      // files they fetch (for example, from a CDN) are delivered without unexpected manipulation.
-      // https://www.npmjs.com/package/webpack-subresource-integrity
-      // Browser-Support: http://caniuse.com/#feat=subresource-integrity
-      new SriPlugin({
-        hashFuncNames: ['sha256', 'sha512'],
-        enabled: _IS_PROD_ && _IS_CLIENT_,
-      }),
-
       /**
        * HappyPack Plugins are used as caching mechanisms to reduce the amount
        * of time Webpack spends rebuilding, during your bundling during
@@ -413,33 +402,46 @@ export default function createWebpackConfig(options) {
               compact: _IS_PROD_,
               presets: [
                 [
+                  // A Babel preset that compiles ES2015+ down to ES5 by automatically determining the Babel plugins and polyfills
+                  // you need based on your targeted browser or runtime environments.
+                  // @see: https://github.com/babel/babel/tree/master/experimental/babel-preset-env
                   'env',
                   {
-                    useBuiltins: true,
+                    useBuiltIns: false,
+                    debug: false,
                     modules: false,
                     exclude: ['transform-regenerator', 'transform-async-to-generator'],
-                    targets: _IS_CLIENT_ ? browserTargets : serverTargets,
+                    targets: _IS_CLIENT_ ? PKG_JSON.browserslist : serverTargets,
                   },
                 ],
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-preset-react
                 'react',
               ],
               plugins: [
+                // Allow parsing of import().
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-syntax-dynamic-import
                 'syntax-dynamic-import',
+                // Remove flowtypes from code
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-flow-strip-types
                 'transform-flow-strip-types',
                 // static defaultProps = {} or state = {}
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-class-properties
                 [
                   'transform-class-properties',
                   {
-                    spec: true,
+                    loose: true,
                   },
                 ],
                 // ...foo
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-rest-spread
                 [
                   'transform-object-rest-spread',
                   {
                     useBuiltIns: true,
                   },
                 ],
+                // universal(props => import(`./${props.page}`)) + dual css/js imports
+                // @see: https://github.com/faceyspacey/babel-plugin-universal-import
                 'universal-import',
                 // Adds component stack to warning messages
                 _IS_DEV_ ? 'transform-react-jsx-source' : null,
@@ -447,16 +449,23 @@ export default function createWebpackConfig(options) {
                 // will use for some warnings
                 _IS_DEV_ ? 'transform-react-jsx-self' : null,
                 _IS_DEV_ ? 'react-hot-loader/babel' : null,
+                // Hoist JSX elements to the highest possible scope
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-constant-elements
                 _IS_PROD_ ? 'transform-react-constant-elements' : null,
+                // Replace React.createElement w/ a more suitable function for prod
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-inline-elements
                 _IS_PROD_ ? 'transform-react-inline-elements' : null,
+                // Remove PropTypes from prod build.
+                // @see: https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types
                 _IS_PROD_ ? 'transform-react-remove-prop-types' : null,
-                // @NOTE: babel-plugin-transform-react-inline-elements@7.0.0-beta.2
                 // Dont want to use styled-components?
                 // remove this babel plugin
+                // @see: https://www.styled-components.com/docs/tooling#babel-plugin
                 [
                   'styled-components',
                   {
                     ssr: true,
+                    displayName: _IS_DEV_,
                     preprocess: true,
                   },
                 ],
@@ -490,26 +499,16 @@ export default function createWebpackConfig(options) {
       // I would recommend using NamedModulesPlugin during development (better output).
       // Via: https://github.com/webpack/webpack.js.org/issues/652#issuecomment-273023082
       _IS_DEV_ ? new webpack.NamedModulesPlugin() : null,
+      _IS_SERVER_
+        ? new webpack.BannerPlugin({
+            banner: 'require("source-map-support").install();',
+            raw: true,
+            entryOnly: false,
+          })
+        : null,
 
-      // Get useful information regarding whats in our bundles...
-      _IS_CLIENT_ && _IS_PROD_
-        ? new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
-            analyzerMode: 'static',
-            defaultSizes: 'gzip',
-            logLevel: 'silent',
-            openAnalyzer: false,
-            reportFilename: 'report.html',
-          })
-        : null,
-      _IS_SERVER_ && _IS_PROD_
-        ? new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
-            analyzerMode: 'static',
-            defaultSizes: 'parsed',
-            logLevel: 'silent',
-            openAnalyzer: false,
-            reportFilename: 'report.html',
-          })
-        : null,
+      // condense modules
+      _IS_PROD_ ? new webpack.optimize.ModuleConcatenationPlugin() : null,
       // only want a single file for server since it's essentially just a middleware
       _IS_SERVER_ ? new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }) : null,
       // minify w/ babel minify
@@ -526,8 +525,7 @@ export default function createWebpackConfig(options) {
             { comments: false },
           )
         : null,
-      // condense modules
-      _IS_PROD_ ? new webpack.optimize.ModuleConcatenationPlugin() : null,
+
       // Dll reference speeds up development by grouping all of your vendor dependencies
       // in a DLL file. This is not compiled again, unless package.json contents
       // have changed.
@@ -541,7 +539,6 @@ export default function createWebpackConfig(options) {
                 'react-dom',
                 'react-router-dom',
                 'redux',
-                'bluebird',
                 'react-redux',
                 'redux-thunk',
                 'redux-logger',
@@ -549,6 +546,7 @@ export default function createWebpackConfig(options) {
                 'styled-components',
                 'react-helmet',
                 'serialize-javascript',
+                'prop-types',
                 'fontfaceobserver',
                 'history',
                 'react-universal-component',
@@ -577,6 +575,25 @@ export default function createWebpackConfig(options) {
             safeToUseOptionalCaches: true,
 
             AppCache: false,
+          })
+        : null,
+      // Get useful information regarding whats in our bundles...
+      _IS_CLIENT_ && _IS_PROD_
+        ? new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            defaultSizes: 'gzip',
+            logLevel: 'silent',
+            openAnalyzer: false,
+            reportFilename: 'report.html',
+          })
+        : null,
+      _IS_SERVER_ && _IS_PROD_
+        ? new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            defaultSizes: 'parsed',
+            logLevel: 'silent',
+            openAnalyzer: false,
+            reportFilename: 'report.html',
           })
         : null,
     ].filter(Boolean),

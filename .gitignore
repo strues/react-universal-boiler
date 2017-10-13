@@ -7,3 +7,4 @@ build/
 .cache-loader
 .idea
 .DS_Store
+.eslintcache

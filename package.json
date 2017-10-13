@@ -33,44 +33,25 @@
     "lint": "eslint . --cache && echo \"eslint: no lint errors\"",
     "nuke": "rimraf node_modules/.cache && npm run clean",
     "prebuild": "rimraf build",
+    "precommit": "lint-staged --verbose",
     "prettier": "find . -name \"*.js\" | grep -v -f .eslintignore | xargs prettier --single-quote --print-width=100 --jsx-bracket-same-line=true --trailing-comma=all --write ",
     "start": "NODE_ENV=production node server/index.js",
     "test": "NODE_ENV=test jest",
     "test:ci": "NODE_ENV=test ./node_modules/.bin/jest"
   },
-  "jest": {
-    "timers": "fake",
-    "moduleNameMapper": {
-      "\\.(css|scss)$": "identity-obj-proxy",
-      ".*\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tools/jest/fileMock.js"
-    },
-    "setupFiles": [
-      "raf/polyfill"
-    ],
-    "collectCoverage": true,
-    "coverageDirectory": "<rootDir>/coverage",
-    "coveragePathIgnorePatterns": [
-      "<rootDir>/(tools|build|docs|public)/",
-      "/flow-typed/",
-      "/__fixtures__/",
-      "/node_modules/"
-    ],
-    "transform": {
-      "^.+\\.js$": "<rootDir>/tools/jest/transform.js"
-    },
-    "testRegex": ".*.test\\.js",
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/__snapshots__",
-      "<rootDir>/(tools|build|docs|public)/"
-    ],
-    "transformIgnorePatterns": [
-      "/node_modules/",
-      "<rootDir>/(tools|build|docs|public)/"
+  "browserslist": [
+    ">1%",
+    "last 3 versions",
+    "Firefox ESR",
+    "not ie < 10"
+  ],
+  "lint-staged": {
+    "*.js": [
+      "yarn prettier",
+      "git add"
     ]
   },
   "dependencies": {
-    "bluebird": "^3.5.1",
     "compression": "^1.7.1",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
@@ -90,6 +71,7 @@
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "serialize-javascript": "^1.4.0",
+    "source-map-support": "^0.5.0",
     "styled-components": "^2.2.1",
     "uuid": "^3.1.0",
     "webpack-flush-chunks": "^1.2.0"
@@ -109,11 +91,12 @@
     "babel-plugin-transform-react-inline-elements": "7.0.0-beta.2",
     "babel-plugin-transform-react-jsx-self": "^7.0.0-beta.2",
     "babel-plugin-transform-react-jsx-source": "^7.0.0-beta.2",
-    "babel-plugin-transform-react-remove-prop-types": "^0.4.9",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.10",
     "babel-plugin-universal-import": "^1.2.7",
     "babel-preset-env": "^2.0.0-beta.2",
     "babel-preset-react": "^7.0.0-beta.2",
     "babel-register": "7.0.0-beta.2",
+    "bluebird": "^3.5.1",
     "cache-loader": "^1.1.0",
     "caniuse-lite": "1.0.30000746",
     "case-sensitive-paths-webpack-plugin": "^2.1.1",
@@ -121,6 +104,7 @@
     "circular-dependency-plugin": "^4.2.1",
     "codecov": "^2.3.0",
     "css-loader": "^0.28.7",
+    "cz-gitmoji": "0.0.7",
     "eslint": "^4.8.0",
     "eslint-config-boldr": "^0.13.2",
     "extract-css-chunks-webpack-plugin": "^2.0.17",
@@ -129,13 +113,16 @@
     "flow-bin": "^0.56.0",
     "fs-extra": "^4.0.2",
     "happypack": "^4.0.0",
+    "husky": "^0.14.3",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^21.2.1",
+    "lint-staged": "^4.2.3",
     "loader-utils": "^1.1.0",
     "lodash.merge": "^4.6.0",
     "node-sass": "^4.5.3",
     "nodemon": "^1.12.1",
     "postcss-cssnext": "^3.0.2",
+    "postcss-discard-duplicates": "2.1.0",
     "postcss-flexbugs-fixes": "^3.2.0",
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.7",
@@ -154,7 +141,11 @@
     "webpack-dev-middleware": "^1.12.0",
     "webpack-hot-middleware": "^2.19.1",
     "webpack-hot-server-middleware": "^0.1.0",
-    "webpack-subresource-integrity": "^1.0.1",
     "write-file-webpack-plugin": "^4.2.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-gitmoji"
+    }
   }
 }

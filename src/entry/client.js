@@ -1,20 +1,20 @@
 /* eslint-disable global-require */
 // @flow
-import './clientPolyfill';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import createHistory from 'history/createBrowserHistory';
 import BrowserRouter from 'react-router-dom/BrowserRouter';
 import FontFaceObserver from 'fontfaceobserver';
-import AppContainer from 'react-hot-loader/lib/AppContainer';
-
+import { polyfill as rafPolyfill } from 'raf';
 // internal
 // $FlowIssue
 import '../styles/main.scss';
 import configureStore from '../state/store';
 import App from '../components/App';
+import AppContainer from './AppContainer';
+
+rafPolyfill();
 
 const history = createHistory();
 const preloadedState = window.__PRELOADED_STATE__;

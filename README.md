@@ -50,8 +50,6 @@ PUBLIC_PATH=/assets/
 SERVER_ENTRY=src/entry/server.js
 # Entry file for the client
 CLIENT_ENTRY=src/entry/client.js
-# Vendor dependencies
-VENDOR_FILE=src/entry/vendor.js
 # Output directory for clientside 
 CLIENT_OUTPUT=build/assets
 # Output directory for the server bundle
@@ -62,10 +60,10 @@ SERVER_OUTPUT=build
 ### Notes
 > Configuring the development DLLs is handled in `tools/webpack/createWebpackConfig.js` at the bottom in the AutoDLLWebpackPlugin options. Adding dependencies here allows Webpack to bundle them once, and not again during development. This dramatically speeds up rebundle times.
 
-For production, vendor assets bundle requires additional input. Simply import (`import 'react';`) your preferred dependency in `vendor.js` located in `src/entry/vendor.js`.
+For production, modify the `VENDOR_FILES` array in `tools/webpack/constants.js`. 
+
 
 This boilerplate uses babel 7, which is currently in beta. If you plan on using `babel-plugin-transform-decorators-legacy`, please see the [Planning for Babel 7](http://babeljs.io/blog/2017/09/12/planning-for-7.0), particularly Stage 3: Class Properties (from Stage 2)
-
 
 
 

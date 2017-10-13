@@ -32,9 +32,20 @@ app.use((req, res, next) => {
 //      For example: app.use('/assets', express.static(....))
 //        -- will serve the files in the directory = require(websiteUrl/assets/
 const assetDir = process.env.CLIENT_OUTPUT;
-app.use(process.env.PUBLIC_PATH, express.static(path.resolve(process.cwd(), assetDir)));
+app.use(
+  process.env.PUBLIC_PATH,
+  express.static(path.resolve(process.cwd(), assetDir), {
+    // Cache static files for a year.
+    maxAge: 31536000000,
+  }),
+);
 // Setup the public directory so that we can serve static assets.
-app.use(express.static(path.resolve(process.cwd(), './public')));
+app.use(
+  express.static(path.resolve(process.cwd(), './public'), {
+    // Cache static files for a year.
+    maxAge: 31536000000,
+  }),
+);
 // Pass any get request through the SSR middleware before sending it back
 // app.get('*', ssrMiddleware);
 if (process.env.NODE_ENV === 'development') {
@@ -42,6 +53,7 @@ if (process.env.NODE_ENV === 'development') {
   const setupHotDev = require('./middleware/hot');
   setupHotDev(app);
 } else {
+  // eslint-disable-next-line
   const clientStats = require('../build/assets/stats.json');
   const serverRender = require('../build/server.js').default;
 

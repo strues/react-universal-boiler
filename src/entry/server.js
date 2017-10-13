@@ -1,5 +1,3 @@
-import './serverPolyfill.js';
-
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Provider } from 'react-redux';
@@ -9,11 +7,16 @@ import matchPath from 'react-router-dom/matchPath';
 import { ServerStyleSheet } from 'styled-components';
 import { flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
+import chalk from 'chalk';
 
 import configureStore from '../state/store';
 import routes from '../routes';
 import App from '../components/App';
 import Html from '../components/Html';
+
+import './serverPolyfill.js';
+
+const log = console.log;
 
 /**
  * Express middleware to render HTML
@@ -39,6 +42,7 @@ export default ({ clientStats }) => (req, res, next) => {
   );
 
   // Here is where our data loading begins
+  log(chalk.dim('Matching routes and fetching data'));
   const matches = routes.reduce((matches, route) => {
     const match = matchPath(req.url, route.path, route);
     if (match && match.isExact) {
@@ -59,11 +63,13 @@ export default ({ clientStats }) => (req, res, next) => {
 
   // Resolve the AJAX calls and render
   Promise.all(promises).then(() => {
-    console.log('Flushing chunks...');
+    log(chalk.dim('Flushing chunks...'));
     const chunkNames = flushChunkNames();
     const { scripts, stylesheets, cssHashRaw } = flushChunks(clientStats, { chunkNames });
+
     // get our "finalState" containing data loaded on the server
     const finalState = store.getState();
+
     // render to stream, collect styled-components css, send assets, and "raw" application component.
     const html = ReactDOMServer.renderToNodeStream(
       sheet.collectStyles(
@@ -79,7 +85,6 @@ export default ({ clientStats }) => (req, res, next) => {
       ),
     );
 
-    console.log('Streaming page...');
     switch (reactRouterContext.status) {
       case 301:
       case 302:
@@ -100,5 +105,6 @@ export default ({ clientStats }) => (req, res, next) => {
         res.write('<!doctype html>');
         html.pipe(res);
     }
+    log(chalk.green('Streaming app to browser'));
   });
 };

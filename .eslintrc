@@ -1,9 +1,0 @@
-{
-  "root": true,
-  "extends": ["boldr", "boldr/react"],
-  "globals": {
-    "__DEV__": true,
-    "__PUB_PATH__": true,
-    "__SERVER__": true
-  }
-}

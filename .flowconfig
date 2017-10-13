@@ -23,9 +23,13 @@ module.system=node
 esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
 unsafe.enable_getters_and_setters=true
+
 # Set this to true and Flow will no longer complain when you use require() with something other than a string literal.
 module.ignore_non_literal_requires=true
 munge_underscores=false
+
+module.system.node.resolve_dirname=node_modules
+module.system.node.resolve_dirname=src
 
 module.name_mapper='^\(.*\)\.\(css\|scss\)$' -> '<PROJECT_ROOT>/tools/flow/stubs/CSSModules.js.flow'
 module.name_mapper='.*\.\(html\|scss\|svg\|png\|jpg\|gif\)$' -> '<PROJECT_ROOT>/tools/flow/stubs/WebpackAssets.js.flow'
