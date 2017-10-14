@@ -36,16 +36,18 @@ const Html = (props: Props): Element<'html'> => {
           href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css"
           crossOrigin="anonymous"
         />
-        {styleTags.getStyleElement()}
-        {/* $FlowIssue */}
-        {styles.map(name => <link rel="stylesheet" href={`${__PUB_PATH__}${name}`} key={name} />)}
         <link
           href="https://fonts.googleapis.com/css?family=Rubik:300,700|Roboto:300,400"
           rel="stylesheet"
         />
+        {/* $FlowIssue */}
+        {styles.map(name => <link rel="stylesheet" href={`${__PUB_PATH__}${name}`} key={name} />)}
+
+        {styleTags}
       </head>
       <body>
-        <div id="app">{component}</div>
+        <div id="app" dangerouslySetInnerHTML={{ __html: component }} />
+
         <script
           type="text/javascript"
           nonce={nonce}

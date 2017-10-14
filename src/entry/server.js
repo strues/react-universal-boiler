@@ -60,7 +60,16 @@ export default ({ clientStats }) => (req, res, next) => {
   });
 
   // Resolve the AJAX calls and render
-  Promise.all(promises).then(() => {
+  Promise.all(promises).then(async () => {
+    let markup = '';
+    try {
+      // render the applicaation to a string and let styled-components
+      // create stylesheet tags
+      markup = await ReactDOMServer.renderToString(sheet.collectStyles(appComponent));
+    } catch (err) {
+      console.error('Unable to render server side React:', err);
+    }
+
     log(chalk.dim('Flushing chunks...'));
     const chunkNames = flushChunkNames();
     const { scripts, stylesheets, cssHashRaw } = flushChunks(clientStats, { chunkNames });
@@ -70,17 +79,15 @@ export default ({ clientStats }) => (req, res, next) => {
 
     // render to stream, collect styled-components css, send assets, and "raw" application component.
     const html = ReactDOMServer.renderToNodeStream(
-      sheet.collectStyles(
-        <Html
-          styles={stylesheets}
-          cssHash={cssHashRaw}
-          js={scripts}
-          styleTags={sheet}
-          nonce={res.locals.nonce}
-          component={appComponent}
-          state={finalState}
-        />,
-      ),
+      <Html
+        styles={stylesheets}
+        cssHash={cssHashRaw}
+        js={scripts}
+        styleTags={sheet.getStyleElement()}
+        nonce={res.locals.nonce}
+        component={markup}
+        state={finalState}
+      />,
     );
 
     switch (reactRouterContext.status) {
