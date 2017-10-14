@@ -30,7 +30,7 @@
     "coverage": "codecov",
     "dev": "NODE_ENV=development PORT=3000 nodemon",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
-    "lint": "eslint . --cache && echo \"eslint: no lint errors\"",
+    "lint": "eslint .",
     "nuke": "rimraf node_modules/.cache && npm run clean",
     "prebuild": "rimraf build",
     "precommit": "lint-staged --verbose",
