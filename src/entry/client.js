@@ -3,10 +3,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import createHistory from 'history/createBrowserHistory';
 import BrowserRouter from 'react-router-dom/BrowserRouter';
 import FontFaceObserver from 'fontfaceobserver';
-import { polyfill as rafPolyfill } from 'raf';
 // internal
 // $FlowIssue
 import '../styles/main.scss';
@@ -14,11 +12,8 @@ import configureStore from '../state/store';
 import App from '../components/App';
 import AppContainer from './AppContainer';
 
-rafPolyfill();
-
-const history = createHistory();
 const preloadedState = window.__PRELOADED_STATE__;
-const store = configureStore(preloadedState, history);
+const store = configureStore(preloadedState);
 
 const robotoObserver = new FontFaceObserver('Roboto', {});
 const rubikObserver = new FontFaceObserver('Rubik', {});
@@ -63,5 +58,14 @@ if (module.hot && __DEV__) {
 }
 
 if (process.env.NODE_ENV === 'production') {
-  require('offline-plugin/runtime').install(); // eslint-disable-line global-require
+  const runtime = require('offline-plugin/runtime');
+
+  runtime.install({
+    onUpdateReady() {
+      runtime.applyUpdate();
+    },
+    onUpdated() {
+      window.location.reload();
+    },
+  });
 }

@@ -23,7 +23,6 @@ import {
   CSSNANO_OPT,
   JS_FILES,
   STYLE_FILES,
-  VENDOR_FILES,
   ASSET_FILES,
 } from './constants';
 
@@ -105,7 +104,17 @@ export default function createWebpackConfig(options) {
   );
 
   const serverTargets = {
-    node: 'current',
+    node: '8',
+  };
+  const browserTargets = {
+    browsers: {
+      android: '4.4.3',
+      chrome: '> 54',
+      edge: '> 16',
+      firefox: '55',
+      ios: '10',
+      safari: '10.1',
+    },
   };
 
   const name = _IS_CLIENT_ ? 'client' : 'server';
@@ -158,7 +167,7 @@ export default function createWebpackConfig(options) {
     let entry = ['react-hot-loader/patch', HMR_MIDDLEWARE, CLIENT_ENTRY];
     if (!_IS_DEV_) {
       entry = {
-        vendor: VENDOR_FILES,
+        // vendor: VENDOR_FILES,
         main: CLIENT_ENTRY,
       };
     }
@@ -229,6 +238,9 @@ export default function createWebpackConfig(options) {
       ? false
       : {
           hints: 'warning',
+          assetFilter: assetFilename => {
+            return assetFilename.endsWith('.js');
+          },
         },
 
     resolve: {
@@ -368,9 +380,17 @@ export default function createWebpackConfig(options) {
         : null,
       // Extract Webpack bootstrap code with knowledge about chunks into separate cachable package.
       // explicit-webpack-runtime-chunk
+      _IS_CLIENT_ && _IS_PROD_
+        ? new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            minChunks: module => /node_modules/.test(module.resource),
+          })
+        : null,
+      // Extract Webpack bootstrap code with knowledge about chunks into separate cachable package.
+      // explicit-webpack-runtime-chunk
       _IS_CLIENT_
         ? new webpack.optimize.CommonsChunkPlugin({
-            names: _IS_DEV_ ? ['bootstrap'] : ['vendor', 'bootstrap'],
+            names: 'bootstrap',
             //   // needed to put webpack bootstrap code before chunks
             filename: _IS_DEV_ ? '[name].js' : '[name]-[chunkhash].js',
             minChunks: Infinity,
@@ -398,21 +418,22 @@ export default function createWebpackConfig(options) {
               cacheDirectory: _IS_DEV_,
               compact: _IS_PROD_,
               presets: [
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-preset-react
+                'react',
                 [
                   // A Babel preset that compiles ES2015+ down to ES5 by automatically determining the Babel plugins and polyfills
                   // you need based on your targeted browser or runtime environments.
                   // @see: https://github.com/babel/babel/tree/master/experimental/babel-preset-env
                   'env',
                   {
-                    useBuiltIns: false,
-                    debug: false,
+                    debug: true,
                     modules: false,
+                    looseMode: true,
+                    compact: true,
                     exclude: ['transform-regenerator', 'transform-async-to-generator'],
-                    targets: _IS_CLIENT_ ? PKG_JSON.browserslist : serverTargets,
+                    targets: _IS_CLIENT_ ? browserTargets : serverTargets,
                   },
                 ],
-                // @see: https://github.com/babel/babel/tree/master/packages/babel-preset-react
-                'react',
               ],
               plugins: [
                 // Allow parsing of import().
@@ -440,23 +461,7 @@ export default function createWebpackConfig(options) {
                 // universal(props => import(`./${props.page}`)) + dual css/js imports
                 // @see: https://github.com/faceyspacey/babel-plugin-universal-import
                 'universal-import',
-                // Adds component stack to warning messages
-                _IS_DEV_ ? 'transform-react-jsx-source' : null,
-                // Adds __self attribute to JSX which React
-                // will use for some warnings
-                _IS_DEV_ ? 'transform-react-jsx-self' : null,
-                _IS_DEV_ ? 'react-hot-loader/babel' : null,
-                // Hoist JSX elements to the highest possible scope
-                // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-constant-elements
-                _IS_PROD_ ? 'transform-react-constant-elements' : null,
-                // Replace React.createElement w/ a more suitable function for prod
-                // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-inline-elements
-                _IS_PROD_ ? 'transform-react-inline-elements' : null,
-                // Remove PropTypes from prod build.
-                // @see: https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types
-                _IS_PROD_ ? 'transform-react-remove-prop-types' : null,
-                // Dont want to use styled-components?
-                // remove this babel plugin
+
                 // @see: https://www.styled-components.com/docs/tooling#babel-plugin
                 [
                   'styled-components',
@@ -466,6 +471,26 @@ export default function createWebpackConfig(options) {
                     preprocess: true,
                   },
                 ],
+                // Remove PropTypes from prod build.
+                // @see: https://github.com/oliviertassinari/babel-plugin-transform-react-remove-prop-types
+                _IS_DEV_
+                  ? 'react-hot-loader/babel'
+                  : [
+                      'transform-react-remove-prop-types',
+                      {
+                        mode: 'remove',
+                        removeImport: true,
+                      },
+                    ],
+                // Replace React.createElement w/ a more suitable function for prod
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-inline-elements
+                // Adds __self attribute to JSX which React
+                // will use for some warnings
+                _IS_DEV_ ? 'transform-react-jsx-self' : 'transform-react-inline-elements',
+                // Hoist JSX elements to the highest possible scope
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-constant-elements
+                // Adds component stack to warning messages
+                _IS_DEV_ ? 'transform-react-jsx-source' : 'transform-react-constant-elements',
               ].filter(Boolean),
             },
           },
@@ -504,8 +529,6 @@ export default function createWebpackConfig(options) {
           })
         : null,
 
-      // condense modules
-      _IS_PROD_ ? new webpack.optimize.ModuleConcatenationPlugin() : null,
       // only want a single file for server since it's essentially just a middleware
       _IS_SERVER_ ? new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }) : null,
       // minify w/ babel minify

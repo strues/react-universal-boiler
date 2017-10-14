@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Provider } from 'react-redux';
-import createHistory from 'history/createMemoryHistory';
 import StaticRouter from 'react-router-dom/StaticRouter';
 import matchPath from 'react-router-dom/matchPath';
 import { ServerStyleSheet } from 'styled-components';
@@ -27,9 +26,8 @@ const log = console.log;
 export default ({ clientStats }) => (req, res, next) => {
   global.navigator = { userAgent: req.headers['user-agent'] };
 
-  const history = createHistory({ initialEntries: [req.path] });
   const initialState = {};
-  const store = configureStore(initialState, history);
+  const store = configureStore(initialState);
   const sheet = new ServerStyleSheet();
   const reactRouterContext = {};
 
