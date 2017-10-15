@@ -26,19 +26,19 @@ Getting up and running for development is easy.
 
 `cd react-universal-boiler`
 
-Install the dependencies `npm install`.   
+Install the dependencies `yarn`.   
     
 Copy the env file `cp .env.example .env`.  
 
-Start development `npm run dev` and your universal React application is running on port 3000.   
+Start development `yarn dev` and your universal React application is running on port 3000.   
 
 
 ### Production
 Running the two commands below will compile your application and serve the production ready build.
 
-**Build:** `npm run build`
+**Build:** `yarn build`
 
-**Run:** `npm run start`
+**Run:** `yarn start`
 
 
 ### Env Variables
@@ -60,7 +60,7 @@ SERVER_OUTPUT=build
 ### Notes
 > Configuring the development DLLs is handled in `tools/webpack/createWebpackConfig.js` at the bottom in the AutoDLLWebpackPlugin options. Adding dependencies here allows Webpack to bundle them once, and not again during development. This dramatically speeds up rebundle times.
 
-For production, modify the `VENDOR_FILES` array in `tools/webpack/constants.js`. 
+For production, this is handled for you by comparing imports to what's in `node_modules`.
 
 
 This boilerplate uses babel 7, which is currently in beta. If you plan on using `babel-plugin-transform-decorators-legacy`, please see the [Planning for Babel 7](http://babeljs.io/blog/2017/09/12/planning-for-7.0), particularly Stage 3: Class Properties (from Stage 2)
