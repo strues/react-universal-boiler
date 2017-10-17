@@ -62,6 +62,8 @@ const defaults = {
   env: process.env.NODE_ENV,
   verbose: false,
   useSourceMaps: true,
+  analyzeServerBundle: false,
+  analyzeClientBundle: true,
 };
 
 export default function createWebpackConfig(options) {
@@ -164,11 +166,16 @@ export default function createWebpackConfig(options) {
 
   const getClientEntry = () => {
     // For development
-    let entry = ['react-hot-loader/patch', HMR_MIDDLEWARE, CLIENT_ENTRY];
+    let entry = [
+      'react-hot-loader/patch',
+      HMR_MIDDLEWARE,
+      require.resolve('./polyfills'),
+      CLIENT_ENTRY,
+    ];
     if (!_IS_DEV_) {
       entry = {
         // vendor: VENDOR_FILES,
-        main: CLIENT_ENTRY,
+        main: [require.resolve('./polyfills'), CLIENT_ENTRY],
       };
     }
 
@@ -176,7 +183,7 @@ export default function createWebpackConfig(options) {
   };
 
   const getServerEntry = () => {
-    const entry = { server: [SERVER_ENTRY] };
+    const entry = { server: [require.resolve('./nodePolyfills'), SERVER_ENTRY] };
     return entry;
   };
 
@@ -418,8 +425,6 @@ export default function createWebpackConfig(options) {
               cacheDirectory: _IS_DEV_,
               compact: _IS_PROD_,
               presets: [
-                // @see: https://github.com/babel/babel/tree/master/packages/babel-preset-react
-                'react',
                 [
                   // A Babel preset that compiles ES2015+ down to ES5 by automatically determining the Babel plugins and polyfills
                   // you need based on your targeted browser or runtime environments.
@@ -428,12 +433,15 @@ export default function createWebpackConfig(options) {
                   {
                     debug: true,
                     modules: false,
-                    looseMode: true,
-                    compact: true,
+                    useBuiltIns: false,
+                    loose: true,
                     exclude: ['transform-regenerator', 'transform-async-to-generator'],
                     targets: _IS_CLIENT_ ? browserTargets : serverTargets,
                   },
                 ],
+                // @see: https://github.com/babel/babel/tree/master/packages/babel-preset-react
+
+                'react',
               ],
               plugins: [
                 // Allow parsing of import().
@@ -598,7 +606,7 @@ export default function createWebpackConfig(options) {
           })
         : null,
       // Get useful information regarding whats in our bundles...
-      _IS_CLIENT_ && _IS_PROD_
+      _IS_CLIENT_ && _IS_PROD_ && config.analyzeClientBundle
         ? new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
             analyzerMode: 'static',
             defaultSizes: 'gzip',
@@ -607,7 +615,7 @@ export default function createWebpackConfig(options) {
             reportFilename: 'report.html',
           })
         : null,
-      _IS_SERVER_ && _IS_PROD_
+      _IS_SERVER_ && _IS_PROD_ && config.analyzeServerBundle
         ? new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
             analyzerMode: 'static',
             defaultSizes: 'parsed',
