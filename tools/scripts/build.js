@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-
+import chalk from 'chalk';
 import formatWebpackMessages from 'react-dev-utils/formatWebpackMessages';
 import FileSizeReporter from 'react-dev-utils/FileSizeReporter';
 import printBuildError from 'react-dev-utils/printBuildError';
