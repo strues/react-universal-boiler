@@ -458,6 +458,9 @@ export default function createWebpackConfig(options) {
                     loose: true,
                   },
                 ],
+                // [...a, 'foo'];
+                // @see https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-es2015-spread
+                'transform-es2015-spread',
                 // ...foo
                 // @see: https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-rest-spread
                 [

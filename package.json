@@ -80,6 +80,7 @@
     "babel-plugin-styled-components": "^1.2.1",
     "babel-plugin-syntax-dynamic-import": "^7.0.0-beta.2",
     "babel-plugin-transform-class-properties": "^7.0.0-beta.2",
+    "babel-plugin-transform-es2015-spread": "^7.0.0-beta.2",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^7.0.0-beta.2",
     "babel-plugin-transform-react-constant-elements": "7.0.0-beta.2",
