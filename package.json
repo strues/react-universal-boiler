@@ -50,7 +50,7 @@
     "compression": "^1.7.1",
     "dotenv": "^4.0.0",
     "es6-promise": "^4.1.1",
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "fontfaceobserver": "^2.0.13",
     "isomorphic-unfetch": "^2.0.0",
     "object-assign": "^4.1.1",
