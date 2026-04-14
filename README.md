@@ -1,4 +1,7 @@
 # React Universal Boiler
+
+> **This project is archived and no longer maintained.** The React ecosystem has moved significantly since this was created. For modern SSR React starters, consider [Next.js](https://nextjs.org/), [Remix](https://remix.run/), or [Vite SSR](https://vite.dev/guide/ssr). The source code remains available for reference.
+
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier) [![Build Status](https://travis-ci.org/strues/react-universal-boiler.svg?branch=master)](https://travis-ci.org/strues/react-universal-boiler) [![codecov](https://codecov.io/gh/strues/react-universal-boiler/branch/master/graph/badge.svg)](https://codecov.io/gh/strues/react-universal-boiler)
 
 
